@@ -4,9 +4,11 @@ go 1.24.1
 
 require (
 	github.com/BurntSushi/toml v1.5.0
+	github.com/ForestEckhardt/freezer v0.1.1
 	github.com/onsi/gomega v1.37.0
 	github.com/paketo-buildpacks/occam v0.25.0
 	github.com/paketo-buildpacks/packit/v2 v2.17.0
+	github.com/pelletier/go-toml v1.9.5
 	github.com/sclevine/spec v1.4.0
 )
 
@@ -15,7 +17,6 @@ require (
 	github.com/Azure/go-ansiterm v0.0.0-20210617225240-d185dfc1b5a1 // indirect
 	github.com/CycloneDX/cyclonedx-go v0.7.1 // indirect
 	github.com/DataDog/zstd v1.4.5 // indirect
-	github.com/ForestEckhardt/freezer v0.1.1 // indirect
 	github.com/Masterminds/goutils v1.1.1 // indirect
 	github.com/Masterminds/semver/v3 v3.3.1 // indirect
 	github.com/Masterminds/sprig/v3 v3.2.3 // indirect
@@ -67,7 +68,7 @@ require (
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/golang/protobuf v1.5.4 // indirect
-	github.com/golang/snappy v0.0.4 // indirect
+	github.com/golang/snappy v1.0.0 // indirect
 	github.com/google/go-cmp v0.7.0 // indirect
 	github.com/google/go-containerregistry v0.20.2 // indirect
 	github.com/google/licensecheck v0.3.1 // indirect
@@ -104,7 +105,6 @@ require (
 	github.com/olekukonko/tablewriter v0.0.5 // indirect
 	github.com/opencontainers/go-digest v1.0.0 // indirect
 	github.com/opencontainers/image-spec v1.1.0 // indirect
-	github.com/pelletier/go-toml v1.9.5 // indirect
 	github.com/pierrec/lz4/v4 v4.1.15 // indirect
 	github.com/pjbgf/sha1cd v0.3.0 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
