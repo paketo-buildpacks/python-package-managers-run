@@ -10,7 +10,7 @@ import (
 	"testing"
 
 	"github.com/paketo-buildpacks/packit/v2"
-	condaenvupdate "github.com/paketo-buildpacks/python-packagers/pkg/conda"
+	condaenvupdate "github.com/paketo-buildpacks/python-packagers/pkg/packagers/conda"
 	"github.com/sclevine/spec"
 
 	. "github.com/onsi/gomega"

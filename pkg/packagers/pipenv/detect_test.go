@@ -10,8 +10,8 @@ import (
 	"testing"
 
 	"github.com/paketo-buildpacks/packit/v2"
-	pipenvinstall "github.com/paketo-buildpacks/python-packagers/pkg/pipenv"
-	"github.com/paketo-buildpacks/python-packagers/pkg/pipenv/fakes"
+	pipenvinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pipenv"
+	"github.com/paketo-buildpacks/python-packagers/pkg/packagers/pipenv/fakes"
 	"github.com/sclevine/spec"
 
 	. "github.com/onsi/gomega"

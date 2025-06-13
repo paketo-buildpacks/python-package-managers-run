@@ -13,8 +13,8 @@ import (
 
 	"github.com/paketo-buildpacks/packit/v2/pexec"
 	"github.com/paketo-buildpacks/packit/v2/scribe"
-	poetryinstall "github.com/paketo-buildpacks/python-packagers/pkg/poetry"
-	"github.com/paketo-buildpacks/python-packagers/pkg/poetry/fakes"
+	poetryinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/poetry"
+	"github.com/paketo-buildpacks/python-packagers/pkg/packagers/poetry/fakes"
 	"github.com/sclevine/spec"
 
 	. "github.com/onsi/gomega"

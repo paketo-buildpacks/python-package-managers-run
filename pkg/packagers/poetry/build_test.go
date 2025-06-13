@@ -16,9 +16,9 @@ import (
 	"github.com/paketo-buildpacks/packit/v2/chronos"
 	"github.com/paketo-buildpacks/packit/v2/sbom"
 	"github.com/paketo-buildpacks/packit/v2/scribe"
-	pythonpackagers "github.com/paketo-buildpacks/python-packagers/pkg/common"
-	poetryinstall "github.com/paketo-buildpacks/python-packagers/pkg/poetry"
-	"github.com/paketo-buildpacks/python-packagers/pkg/poetry/fakes"
+	pythonpackagers "github.com/paketo-buildpacks/python-packagers/pkg/packagers/common"
+	poetryinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/poetry"
+	"github.com/paketo-buildpacks/python-packagers/pkg/packagers/poetry/fakes"
 	"github.com/sclevine/spec"
 
 	. "github.com/onsi/gomega"

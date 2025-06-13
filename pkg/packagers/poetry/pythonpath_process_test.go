@@ -10,7 +10,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	poetryinstall "github.com/paketo-buildpacks/python-packagers/pkg/poetry"
+	poetryinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/poetry"
 	"github.com/sclevine/spec"
 
 	. "github.com/onsi/gomega"

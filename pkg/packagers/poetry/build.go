@@ -2,23 +2,23 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-package pipinstall
+package poetryinstall
 
 import (
 	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/paketo-buildpacks/packit/v2"
-	"github.com/paketo-buildpacks/packit/v2/draft"
 	"github.com/paketo-buildpacks/packit/v2/fs"
 	"github.com/paketo-buildpacks/packit/v2/sbom"
 
-	pythonpackagers "github.com/paketo-buildpacks/python-packagers/pkg/common"
+	pythonpackagers "github.com/paketo-buildpacks/python-packagers/pkg/packagers/common"
 )
 
 //go:generate faux --interface EntryResolver --output fakes/entry_resolver.go
 //go:generate faux --interface InstallProcess --output fakes/install_process.go
-//go:generate faux --interface SitePackagesProcess --output fakes/site_packages_process.go
+//go:generate faux --interface PythonPathLookupProcess --output fakes/python_path_process.go
 //go:generate faux --interface SBOMGenerator --output fakes/sbom_generator.go
 
 // EntryResolver defines the interface for picking the most relevant entry from
@@ -27,36 +27,38 @@ type EntryResolver interface {
 	MergeLayerTypes(name string, entries []packit.BuildpackPlanEntry) (launch, build bool)
 }
 
-// InstallProcess defines the interface for installing the pip dependencies.
+// InstallProcess defines the interface for installing the poetry dependencies.
+// It returns the location of the virtual env directory.
 type InstallProcess interface {
-	Execute(workingDir, targetDir, cacheDir string) error
+	Execute(workingDir, targetDir, cacheDir string) (string, error)
 }
 
-// SitePackagesProcess defines the interface for determining the site-packages path.
-type SitePackagesProcess interface {
-	Execute(layerPath string) (sitePackagesPath string, err error)
+// PythonPathProcess defines the interface for finding the PYTHONPATH (AKA the site-packages directory)
+type PythonPathLookupProcess interface {
+	Execute(venvDir string) (string, error)
 }
 
-// PipBuildParameters encapsulates the pip specific parameters for the
+// PoetryEnvBuildParameters encapsulates the poetry specific parameters for the
 // Build function
-type PipBuildParameters struct {
-	InstallProcess      InstallProcess
-	SitePackagesProcess SitePackagesProcess
+type PoetryEnvBuildParameters struct {
+	EntryResolver           EntryResolver
+	InstallProcess          InstallProcess
+	PythonPathLookupProcess PythonPathLookupProcess
 }
 
 // Build will return a packit.BuildFunc that will be invoked during the build
 // phase of the buildpack lifecycle.
 //
-// Build will install the pip dependencies by using the requirements.txt file
-// to a packages layer. It also makes use of a cache layer to reuse the pip
-// cache.
+// Build will install the poetry dependencies by using the pyproject.toml file
+// to a virtual environment layer.
 func Build(
-	buildParameters PipBuildParameters,
+	buildParameters PoetryEnvBuildParameters,
 	parameters pythonpackagers.CommonBuildParameters,
 ) packit.BuildFunc {
 	return func(context packit.BuildContext) (packit.BuildResult, error) {
+		entryResolver := buildParameters.EntryResolver
 		installProcess := buildParameters.InstallProcess
-		siteProcess := buildParameters.SitePackagesProcess
+		pythonPathProcess := buildParameters.PythonPathLookupProcess
 
 		sbomGenerator := parameters.SbomGenerator
 		clock := parameters.Clock
@@ -64,7 +66,7 @@ func Build(
 
 		logger.Title("%s %s", context.BuildpackInfo.Name, context.BuildpackInfo.Version)
 
-		packagesLayer, err := context.Layers.Get(PackagesLayerName)
+		venvLayer, err := context.Layers.Get(VenvLayerName)
 		if err != nil {
 			return packit.BuildResult{}, err
 		}
@@ -74,9 +76,11 @@ func Build(
 			return packit.BuildResult{}, err
 		}
 
+		var venvDir string
 		logger.Process("Executing build process")
 		duration, err := clock.Measure(func() error {
-			return installProcess.Execute(context.WorkingDir, packagesLayer.Path, cacheLayer.Path)
+			venvDir, err = installProcess.Execute(context.WorkingDir, venvLayer.Path, cacheLayer.Path)
+			return err
 		})
 		if err != nil {
 			return packit.BuildResult{}, err
@@ -85,18 +89,16 @@ func Build(
 		logger.Action("Completed in %s", duration.Round(time.Millisecond))
 		logger.Break()
 
-		planner := draft.NewPlanner()
-
-		packagesLayer.Launch, packagesLayer.Build = planner.MergeLayerTypes(SitePackages, context.Plan.Entries)
-		packagesLayer.Cache = packagesLayer.Launch || packagesLayer.Build
-		cacheLayer.Cache = true
-
-		sitePackagesPath, err := siteProcess.Execute(packagesLayer.Path)
+		pythonPathDir, err := pythonPathProcess.Execute(venvDir)
 		if err != nil {
 			return packit.BuildResult{}, err
 		}
 
-		logger.GeneratingSBOM(packagesLayer.Path)
+		venvLayer.Launch, venvLayer.Build = entryResolver.MergeLayerTypes(PoetryVenv, context.Plan.Entries)
+		venvLayer.Cache = venvLayer.Launch || venvLayer.Build
+		cacheLayer.Cache = true
+
+		logger.GeneratingSBOM(venvLayer.Path)
 
 		var sbomContent sbom.SBOM
 		duration, err = clock.Measure(func() error {
@@ -111,16 +113,18 @@ func Build(
 
 		logger.FormattingSBOM(context.BuildpackInfo.SBOMFormats...)
 
-		packagesLayer.SBOM, err = sbomContent.InFormats(context.BuildpackInfo.SBOMFormats...)
+		venvLayer.SBOM, err = sbomContent.InFormats(context.BuildpackInfo.SBOMFormats...)
 		if err != nil {
 			return packit.BuildResult{}, err
 		}
 
-		packagesLayer.SharedEnv.Prepend("PYTHONPATH", sitePackagesPath, string(os.PathListSeparator))
+		venvLayer.SharedEnv.Default("POETRY_VIRTUALENVS_PATH", venvLayer.Path)
+		venvLayer.SharedEnv.Prepend("PYTHONPATH", pythonPathDir, string(os.PathListSeparator))
+		venvLayer.SharedEnv.Prepend("PATH", filepath.Join(venvDir, "bin"), string(os.PathListSeparator))
 
-		logger.EnvironmentVariables(packagesLayer)
+		logger.EnvironmentVariables(venvLayer)
 
-		layers := []packit.Layer{packagesLayer}
+		layers := []packit.Layer{venvLayer}
 		if _, err := os.Stat(cacheLayer.Path); err == nil {
 			if !fs.IsEmptyDir(cacheLayer.Path) {
 				layers = append(layers, cacheLayer)

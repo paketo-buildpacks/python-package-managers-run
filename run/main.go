@@ -15,11 +15,11 @@ import (
 	"github.com/paketo-buildpacks/packit/v2/pexec"
 	"github.com/paketo-buildpacks/packit/v2/scribe"
 	pythonpackagers "github.com/paketo-buildpacks/python-packagers"
-	pkgcommon "github.com/paketo-buildpacks/python-packagers/pkg/common"
-	conda "github.com/paketo-buildpacks/python-packagers/pkg/conda"
-	pipinstall "github.com/paketo-buildpacks/python-packagers/pkg/pip"
-	pipenvinstall "github.com/paketo-buildpacks/python-packagers/pkg/pipenv"
-	poetryinstall "github.com/paketo-buildpacks/python-packagers/pkg/poetry"
+	pkgcommon "github.com/paketo-buildpacks/python-packagers/pkg/packagers/common"
+	conda "github.com/paketo-buildpacks/python-packagers/pkg/packagers/conda"
+	pipinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pip"
+	pipenvinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pipenv"
+	poetryinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/poetry"
 )
 
 func main() {

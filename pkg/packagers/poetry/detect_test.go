@@ -10,7 +10,7 @@ import (
 	"testing"
 
 	"github.com/paketo-buildpacks/packit/v2"
-	poetryinstall "github.com/paketo-buildpacks/python-packagers/pkg/poetry"
+	poetryinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/poetry"
 
 	"github.com/sclevine/spec"
 

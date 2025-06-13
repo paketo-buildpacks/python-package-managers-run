@@ -15,8 +15,8 @@ import (
 
 	"github.com/paketo-buildpacks/packit/v2/pexec"
 	"github.com/paketo-buildpacks/packit/v2/scribe"
-	condaenvupdate "github.com/paketo-buildpacks/python-packagers/pkg/conda"
-	"github.com/paketo-buildpacks/python-packagers/pkg/conda/fakes"
+	condaenvupdate "github.com/paketo-buildpacks/python-packagers/pkg/packagers/conda"
+	"github.com/paketo-buildpacks/python-packagers/pkg/packagers/conda/fakes"
 	"github.com/sclevine/spec"
 
 	. "github.com/onsi/gomega"

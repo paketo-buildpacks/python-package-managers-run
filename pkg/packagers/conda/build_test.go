@@ -15,9 +15,9 @@ import (
 	"github.com/paketo-buildpacks/packit/v2/chronos"
 	"github.com/paketo-buildpacks/packit/v2/sbom"
 	"github.com/paketo-buildpacks/packit/v2/scribe"
-	pythonpackagers "github.com/paketo-buildpacks/python-packagers/pkg/common"
-	condaenvupdate "github.com/paketo-buildpacks/python-packagers/pkg/conda"
-	"github.com/paketo-buildpacks/python-packagers/pkg/conda/fakes"
+	pythonpackagers "github.com/paketo-buildpacks/python-packagers/pkg/packagers/common"
+	condaenvupdate "github.com/paketo-buildpacks/python-packagers/pkg/packagers/conda"
+	"github.com/paketo-buildpacks/python-packagers/pkg/packagers/conda/fakes"
 	"github.com/sclevine/spec"
 
 	. "github.com/onsi/gomega"

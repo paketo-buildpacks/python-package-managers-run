@@ -13,7 +13,7 @@ import (
 	"github.com/paketo-buildpacks/packit/v2/fs"
 	"github.com/paketo-buildpacks/packit/v2/sbom"
 
-	pythonpackagers "github.com/paketo-buildpacks/python-packagers/pkg/common"
+	pythonpackagers "github.com/paketo-buildpacks/python-packagers/pkg/packagers/common"
 )
 
 //go:generate faux --interface Runner --output fakes/runner.go

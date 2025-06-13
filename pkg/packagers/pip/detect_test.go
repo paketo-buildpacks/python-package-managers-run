@@ -10,7 +10,7 @@ import (
 	"testing"
 
 	"github.com/paketo-buildpacks/packit/v2"
-	pipinstall "github.com/paketo-buildpacks/python-packagers/pkg/pip"
+	pipinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pip"
 	"github.com/sclevine/spec"
 
 	. "github.com/onsi/gomega"

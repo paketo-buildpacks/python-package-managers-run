@@ -15,9 +15,9 @@ import (
 	"github.com/paketo-buildpacks/packit/v2/chronos"
 	"github.com/paketo-buildpacks/packit/v2/sbom"
 	"github.com/paketo-buildpacks/packit/v2/scribe"
-	pythonpackagers "github.com/paketo-buildpacks/python-packagers/pkg/common"
-	pipinstall "github.com/paketo-buildpacks/python-packagers/pkg/pip"
-	"github.com/paketo-buildpacks/python-packagers/pkg/pip/fakes"
+	pythonpackagers "github.com/paketo-buildpacks/python-packagers/pkg/packagers/common"
+	pipinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pip"
+	"github.com/paketo-buildpacks/python-packagers/pkg/packagers/pip/fakes"
 	"github.com/sclevine/spec"
 
 	. "github.com/onsi/gomega"

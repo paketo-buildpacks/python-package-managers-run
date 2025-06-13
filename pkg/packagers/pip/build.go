@@ -2,11 +2,10 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-package pipenvinstall
+package pipinstall
 
 import (
 	"os"
-	"path/filepath"
 	"time"
 
 	"github.com/paketo-buildpacks/packit/v2"
@@ -14,50 +13,50 @@ import (
 	"github.com/paketo-buildpacks/packit/v2/fs"
 	"github.com/paketo-buildpacks/packit/v2/sbom"
 
-	pythonpackagers "github.com/paketo-buildpacks/python-packagers/pkg/common"
+	pythonpackagers "github.com/paketo-buildpacks/python-packagers/pkg/packagers/common"
 )
 
+//go:generate faux --interface EntryResolver --output fakes/entry_resolver.go
 //go:generate faux --interface InstallProcess --output fakes/install_process.go
 //go:generate faux --interface SitePackagesProcess --output fakes/site_packages_process.go
-//go:generate faux --interface VenvDirLocator --output fakes/venv_dir_locator.go
 //go:generate faux --interface SBOMGenerator --output fakes/sbom_generator.go
+
+// EntryResolver defines the interface for picking the most relevant entry from
+// the Buildpack Plan entries.
+type EntryResolver interface {
+	MergeLayerTypes(name string, entries []packit.BuildpackPlanEntry) (launch, build bool)
+}
+
+// InstallProcess defines the interface for installing the pip dependencies.
+type InstallProcess interface {
+	Execute(workingDir, targetDir, cacheDir string) error
+}
 
 // SitePackagesProcess defines the interface for determining the site-packages path.
 type SitePackagesProcess interface {
 	Execute(layerPath string) (sitePackagesPath string, err error)
 }
 
-// InstallProcess defines the interface for installing the pipenv dependencies.
-type InstallProcess interface {
-	Execute(workingDir string, targetLayer, cacheLayer packit.Layer) error
-}
-
-// VenvDirLocator defines the interface for locating the virtual environment
-// directory under a given path
-type VenvDirLocator interface {
-	LocateVenvDir(path string) (venvDir string, err error)
-}
-
-type PipEnvBuildParameters struct {
-	InstallProcess InstallProcess
-	SiteProcess    SitePackagesProcess
-	VenvDirLocator VenvDirLocator
+// PipBuildParameters encapsulates the pip specific parameters for the
+// Build function
+type PipBuildParameters struct {
+	InstallProcess      InstallProcess
+	SitePackagesProcess SitePackagesProcess
 }
 
 // Build will return a packit.BuildFunc that will be invoked during the build
 // phase of the buildpack lifecycle.
 //
-// Build will install the pipenv dependencies by using the Pipfile to a
-// packages layer. It also makes use of a cache layer to reuse the pipenv
+// Build will install the pip dependencies by using the requirements.txt file
+// to a packages layer. It also makes use of a cache layer to reuse the pip
 // cache.
 func Build(
-	buildParameters PipEnvBuildParameters,
+	buildParameters PipBuildParameters,
 	parameters pythonpackagers.CommonBuildParameters,
 ) packit.BuildFunc {
 	return func(context packit.BuildContext) (packit.BuildResult, error) {
 		installProcess := buildParameters.InstallProcess
-		siteProcess := buildParameters.SiteProcess
-		venvDirLocator := buildParameters.VenvDirLocator
+		siteProcess := buildParameters.SitePackagesProcess
 
 		sbomGenerator := parameters.SbomGenerator
 		clock := parameters.Clock
@@ -75,14 +74,9 @@ func Build(
 			return packit.BuildResult{}, err
 		}
 
-		planner := draft.NewPlanner()
-		packagesLayer.Launch, packagesLayer.Build = planner.MergeLayerTypes(SitePackages, context.Plan.Entries)
-		packagesLayer.Cache = packagesLayer.Launch || packagesLayer.Build
-		cacheLayer.Cache = true
-
 		logger.Process("Executing build process")
 		duration, err := clock.Measure(func() error {
-			return installProcess.Execute(context.WorkingDir, packagesLayer, cacheLayer)
+			return installProcess.Execute(context.WorkingDir, packagesLayer.Path, cacheLayer.Path)
 		})
 		if err != nil {
 			return packit.BuildResult{}, err
@@ -91,10 +85,11 @@ func Build(
 		logger.Action("Completed in %s", duration.Round(time.Millisecond))
 		logger.Break()
 
-		venvDir, err := venvDirLocator.LocateVenvDir(packagesLayer.Path)
-		if err != nil {
-			return packit.BuildResult{}, err
-		}
+		planner := draft.NewPlanner()
+
+		packagesLayer.Launch, packagesLayer.Build = planner.MergeLayerTypes(SitePackages, context.Plan.Entries)
+		packagesLayer.Cache = packagesLayer.Launch || packagesLayer.Build
+		cacheLayer.Cache = true
 
 		sitePackagesPath, err := siteProcess.Execute(packagesLayer.Path)
 		if err != nil {
@@ -121,7 +116,6 @@ func Build(
 			return packit.BuildResult{}, err
 		}
 
-		packagesLayer.SharedEnv.Prepend("PATH", filepath.Join(venvDir, "bin"), ":")
 		packagesLayer.SharedEnv.Prepend("PYTHONPATH", sitePackagesPath, string(os.PathListSeparator))
 
 		logger.EnvironmentVariables(packagesLayer)

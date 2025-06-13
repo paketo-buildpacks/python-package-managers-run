@@ -24,13 +24,13 @@ SPDX-FileCopyrightText = "Copyright (c) 2013-Present CloudFoundry.org Foundation
 SPDX-License-Identifier = "Apache-2.0"
 
 [[annotations]]
-path = "integration/**/integration.json"
+path = "integration.json"
 precedence = "override"
 SPDX-FileCopyrightText = "Copyright (c) 2013-Present CloudFoundry.org Foundation, Inc. All Rights Reserved."
 SPDX-License-Identifier = "Apache-2.0"
 
 [[annotations]]
-path = "pkg/pipenv/Pipfile.lock"
+path = "pkg/packagers/pipenv/Pipfile.lock"
 precedence = "override"
 SPDX-FileCopyrightText = "Copyright (c) 2013-Present CloudFoundry.org Foundation, Inc. All Rights Reserved."
 SPDX-License-Identifier = "Apache-2.0"
