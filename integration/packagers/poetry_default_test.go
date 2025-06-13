@@ -18,7 +18,7 @@ import (
 	. "github.com/paketo-buildpacks/occam/matchers"
 )
 
-func testDefault(t *testing.T, context spec.G, it spec.S) {
+func poetryTestDefault(t *testing.T, context spec.G, it spec.S) {
 	var (
 		Expect     = NewWithT(t).Expect
 		Eventually = NewWithT(t).Eventually
@@ -45,7 +45,7 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 			name, err = occam.RandomName()
 			Expect(err).NotTo(HaveOccurred())
 
-			source, err = occam.Source(filepath.Join("testdata", "default_app"))
+			source, err = occam.Source(filepath.Join("testdata", "poetry", "default_app"))
 			Expect(err).NotTo(HaveOccurred())
 		})
 
@@ -66,7 +66,7 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 					settings.Buildpacks.CPython.Online,
 					settings.Buildpacks.Pip.Online,
 					settings.Buildpacks.Poetry.Online,
-					settings.Buildpacks.PoetryInstall.Online,
+					settings.Buildpacks.PythonPackagers.Online,
 					settings.Buildpacks.BuildPlan.Online,
 				).
 				Execute(name, source)
@@ -130,7 +130,7 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 						settings.Buildpacks.CPython.Online,
 						settings.Buildpacks.Pip.Online,
 						settings.Buildpacks.Poetry.Online,
-						settings.Buildpacks.PoetryInstall.Online,
+						settings.Buildpacks.PythonPackagers.Online,
 						settings.Buildpacks.BuildPlan.Online,
 					).
 					WithEnv(map[string]string{

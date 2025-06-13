@@ -17,7 +17,7 @@ import (
 	. "github.com/paketo-buildpacks/occam/matchers"
 )
 
-func testReused(t *testing.T, context spec.G, it spec.S) {
+func pipTestReused(t *testing.T, context spec.G, it spec.S) {
 	var (
 		Expect = NewWithT(t).Expect
 
@@ -56,7 +56,7 @@ func testReused(t *testing.T, context spec.G, it spec.S) {
 			var logs1 fmt.Stringer
 			var logs2 fmt.Stringer
 
-			source, err = occam.Source(filepath.Join("testdata", "default_app"))
+			source, err = occam.Source(filepath.Join("testdata", "pip", "default_app"))
 			Expect(err).NotTo(HaveOccurred())
 
 			image1, logs1, err := pack.WithNoColor().Build.
@@ -64,7 +64,7 @@ func testReused(t *testing.T, context spec.G, it spec.S) {
 				WithBuildpacks(
 					settings.Buildpacks.CPython.Online,
 					settings.Buildpacks.Pip.Online,
-					settings.Buildpacks.PipInstall.Online,
+					settings.Buildpacks.PythonPackagers.Online,
 					settings.Buildpacks.BuildPlan.Online,
 				).
 				Execute(name, source)
@@ -76,7 +76,7 @@ func testReused(t *testing.T, context spec.G, it spec.S) {
 				WithBuildpacks(
 					settings.Buildpacks.CPython.Online,
 					settings.Buildpacks.Pip.Online,
-					settings.Buildpacks.PipInstall.Online,
+					settings.Buildpacks.PythonPackagers.Online,
 					settings.Buildpacks.BuildPlan.Online,
 				).
 				Execute(name, source)

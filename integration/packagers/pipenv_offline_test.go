@@ -19,7 +19,7 @@ import (
 	. "github.com/paketo-buildpacks/occam/matchers"
 )
 
-func testOffline(t *testing.T, context spec.G, it spec.S) {
+func pipenvTestOffline(t *testing.T, context spec.G, it spec.S) {
 	var (
 		Expect     = NewWithT(t).Expect
 		Eventually = NewWithT(t).Eventually
@@ -62,7 +62,7 @@ func testOffline(t *testing.T, context spec.G, it spec.S) {
 		it("builds and runs successfully", func() {
 			var err error
 			var logs fmt.Stringer
-			source, err = occam.Source(filepath.Join("testdata", "vendored_app"))
+			source, err = occam.Source(filepath.Join("testdata", "pipenv", "vendored_app"))
 			Expect(err).NotTo(HaveOccurred())
 
 			image, logs, err = pack.WithNoColor().Build.
@@ -71,7 +71,7 @@ func testOffline(t *testing.T, context spec.G, it spec.S) {
 					settings.Buildpacks.CPython.Offline,
 					settings.Buildpacks.Pip.Offline,
 					settings.Buildpacks.Pipenv.Offline,
-					settings.Buildpacks.PipenvInstall.Offline,
+					settings.Buildpacks.PythonPackagers.Offline,
 					settings.Buildpacks.BuildPlan.Online,
 				).
 				WithNetwork("none").

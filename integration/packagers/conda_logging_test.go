@@ -18,7 +18,7 @@ import (
 	. "github.com/paketo-buildpacks/occam/matchers"
 )
 
-func testLogging(t *testing.T, context spec.G, it spec.S) {
+func condaTestLogging(t *testing.T, context spec.G, it spec.S) {
 
 	var (
 		Expect = NewWithT(t).Expect
@@ -54,15 +54,15 @@ func testLogging(t *testing.T, context spec.G, it spec.S) {
 	context("when app is vendored", func() {
 		it("has correct logging output", func() {
 			var err error
-			source, err = occam.Source(filepath.Join("testdata", "vendored_app"))
+			source, err = occam.Source(filepath.Join("testdata", "conda", "vendored_app"))
 			Expect(err).NotTo(HaveOccurred())
 
 			image, logs, err := pack.WithNoColor().Build.
 				WithPullPolicy("never").
 				WithBuildpacks(
-					minicondaBuildpack,
-					buildpack,
-					buildPlanBuildpack,
+					settings.Buildpacks.Miniconda.Online,
+					settings.Buildpacks.PythonPackagers.Online,
+					settings.Buildpacks.BuildPlan.Online,
 				).
 				Execute(name, source)
 			Expect(err).NotTo(HaveOccurred(), logs.String())
@@ -93,15 +93,15 @@ func testLogging(t *testing.T, context spec.G, it spec.S) {
 	context("when app has lockfile", func() {
 		it("has correct logging output on initial build and rebuild", func() {
 			var err error
-			source, err = occam.Source(filepath.Join("testdata", "with_lock_file"))
+			source, err = occam.Source(filepath.Join("testdata", "conda", "with_lock_file"))
 			Expect(err).NotTo(HaveOccurred())
 
 			image, logs, err := pack.WithNoColor().Build.
 				WithPullPolicy("never").
 				WithBuildpacks(
-					minicondaBuildpack,
-					buildpack,
-					buildPlanBuildpack,
+					settings.Buildpacks.Miniconda.Online,
+					settings.Buildpacks.PythonPackagers.Online,
+					settings.Buildpacks.BuildPlan.Online,
 				).
 				Execute(name, source)
 			Expect(err).NotTo(HaveOccurred(), logs.String())
@@ -132,9 +132,9 @@ func testLogging(t *testing.T, context spec.G, it spec.S) {
 			secondImage, logs, err := pack.WithNoColor().Build.
 				WithPullPolicy("never").
 				WithBuildpacks(
-					minicondaBuildpack,
-					buildpack,
-					buildPlanBuildpack,
+					settings.Buildpacks.Miniconda.Online,
+					settings.Buildpacks.PythonPackagers.Online,
+					settings.Buildpacks.BuildPlan.Online,
 				).
 				Execute(name, source)
 			Expect(err).NotTo(HaveOccurred(), logs.String())
@@ -152,15 +152,15 @@ func testLogging(t *testing.T, context spec.G, it spec.S) {
 	context("when app doesn't have vendor folder and lockfile", func() {
 		it("has correct logging output", func() {
 			var err error
-			source, err = occam.Source(filepath.Join("testdata", "default_app"))
+			source, err = occam.Source(filepath.Join("testdata", "conda", "default_app"))
 			Expect(err).NotTo(HaveOccurred())
 
 			image, logs, err := pack.WithNoColor().Build.
 				WithPullPolicy("never").
 				WithBuildpacks(
-					minicondaBuildpack,
-					buildpack,
-					buildPlanBuildpack,
+					settings.Buildpacks.Miniconda.Online,
+					settings.Buildpacks.PythonPackagers.Online,
+					settings.Buildpacks.BuildPlan.Online,
 				).
 				Execute(name, source)
 			Expect(err).NotTo(HaveOccurred(), logs.String())

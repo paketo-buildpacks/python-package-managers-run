@@ -18,7 +18,7 @@ import (
 	. "github.com/paketo-buildpacks/occam/matchers"
 )
 
-func testDefault(t *testing.T, context spec.G, it spec.S) {
+func condaTestDefault(t *testing.T, context spec.G, it spec.S) {
 	var (
 		Expect     = NewWithT(t).Expect
 		Eventually = NewWithT(t).Eventually
@@ -44,7 +44,7 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 			name, err = occam.RandomName()
 			Expect(err).NotTo(HaveOccurred())
 
-			source, err = occam.Source(filepath.Join("testdata", "default_app"))
+			source, err = occam.Source(filepath.Join("testdata", "conda", "default_app"))
 			Expect(err).NotTo(HaveOccurred())
 		})
 
@@ -62,9 +62,9 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 			image, logs, err = pack.WithNoColor().Build.
 				WithPullPolicy("never").
 				WithBuildpacks(
-					minicondaBuildpack,
-					buildpack,
-					buildPlanBuildpack,
+					settings.Buildpacks.Miniconda.Online,
+					settings.Buildpacks.PythonPackagers.Online,
+					settings.Buildpacks.BuildPlan.Online,
 				).
 				Execute(name, source)
 			Expect(err).NotTo(HaveOccurred(), logs.String())
@@ -91,7 +91,7 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 				Expect(err).NotTo(HaveOccurred())
 				Expect(os.Chmod(sbomDir, os.ModePerm)).To(Succeed())
 
-				source, err = occam.Source(filepath.Join("testdata", "vendored_app"))
+				source, err = occam.Source(filepath.Join("testdata", "conda", "vendored_app"))
 				Expect(err).NotTo(HaveOccurred())
 			})
 
@@ -106,9 +106,9 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 				image, logs, err = pack.WithNoColor().Build.
 					WithPullPolicy("never").
 					WithBuildpacks(
-						minicondaBuildpack,
-						buildpack,
-						buildPlanBuildpack,
+						settings.Buildpacks.Miniconda.Online,
+						settings.Buildpacks.PythonPackagers.Online,
+						settings.Buildpacks.BuildPlan.Online,
 					).
 					WithEnv(map[string]string{
 						"BP_LOG_LEVEL": "DEBUG",
