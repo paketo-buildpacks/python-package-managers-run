@@ -44,7 +44,7 @@ type TestSettings struct {
 			Offline string
 		}
 		Poetry struct {
-			Online  string
+			Online string
 		}
 		BuildPlan struct {
 			Online string
