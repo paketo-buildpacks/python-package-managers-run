@@ -9,10 +9,10 @@ import (
 	"github.com/paketo-buildpacks/packit/v2"
 	"github.com/paketo-buildpacks/packit/v2/scribe"
 
-	conda "github.com/paketo-buildpacks/python-packagers/pkg/conda"
-	pipinstall "github.com/paketo-buildpacks/python-packagers/pkg/pip"
-	pipenvinstall "github.com/paketo-buildpacks/python-packagers/pkg/pipenv"
-	poetryinstall "github.com/paketo-buildpacks/python-packagers/pkg/poetry"
+	conda "github.com/paketo-buildpacks/python-packagers/pkg/packagers/conda"
+	pipinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pip"
+	pipenvinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pipenv"
+	poetryinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/poetry"
 )
 
 // Detect will return a packit.DetectFunc that will be invoked during the

@@ -9,12 +9,12 @@ import (
 	"github.com/paketo-buildpacks/packit/v2"
 	"github.com/paketo-buildpacks/packit/v2/scribe"
 
-	conda "github.com/paketo-buildpacks/python-packagers/pkg/conda"
-	pipinstall "github.com/paketo-buildpacks/python-packagers/pkg/pip"
-	pipenvinstall "github.com/paketo-buildpacks/python-packagers/pkg/pipenv"
-	poetryinstall "github.com/paketo-buildpacks/python-packagers/pkg/poetry"
+	conda "github.com/paketo-buildpacks/python-packagers/pkg/packagers/conda"
+	pipinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pip"
+	pipenvinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pipenv"
+	poetryinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/poetry"
 
-	pythonpackagers "github.com/paketo-buildpacks/python-packagers/pkg/common"
+	pythonpackagers "github.com/paketo-buildpacks/python-packagers/pkg/packagers/common"
 )
 
 // filtered returns the slice passed in parameter with the needle removed
