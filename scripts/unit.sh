@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-
 # Copyright (c) 2013-Present CloudFoundry.org Foundation, Inc. All Rights Reserved.
 #
 # SPDX-License-Identifier: Apache-2.0
@@ -9,6 +8,8 @@ set -o pipefail
 
 readonly PROGDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly BUILDPACKDIR="$(cd "${PROGDIR}/.." && pwd)"
+
+GO_TEST_PARAMS="${GO_TEST_PARAMS:-}"
 
 # shellcheck source=SCRIPTDIR/.util/tools.sh
 source "${PROGDIR}/.util/tools.sh"
@@ -54,7 +55,7 @@ function unit::run() {
 
   testout=$(mktemp)
   pushd "${BUILDPACKDIR}" > /dev/null
-    if go test ./... -v -run Unit | tee "${testout}"; then
+    if go test ./... -v ${GO_TEST_PARAMS} -run Unit | tee "${testout}"; then
       util::tools::tests::checkfocus "${testout}"
       util::print::success "** GO Test Succeeded **"
     else

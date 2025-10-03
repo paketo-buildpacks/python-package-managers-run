@@ -1,14 +1,13 @@
 {
     "builders":
     [
-        "index.docker.io/paketobuildpacks/builder:buildpackless-base",
         "index.docker.io/paketobuildpacks/builder-jammy-buildpackless-base:latest",
-        "index.docker.io/jericop/amazonlinux-builder:base"
+        "index.docker.io/paketobuildpacks/ubuntu-noble-builder-buildpackless:latest"
     ],
-    "miniconda": "github.com/paketo-buildpacks/miniconda",
-    "cpython": "github.com/paketo-buildpacks/cpython",
-    "pip": "github.com/paketo-buildpacks/pip",
-    "pipenv": "github.com/paketo-buildpacks/pipenv",
-    "poetry": "github.com/paketo-buildpacks/poetry",
-    "build-plan": "github.com/paketo-community/build-plan"
+    "miniconda": "index.docker.io/paketobuildpacks/miniconda",
+    "cpython": "index.docker.io/paketobuildpacks/cpython",
+    "pip": "index.docker.io/paketobuildpacks/pip",
+    "pipenv": "index.docker.io/paketobuildpacks/pipenv",
+    "poetry": "index.docker.io/paketobuildpacks/poetry",
+    "build-plan": "index.docker.io/paketocommunity/build-plan"
 }
