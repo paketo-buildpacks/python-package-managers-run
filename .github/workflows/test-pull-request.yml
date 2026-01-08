@@ -18,10 +18,10 @@ jobs:
       builders: ${{ steps.builders.outputs.builders }}
     steps:
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
 
     - name: Setup Go
-      uses: actions/setup-go@v5
+      uses: actions/setup-go@v6
       with:
         go-version-file: go.mod
 
@@ -48,24 +48,23 @@ jobs:
         builder: ${{ fromJSON(needs.unit.outputs.builders) }}
       fail-fast: false  # don't cancel all test jobs when one fails
     steps:
-    - name: Free Disk Space (Ubuntu)
-      uses: jlumbroso/free-disk-space@main
+    - name: Checkout
+      uses: actions/checkout@v6
+
+    - name: Free Disk Space
+      if: vars.RECLAIM_DISK_SPACE == 'true'
+      uses: paketo-buildpacks/github-config/actions/pull-request/reclaim-disk-space@main
       with:
-        # This might remove tools that are actually needed,
-        # if set to "true" but frees about 6 GB
         tool-cache: false
-        # Default settings from documentation
         android: true
         dotnet: true
         haskell: true
-        large-packages: true
+        large-packages: false
         docker-images: true
         swap-storage: true
-    - name: Checkout
-      uses: actions/checkout@v4
 
     - name: Setup Go
-      uses: actions/setup-go@v5
+      uses: actions/setup-go@v6
       with:
         go-version-file: go.mod
 
@@ -73,6 +72,7 @@ jobs:
       run: ./scripts/integration.sh --builder ${{ matrix.builder }} --token ${{ github.token }}
       env:
         TMPDIR: "${{ runner.temp }}"
+        GIT_TOKEN: ${{ github.token }}
 
   roundup:
     name: Integration Tests
@@ -95,7 +95,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
     - name: Upload Artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       with:
         name: event-payload
         path: ${{ github.event_path }}
