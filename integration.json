@@ -9,5 +9,6 @@
     "pip": "index.docker.io/paketobuildpacks/pip",
     "pipenv": "index.docker.io/paketobuildpacks/pipenv",
     "poetry": "index.docker.io/paketobuildpacks/poetry",
+    "python-installers": "/Users/sgaist/Code/Idiap/aiplatform/sources/buildpacks/python-installers",
     "build-plan": "index.docker.io/paketocommunity/build-plan"
 }

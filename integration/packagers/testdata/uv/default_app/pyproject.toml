@@ -1,0 +1,12 @@
+# Copyright (c) 2013-Present CloudFoundry.org Foundation, Inc. All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
+[project]
+name = "integration-test"
+version = "0.0.0"
+requires-python = "==3.10.*"
+dependencies = [
+    "Flask==3.0.0",
+    "gunicorn==20.1.0"
+]

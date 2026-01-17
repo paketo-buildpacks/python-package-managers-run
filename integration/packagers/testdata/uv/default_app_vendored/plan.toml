@@ -1,0 +1,16 @@
+[[requires]]
+name = "uv"
+  [requires.metadata]
+    launch = true
+
+[[requires]]
+name = "uv-environment"
+  [requires.metadata]
+    launch = true
+
+# [[requires]]
+#   name = "cpython"
+
+#   [requires.metadata]
+#     launch = true
+#     version = "3.10"

@@ -100,6 +100,17 @@ func TestIntegration(t *testing.T) {
 		Execute(settings.Config.Poetry)
 	Expect(err).NotTo(HaveOccurred())
 
+	settings.Buildpacks.PythonInstallers.Online, err = buildpackStore.Get.
+		WithVersion("0.1.0").
+		Execute(settings.Config.PythonInstallers)
+	Expect(err).NotTo(HaveOccurred())
+
+	settings.Buildpacks.PythonInstallers.Offline, err = buildpackStore.Get.
+		WithVersion("0.1.0").
+		WithOfflineDependencies().
+		Execute(settings.Config.PythonInstallers)
+	Expect(err).NotTo(HaveOccurred())
+
 	settings.Buildpacks.PythonPackagers.Online, err = buildpackStore.Get.
 		WithVersion("1.2.3").
 		Execute(root)
@@ -137,6 +148,11 @@ func TestIntegration(t *testing.T) {
 
 	// poetry
 	suite("Poetry Default", poetryTestDefault)
+
+	// uv
+	suite("uv Default", uvTestDefault)
+	suite("uv Offline", uvTestOffline)
+	suite("uv Reused", uvTestReused)
 
 	suite.Run(t)
 }

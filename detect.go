@@ -13,6 +13,7 @@ import (
 	pipinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pip"
 	pipenvinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pipenv"
 	poetryinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/poetry"
+	uvinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/uv"
 )
 
 // Detect will return a packit.DetectFunc that will be invoked during the
@@ -22,64 +23,69 @@ import (
 // it will pass detection.
 func Detect(logger scribe.Emitter) packit.DetectFunc {
 	return func(context packit.DetectContext) (packit.DetectResult, error) {
-		plans := []packit.BuildPlan{}
-
+		logger.Title("Checking for pip")
 		pipResult, err := pipinstall.Detect()(context)
 
 		if err == nil {
-			plans = append(plans, pipResult.Plan)
+			// plans = append(plans, pipResult.Plan)
+			return packit.DetectResult{
+				Plan: pipResult.Plan,
+			}, nil
 		} else {
 			logger.Detail("%s", err)
 		}
 
+		logger.Title("Checking for conda")
 		condaResult, err := conda.Detect()(context)
 
 		if err == nil {
-			plans = append(plans, condaResult.Plan)
+			// plans = append(plans, condaResult.Plan)
+			return packit.DetectResult{
+				Plan: condaResult.Plan,
+			}, nil
 		} else {
 			logger.Detail("%s", err)
 		}
 
+		logger.Title("Checking for pipenv")
 		pipenvResult, err := pipenvinstall.Detect(
 			pipenvinstall.NewPipfileParser(),
 			pipenvinstall.NewPipfileLockParser(),
 		)(context)
 
 		if err == nil {
-			plans = append(plans, pipenvResult.Plan)
+			// plans = append(plans, pipenvResult.Plan)
+			return packit.DetectResult{
+				Plan: pipenvResult.Plan,
+			}, nil
 		} else {
 			logger.Detail("%s", err)
 		}
 
+		logger.Title("Checking for uv")
+		uvResult, err := uvinstall.Detect()(context)
+
+		if err == nil {
+			// plans = append(plans, uvResult.Plan)
+			return packit.DetectResult{
+				Plan: uvResult.Plan,
+			}, nil
+		} else {
+			logger.Detail("%s", err)
+		}
+
+		logger.Title("Checking for poetry")
 		poetryResult, err := poetryinstall.Detect()(context)
 
 		if err == nil {
-			plans = append(plans, poetryResult.Plan)
+			// plans = append(plans, poetryResult.Plan)
+			return packit.DetectResult{
+				Plan: poetryResult.Plan,
+			}, nil
 		} else {
 			logger.Detail("%s", err)
 		}
 
-		if len(plans) == 0 {
-			return packit.DetectResult{}, packit.Fail.WithMessage("No python packager manager related files found")
-		}
-
-		return packit.DetectResult{
-			Plan: or(plans...),
-		}, nil
+		return packit.DetectResult{}, packit.Fail.WithMessage("No python packager manager related files found")
 	}
-}
-
-func or(plans ...packit.BuildPlan) packit.BuildPlan {
-	if len(plans) < 1 {
-		return packit.BuildPlan{}
-	}
-	combinedPlan := plans[0]
-
-	for i := range plans {
-		if i == 0 {
-			continue
-		}
-		combinedPlan.Or = append(combinedPlan.Or, plans[i])
-	}
-	return combinedPlan
 }

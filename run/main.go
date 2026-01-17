@@ -20,6 +20,7 @@ import (
 	pipinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pip"
 	pipenvinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pipenv"
 	poetryinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/poetry"
+	uvinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/uv"
 )
 
 func main() {
@@ -48,6 +49,9 @@ func main() {
 			EntryResolver:           draft.NewPlanner(),
 			InstallProcess:          poetryinstall.NewPoetryInstallProcess(pexec.NewExecutable("poetry"), logger),
 			PythonPathLookupProcess: poetryinstall.NewPythonPathProcess(),
+		},
+		uvinstall.UvEnvPlanEntry: uvinstall.UvBuildParameters{
+			Runner: uvinstall.NewUvRunner(pexec.NewExecutable("uv"), fs.NewChecksumCalculator(), logger),
 		},
 	}
 

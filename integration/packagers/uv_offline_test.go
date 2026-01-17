@@ -1,0 +1,83 @@
+// SPDX-FileCopyrightText: Copyright (c) 2013-Present CloudFoundry.org Foundation, Inc. All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+
+package integration_test
+
+import (
+	"fmt"
+	"os"
+	"path/filepath"
+	"testing"
+
+	. "github.com/onsi/gomega"
+	. "github.com/paketo-buildpacks/occam/matchers"
+
+	"github.com/paketo-buildpacks/occam"
+	"github.com/sclevine/spec"
+)
+
+func uvTestOffline(t *testing.T, context spec.G, it spec.S) {
+	var (
+		Expect     = NewWithT(t).Expect
+		Eventually = NewWithT(t).Eventually
+		pack       occam.Pack
+		docker     occam.Docker
+	)
+
+	it.Before(func() {
+		pack = occam.NewPack().WithVerbose()
+		docker = occam.NewDocker()
+	})
+
+	context("when building an app with a vendor directory", func() {
+		var (
+			image     occam.Image
+			container occam.Container
+			name      string
+			source    string
+		)
+
+		it.Before(func() {
+			var err error
+			name, err = occam.RandomName()
+			Expect(err).NotTo(HaveOccurred())
+
+			source, err = occam.Source(filepath.Join("testdata", "uv", "default_app_vendored"))
+			Expect(err).NotTo(HaveOccurred())
+		})
+
+		it.After(func() {
+			Expect(docker.Container.Remove.Execute(container.ID)).To(Succeed())
+			Expect(docker.Image.Remove.Execute(image.ID)).To(Succeed())
+			Expect(docker.Volume.Remove.Execute(occam.CacheVolumeNames(name))).To(Succeed())
+			Expect(os.RemoveAll(source)).To(Succeed())
+		})
+
+		it("uses the vendored dependencies for the build", func() {
+			var err error
+
+			var logs fmt.Stringer
+			image, logs, err = pack.WithNoColor().Build.
+				WithPullPolicy("never").
+				WithBuildpacks(
+					settings.Buildpacks.PythonInstallers.Offline,
+					settings.Buildpacks.PythonPackagers.Offline,
+					settings.Buildpacks.BuildPlan.Online,
+				).
+				WithNetwork("none").
+				Execute(name, source)
+			Expect(err).NotTo(HaveOccurred(), logs.String())
+
+			container, err = docker.Container.Run.
+				WithEnv(map[string]string{"PORT": "8080"}).
+				WithPublish("8080").
+				WithPublishAll().
+				WithCommand("python app.py").
+				Execute(image.ID)
+			Expect(err).NotTo(HaveOccurred())
+
+			Eventually(container).Should(Serve(ContainSubstring("Hello, world!")).OnPort(8080))
+		})
+	})
+}

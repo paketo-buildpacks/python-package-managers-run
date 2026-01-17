@@ -49,6 +49,10 @@ type TestSettings struct {
 		BuildPlan struct {
 			Online string
 		}
+		PythonInstallers struct {
+			Online  string
+			Offline string
+		}
 		// This buildpack
 		PythonPackagers struct {
 			Online  string
@@ -57,11 +61,12 @@ type TestSettings struct {
 	}
 
 	Config struct {
-		Miniconda string `json:"miniconda"`
-		CPython   string `json:"cpython"`
-		Pip       string `json:"pip"`
-		Pipenv    string `json:"pipenv"`
-		Poetry    string `json:"poetry"`
-		BuildPlan string `json:"build-plan"`
+		Miniconda        string `json:"miniconda"`
+		CPython          string `json:"cpython"`
+		Pip              string `json:"pip"`
+		Pipenv           string `json:"pipenv"`
+		Poetry           string `json:"poetry"`
+		PythonInstallers string `json:"python-installers"`
+		BuildPlan        string `json:"build-plan"`
 	}
 }
