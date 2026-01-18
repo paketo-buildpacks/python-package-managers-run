@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-
 # Copyright (c) 2013-Present CloudFoundry.org Foundation, Inc. All Rights Reserved.
 #
 # SPDX-License-Identifier: Apache-2.0
@@ -148,26 +147,15 @@ function buildpackage::create() {
 
   util::print::title "Packaging ${buildpack_type}... ${output}"
 
-  if [ "$buildpack_type" == "extension" ]; then
-    cwd=$(pwd)
-    cd ${BUILD_DIR}
-    mkdir cnbdir
-    cd cnbdir
-    cp ../buildpack.tgz .
-    tar -xvf buildpack.tgz
-    rm buildpack.tgz
+  mkdir ${BUILD_DIR}/cnbdir
+  tar -xvf ${BUILD_DIR}/buildpack.tgz -C ${BUILD_DIR}/cnbdir
 
-    pack \
-      extension package "${output}" \
-        --format file
+  pack \
+    "${buildpack_type}" package "${output}" \
+      --path ${BUILD_DIR}/cnbdir \
+      --format file
 
-    cd $cwd
-  else
-    pack \
-      buildpack package "${output}" \
-        --path "${BUILD_DIR}/buildpack.tgz" \
-        --format file
-  fi
+  rm -rf ${BUILD_DIR}/cnbdir
 }
 
 main "${@:-}"

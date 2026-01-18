@@ -8,7 +8,6 @@ import (
 	"encoding/json"
 	"os"
 	"path/filepath"
-	"strings"
 	"testing"
 	"time"
 
@@ -129,9 +128,7 @@ func TestIntegration(t *testing.T) {
 
 	// pip
 	suite("Pip Default", pipTestDefault)
-	if !strings.Contains(builder.LocalInfo.Stack.ID, "amazonlinux") {
-		suite("Pip Offline", pipTestOffline)
-	}
+	suite("Pip Offline", pipTestOffline)
 	suite("Pip Reused", pipTestReused)
 
 	// pipenv
