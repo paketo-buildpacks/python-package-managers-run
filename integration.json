@@ -4,11 +4,7 @@
         "index.docker.io/paketobuildpacks/builder-jammy-buildpackless-base:latest",
         "index.docker.io/paketobuildpacks/ubuntu-noble-builder-buildpackless:latest"
     ],
-    "miniconda": "index.docker.io/paketobuildpacks/miniconda",
     "cpython": "index.docker.io/paketobuildpacks/cpython",
-    "pip": "index.docker.io/paketobuildpacks/pip",
-    "pipenv": "index.docker.io/paketobuildpacks/pipenv",
-    "poetry": "index.docker.io/paketobuildpacks/poetry",
-    "python-installers": "/Users/sgaist/Code/Idiap/aiplatform/sources/buildpacks/python-installers",
+    "python-installers": "github.com/idiap/python-installers",
     "build-plan": "index.docker.io/paketocommunity/build-plan"
 }

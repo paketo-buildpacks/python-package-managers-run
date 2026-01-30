@@ -60,15 +60,6 @@ func TestIntegration(t *testing.T) {
 		Execute(settings.Config.BuildPlan)
 	Expect(err).NotTo(HaveOccurred())
 
-	settings.Buildpacks.Miniconda.Online, err = buildpackStore.Get.
-		Execute(settings.Config.Miniconda)
-	Expect(err).NotTo(HaveOccurred())
-
-	settings.Buildpacks.Miniconda.Offline, err = buildpackStore.Get.
-		WithOfflineDependencies().
-		Execute(settings.Config.Miniconda)
-	Expect(err).NotTo(HaveOccurred())
-
 	settings.Buildpacks.CPython.Online, err = buildpackStore.Get.
 		Execute(settings.Config.CPython)
 	Expect(err).NotTo(HaveOccurred())
@@ -76,28 +67,6 @@ func TestIntegration(t *testing.T) {
 	settings.Buildpacks.CPython.Offline, err = buildpackStore.Get.
 		WithOfflineDependencies().
 		Execute(settings.Config.CPython)
-	Expect(err).NotTo(HaveOccurred())
-
-	settings.Buildpacks.Pip.Online, err = buildpackStore.Get.
-		Execute(settings.Config.Pip)
-	Expect(err).NotTo(HaveOccurred())
-
-	settings.Buildpacks.Pip.Offline, err = buildpackStore.Get.
-		WithOfflineDependencies().
-		Execute(settings.Config.Pip)
-	Expect(err).NotTo(HaveOccurred())
-
-	settings.Buildpacks.Pipenv.Online, err = buildpackStore.Get.
-		Execute(settings.Config.Pipenv)
-	Expect(err).NotTo(HaveOccurred())
-
-	settings.Buildpacks.Pipenv.Offline, err = buildpackStore.Get.
-		WithOfflineDependencies().
-		Execute(settings.Config.Pipenv)
-	Expect(err).NotTo(HaveOccurred())
-
-	settings.Buildpacks.Poetry.Online, err = buildpackStore.Get.
-		Execute(settings.Config.Poetry)
 	Expect(err).NotTo(HaveOccurred())
 
 	settings.Buildpacks.PythonInstallers.Online, err = buildpackStore.Get.

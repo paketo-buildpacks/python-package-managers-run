@@ -61,6 +61,7 @@ func uvTestOffline(t *testing.T, context spec.G, it spec.S) {
 			image, logs, err = pack.WithNoColor().Build.
 				WithPullPolicy("never").
 				WithBuildpacks(
+					settings.Buildpacks.CPython.Offline,
 					settings.Buildpacks.PythonInstallers.Offline,
 					settings.Buildpacks.PythonPackagers.Offline,
 					settings.Buildpacks.BuildPlan.Online,
@@ -73,7 +74,7 @@ func uvTestOffline(t *testing.T, context spec.G, it spec.S) {
 				WithEnv(map[string]string{"PORT": "8080"}).
 				WithPublish("8080").
 				WithPublishAll().
-				WithCommand("python app.py").
+				WithCommand("python server.py").
 				Execute(image.ID)
 			Expect(err).NotTo(HaveOccurred())
 

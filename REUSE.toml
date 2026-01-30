@@ -12,7 +12,7 @@ SPDX-FileCopyrightText = "© 2025 Idiap Research Institute <contact@idiap.ch>"
 SPDX-License-Identifier = "Apache-2.0"
 
 [[annotations]]
-path = "scripts/.util/tools.json"
+path = "scripts/**"
 precedence = "override"
 SPDX-FileCopyrightText = "Copyright (c) 2013-Present CloudFoundry.org Foundation, Inc. All Rights Reserved."
 SPDX-License-Identifier = "Apache-2.0"
