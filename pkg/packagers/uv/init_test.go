@@ -15,6 +15,7 @@ func TestUnitUvInstall(t *testing.T) {
 	suite := spec.New("uvinstall", spec.Report(report.Terminal{}), spec.Parallel())
 	suite("Build", testBuild)
 	suite("UvRunner", testUvRunner)
+	suite("UvLockParser", testUvLockParser)
 	suite("Detect", testDetect)
 	suite.Run(t)
 }
