@@ -24,7 +24,7 @@ SPDX-FileCopyrightText = "Copyright (c) 2013-Present CloudFoundry.org Foundation
 SPDX-License-Identifier = "Apache-2.0"
 
 [[annotations]]
-path = "integration.json"
+path = ["integration.json", "registries.json"]
 precedence = "override"
 SPDX-FileCopyrightText = "Copyright (c) 2013-Present CloudFoundry.org Foundation, Inc. All Rights Reserved."
 SPDX-License-Identifier = "Apache-2.0"
