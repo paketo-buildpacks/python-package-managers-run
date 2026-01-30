@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/paketo-buildpacks/occam"
@@ -17,7 +18,7 @@ import (
 	. "github.com/paketo-buildpacks/occam/matchers"
 )
 
-func pipTestReused(t *testing.T, context spec.G, it spec.S) {
+func uvTestReused(t *testing.T, context spec.G, it spec.S) {
 	var (
 		Expect = NewWithT(t).Expect
 
@@ -56,13 +57,12 @@ func pipTestReused(t *testing.T, context spec.G, it spec.S) {
 			var logs1 fmt.Stringer
 			var logs2 fmt.Stringer
 
-			source, err = occam.Source(filepath.Join("testdata", "pip", "default_app"))
+			source, err = occam.Source(filepath.Join("testdata", "uv", "default_app"))
 			Expect(err).NotTo(HaveOccurred())
 
 			image1, logs1, err := pack.WithNoColor().Build.
 				WithPullPolicy("never").
 				WithBuildpacks(
-					settings.Buildpacks.CPython.Online,
 					settings.Buildpacks.PythonInstallers.Online,
 					settings.Buildpacks.PythonPackagers.Online,
 					settings.Buildpacks.BuildPlan.Online,
@@ -74,7 +74,6 @@ func pipTestReused(t *testing.T, context spec.G, it spec.S) {
 			image2, logs2, err := pack.WithNoColor().Build.
 				WithPullPolicy("never").
 				WithBuildpacks(
-					settings.Buildpacks.CPython.Online,
 					settings.Buildpacks.PythonInstallers.Online,
 					settings.Buildpacks.PythonPackagers.Online,
 					settings.Buildpacks.BuildPlan.Online,
@@ -84,10 +83,10 @@ func pipTestReused(t *testing.T, context spec.G, it spec.S) {
 			images[image2.ID] = true
 
 			Expect(logs2).To(ContainLines(
-				fmt.Sprintf("Reusing cache layer '%s:packages'", buildpackInfo.Buildpack.ID),
+				fmt.Sprintf("  Reusing cached layer /layers/%s/uv-env", strings.ReplaceAll(buildpackInfo.Buildpack.ID, "/", "_")),
 			))
 
-			Expect(image2.Buildpacks[2].Layers["packages"].SHA).To(Equal(image1.Buildpacks[2].Layers["packages"].SHA))
+			Expect(image2.Buildpacks[0].Layers["uv-env"].SHA).To(Equal(image1.Buildpacks[0].Layers["uv-env"].SHA))
 		})
 	})
 }

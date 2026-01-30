@@ -18,7 +18,7 @@ import (
 	. "github.com/paketo-buildpacks/occam/matchers"
 )
 
-func condaTestDefault(t *testing.T, context spec.G, it spec.S) {
+func uvTestDefault(t *testing.T, context spec.G, it spec.S) {
 	var (
 		Expect     = NewWithT(t).Expect
 		Eventually = NewWithT(t).Eventually
@@ -44,7 +44,7 @@ func condaTestDefault(t *testing.T, context spec.G, it spec.S) {
 			name, err = occam.RandomName()
 			Expect(err).NotTo(HaveOccurred())
 
-			source, err = occam.Source(filepath.Join("testdata", "conda", "default_app"))
+			source, err = occam.Source(filepath.Join("testdata", "uv", "default_app"))
 			Expect(err).NotTo(HaveOccurred())
 		})
 
@@ -73,7 +73,7 @@ func condaTestDefault(t *testing.T, context spec.G, it spec.S) {
 				WithEnv(map[string]string{"PORT": "8080"}).
 				WithPublish("8080").
 				WithPublishAll().
-				WithCommand("python app.py").
+				WithCommand("python server.py").
 				Execute(image.ID)
 			Expect(err).NotTo(HaveOccurred())
 
@@ -91,7 +91,7 @@ func condaTestDefault(t *testing.T, context spec.G, it spec.S) {
 				Expect(err).NotTo(HaveOccurred())
 				Expect(os.Chmod(sbomDir, os.ModePerm)).To(Succeed())
 
-				source, err = occam.Source(filepath.Join("testdata", "conda", "vendored_app"))
+				source, err = occam.Source(filepath.Join("testdata", "uv", "default_app"))
 				Expect(err).NotTo(HaveOccurred())
 			})
 
@@ -118,7 +118,7 @@ func condaTestDefault(t *testing.T, context spec.G, it spec.S) {
 				Expect(err).ToNot(HaveOccurred(), logs.String)
 
 				container, err = docker.Container.Run.
-					WithCommand("python app.py").
+					WithCommand("python server.py").
 					WithEnv(map[string]string{"PORT": "8080"}).
 					WithPublish("8080").
 					Execute(image.ID)
@@ -128,7 +128,7 @@ func condaTestDefault(t *testing.T, context spec.G, it spec.S) {
 				Eventually(container).Should(Serve(ContainSubstring("Hello, world!")).OnPort(8080))
 
 				Expect(logs).To(ContainLines(
-					fmt.Sprintf("  Generating SBOM for /layers/%s/conda-env", strings.ReplaceAll(buildpackInfo.Buildpack.ID, "/", "_")),
+					fmt.Sprintf("  Generating SBOM for /layers/%s/uv-env", strings.ReplaceAll(buildpackInfo.Buildpack.ID, "/", "_")),
 					MatchRegexp(`      Completed in \d+(\.?\d+)*`),
 				))
 				Expect(logs).To(ContainLines(
@@ -139,12 +139,12 @@ func condaTestDefault(t *testing.T, context spec.G, it spec.S) {
 				))
 
 				// check that all required SBOM files are present
-				Expect(filepath.Join(sbomDir, "sbom", "launch", strings.ReplaceAll(buildpackInfo.Buildpack.ID, "/", "_"), "conda-env", "sbom.cdx.json")).To(BeARegularFile())
-				Expect(filepath.Join(sbomDir, "sbom", "launch", strings.ReplaceAll(buildpackInfo.Buildpack.ID, "/", "_"), "conda-env", "sbom.spdx.json")).To(BeARegularFile())
-				Expect(filepath.Join(sbomDir, "sbom", "launch", strings.ReplaceAll(buildpackInfo.Buildpack.ID, "/", "_"), "conda-env", "sbom.syft.json")).To(BeARegularFile())
+				Expect(filepath.Join(sbomDir, "sbom", "launch", strings.ReplaceAll(buildpackInfo.Buildpack.ID, "/", "_"), "uv-env", "sbom.cdx.json")).To(BeARegularFile())
+				Expect(filepath.Join(sbomDir, "sbom", "launch", strings.ReplaceAll(buildpackInfo.Buildpack.ID, "/", "_"), "uv-env", "sbom.spdx.json")).To(BeARegularFile())
+				Expect(filepath.Join(sbomDir, "sbom", "launch", strings.ReplaceAll(buildpackInfo.Buildpack.ID, "/", "_"), "uv-env", "sbom.syft.json")).To(BeARegularFile())
 
 				// check an SBOM file to make sure it has an entry for a dependency from requirements.txt
-				contents, err := os.ReadFile(filepath.Join(sbomDir, "sbom", "launch", strings.ReplaceAll(buildpackInfo.Buildpack.ID, "/", "_"), "conda-env", "sbom.cdx.json"))
+				contents, err := os.ReadFile(filepath.Join(sbomDir, "sbom", "launch", strings.ReplaceAll(buildpackInfo.Buildpack.ID, "/", "_"), "uv-env", "sbom.cdx.json"))
 				Expect(err).NotTo(HaveOccurred())
 				Expect(string(contents)).To(ContainSubstring(`"name": "flask"`))
 			})

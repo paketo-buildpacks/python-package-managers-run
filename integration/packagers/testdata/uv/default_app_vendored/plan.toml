@@ -1,0 +1,9 @@
+[[requires]]
+name = "uv"
+  [requires.metadata]
+    launch = true
+
+[[requires]]
+name = "uv-environment"
+  [requires.metadata]
+    launch = true

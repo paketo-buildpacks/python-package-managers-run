@@ -18,6 +18,7 @@ import (
 	pip "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pip"
 	pipenv "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pipenv"
 	poetry "github.com/paketo-buildpacks/python-packagers/pkg/packagers/poetry"
+	uv "github.com/paketo-buildpacks/python-packagers/pkg/packagers/uv"
 
 	"github.com/sclevine/spec"
 
@@ -225,6 +226,65 @@ func testDetect(t *testing.T, context spec.G, it spec.S) {
 							Name: poetry.Poetry,
 							Metadata: poetry.BuildPlanMetadata{
 								Build: true,
+							},
+						},
+					},
+				}))
+			})
+		})
+
+		context("When only a uv.lock file is present", func() {
+			it.Before(func() {
+				Expect(os.RemoveAll(filepath.Join(workingDir, "x.py"))).To(Succeed())
+				Expect(os.WriteFile(filepath.Join(workingDir, "uv.lock"), []byte{}, os.ModePerm)).To(Succeed())
+			})
+
+			it("passes detection", func() {
+				result, err := detect(packit.DetectContext{
+					WorkingDir: workingDir,
+				})
+				Expect(err).NotTo(HaveOccurred())
+				Expect(result.Plan).To(Equal(packit.BuildPlan{
+					Provides: []packit.BuildPlanProvision{
+						{
+							Name: uv.UvEnvPlanEntry,
+						},
+					},
+					Requires: []packit.BuildPlanRequirement{
+						{
+							Name: uv.UvPlanEntry,
+							Metadata: map[string]interface{}{
+								"build": true,
+							},
+						},
+					},
+				}))
+			})
+		})
+
+		context("When a uv.lock and pyproject.toml file is present", func() {
+			it.Before(func() {
+				Expect(os.RemoveAll(filepath.Join(workingDir, "x.py"))).To(Succeed())
+				Expect(os.WriteFile(filepath.Join(workingDir, "pyproject.toml"), []byte{}, os.ModePerm)).To(Succeed())
+				Expect(os.WriteFile(filepath.Join(workingDir, "uv.lock"), []byte{}, os.ModePerm)).To(Succeed())
+			})
+
+			it("passes detection", func() {
+				result, err := detect(packit.DetectContext{
+					WorkingDir: workingDir,
+				})
+				Expect(err).NotTo(HaveOccurred())
+				Expect(result.Plan).To(Equal(packit.BuildPlan{
+					Provides: []packit.BuildPlanProvision{
+						{
+							Name: uv.UvEnvPlanEntry,
+						},
+					},
+					Requires: []packit.BuildPlanRequirement{
+						{
+							Name: uv.UvPlanEntry,
+							Metadata: map[string]interface{}{
+								"build": true,
 							},
 						},
 					},

@@ -60,15 +60,6 @@ func TestIntegration(t *testing.T) {
 		Execute(settings.Config.BuildPlan)
 	Expect(err).NotTo(HaveOccurred())
 
-	settings.Buildpacks.Miniconda.Online, err = buildpackStore.Get.
-		Execute(settings.Config.Miniconda)
-	Expect(err).NotTo(HaveOccurred())
-
-	settings.Buildpacks.Miniconda.Offline, err = buildpackStore.Get.
-		WithOfflineDependencies().
-		Execute(settings.Config.Miniconda)
-	Expect(err).NotTo(HaveOccurred())
-
 	settings.Buildpacks.CPython.Online, err = buildpackStore.Get.
 		Execute(settings.Config.CPython)
 	Expect(err).NotTo(HaveOccurred())
@@ -78,26 +69,15 @@ func TestIntegration(t *testing.T) {
 		Execute(settings.Config.CPython)
 	Expect(err).NotTo(HaveOccurred())
 
-	settings.Buildpacks.Pip.Online, err = buildpackStore.Get.
-		Execute(settings.Config.Pip)
+	settings.Buildpacks.PythonInstallers.Online, err = buildpackStore.Get.
+		WithVersion("0.1.0").
+		Execute(settings.Config.PythonInstallers)
 	Expect(err).NotTo(HaveOccurred())
 
-	settings.Buildpacks.Pip.Offline, err = buildpackStore.Get.
+	settings.Buildpacks.PythonInstallers.Offline, err = buildpackStore.Get.
+		WithVersion("0.1.0").
 		WithOfflineDependencies().
-		Execute(settings.Config.Pip)
-	Expect(err).NotTo(HaveOccurred())
-
-	settings.Buildpacks.Pipenv.Online, err = buildpackStore.Get.
-		Execute(settings.Config.Pipenv)
-	Expect(err).NotTo(HaveOccurred())
-
-	settings.Buildpacks.Pipenv.Offline, err = buildpackStore.Get.
-		WithOfflineDependencies().
-		Execute(settings.Config.Pipenv)
-	Expect(err).NotTo(HaveOccurred())
-
-	settings.Buildpacks.Poetry.Online, err = buildpackStore.Get.
-		Execute(settings.Config.Poetry)
+		Execute(settings.Config.PythonInstallers)
 	Expect(err).NotTo(HaveOccurred())
 
 	settings.Buildpacks.PythonPackagers.Online, err = buildpackStore.Get.
@@ -137,6 +117,11 @@ func TestIntegration(t *testing.T) {
 
 	// poetry
 	suite("Poetry Default", poetryTestDefault)
+
+	// uv
+	suite("uv Default", uvTestDefault)
+	suite("uv Offline", uvTestOffline)
+	suite("uv Reused", uvTestReused)
 
 	suite.Run(t)
 }

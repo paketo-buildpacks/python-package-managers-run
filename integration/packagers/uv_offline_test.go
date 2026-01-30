@@ -17,7 +17,7 @@ import (
 	"github.com/sclevine/spec"
 )
 
-func condaTestOffline(t *testing.T, context spec.G, it spec.S) {
+func uvTestOffline(t *testing.T, context spec.G, it spec.S) {
 	var (
 		Expect     = NewWithT(t).Expect
 		Eventually = NewWithT(t).Eventually
@@ -43,7 +43,7 @@ func condaTestOffline(t *testing.T, context spec.G, it spec.S) {
 			name, err = occam.RandomName()
 			Expect(err).NotTo(HaveOccurred())
 
-			source, err = occam.Source(filepath.Join("testdata", "conda", "vendored_app"))
+			source, err = occam.Source(filepath.Join("testdata", "uv", "default_app_vendored"))
 			Expect(err).NotTo(HaveOccurred())
 		})
 
@@ -61,6 +61,7 @@ func condaTestOffline(t *testing.T, context spec.G, it spec.S) {
 			image, logs, err = pack.WithNoColor().Build.
 				WithPullPolicy("never").
 				WithBuildpacks(
+					settings.Buildpacks.CPython.Offline,
 					settings.Buildpacks.PythonInstallers.Offline,
 					settings.Buildpacks.PythonPackagers.Offline,
 					settings.Buildpacks.BuildPlan.Online,
@@ -73,7 +74,7 @@ func condaTestOffline(t *testing.T, context spec.G, it spec.S) {
 				WithEnv(map[string]string{"PORT": "8080"}).
 				WithPublish("8080").
 				WithPublishAll().
-				WithCommand("python app.py").
+				WithCommand("python server.py").
 				Execute(image.ID)
 			Expect(err).NotTo(HaveOccurred())
 

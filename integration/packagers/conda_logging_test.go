@@ -60,7 +60,7 @@ func condaTestLogging(t *testing.T, context spec.G, it spec.S) {
 			image, logs, err := pack.WithNoColor().Build.
 				WithPullPolicy("never").
 				WithBuildpacks(
-					settings.Buildpacks.Miniconda.Online,
+					settings.Buildpacks.PythonInstallers.Online,
 					settings.Buildpacks.PythonPackagers.Online,
 					settings.Buildpacks.BuildPlan.Online,
 				).
@@ -99,7 +99,7 @@ func condaTestLogging(t *testing.T, context spec.G, it spec.S) {
 			image, logs, err := pack.WithNoColor().Build.
 				WithPullPolicy("never").
 				WithBuildpacks(
-					settings.Buildpacks.Miniconda.Online,
+					settings.Buildpacks.PythonInstallers.Online,
 					settings.Buildpacks.PythonPackagers.Online,
 					settings.Buildpacks.BuildPlan.Online,
 				).
@@ -132,7 +132,7 @@ func condaTestLogging(t *testing.T, context spec.G, it spec.S) {
 			secondImage, logs, err := pack.WithNoColor().Build.
 				WithPullPolicy("never").
 				WithBuildpacks(
-					settings.Buildpacks.Miniconda.Online,
+					settings.Buildpacks.PythonInstallers.Online,
 					settings.Buildpacks.PythonPackagers.Online,
 					settings.Buildpacks.BuildPlan.Online,
 				).
@@ -158,7 +158,7 @@ func condaTestLogging(t *testing.T, context spec.G, it spec.S) {
 			image, logs, err := pack.WithNoColor().Build.
 				WithPullPolicy("never").
 				WithBuildpacks(
-					settings.Buildpacks.Miniconda.Online,
+					settings.Buildpacks.PythonInstallers.Online,
 					settings.Buildpacks.PythonPackagers.Online,
 					settings.Buildpacks.BuildPlan.Online,
 				).
