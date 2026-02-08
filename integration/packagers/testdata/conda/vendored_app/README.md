@@ -9,9 +9,10 @@ To recreate this vendored app:
 - Install conda build tools: `conda install conda-build`
 
 **Steps**
-1. `cd integration/testdata/vendored_app`
+1. `cd integration/testdata/conda/vendored_app`
 1. Use the existing `environment.yml` file in the root of the app
 1. `CONDA_PKGS_DIRS=vendor/noarch conda env create -f environment.yml -n vendored_app`
 1. `conda index vendor`
+1. `find vendor/noarch/ -mindepth 1 -maxdepth 1 -type d -exec rm -rf {} \;`
 1. `conda list -n vendored_app -e > package-list.txt`
 1. Commit `environment.yml`, `vendor`, and `package-list.txt`
