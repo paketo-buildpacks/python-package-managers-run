@@ -73,83 +73,55 @@ func (p *PyProjectParser) GetInstaller(path string) (string, error) {
 	return installer, nil
 }
 
-func (p *PyProjectParser) CreatePlan(installer string) (packit.BuildPlan, error) {
-	var plan packit.BuildPlan
+func (p *PyProjectParser) CreatePlan(installer string, context packit.DetectContext) (packit.DetectResult, error) {
+	var result packit.DetectResult
 	var err error
 
 	switch installer {
 	case pip.Pip:
-		plan = packit.BuildPlan{
-			Provides: []packit.BuildPlanProvision{
-				{
-					Name: pip.SitePackages,
-				},
-				{
-					Name: pip.Manager,
-				},
-			},
-			Requires: []packit.BuildPlanRequirement{
-				{
-					Name: pip.CPython,
-					Metadata: common.BuildPlanMetadata{
-						Build: true,
+		result = packit.DetectResult{
+			Plan: packit.BuildPlan{
+				Provides: []packit.BuildPlanProvision{
+					{
+						Name: pip.SitePackages,
+					},
+					{
+						Name: pip.Manager,
 					},
 				},
-				{
-					Name: pip.Pip,
-					Metadata: common.BuildPlanMetadata{
-						Build: true,
+				Requires: []packit.BuildPlanRequirement{
+					{
+						Name: pip.CPython,
+						Metadata: common.BuildPlanMetadata{
+							Build: true,
+						},
 					},
-				},
-				{
-					Name: pip.Manager,
-					Metadata: common.BuildPlanMetadata{
-						Build: true,
+					{
+						Name: pip.Pip,
+						Metadata: common.BuildPlanMetadata{
+							Build: true,
+						},
+					},
+					{
+						Name: pip.Manager,
+						Metadata: common.BuildPlanMetadata{
+							Build: true,
+						},
 					},
 				},
 			},
 		}
 
 	case poetry.Poetry:
-		plan = packit.BuildPlan{
-			Provides: []packit.BuildPlanProvision{
-				{Name: poetry.PoetryVenv},
-			},
-			Requires: []packit.BuildPlanRequirement{
-				{
-					Name: poetry.CPython,
-					Metadata: common.BuildPlanMetadata{
-						Build: true,
-					},
-				},
-				{
-					Name: poetry.Poetry,
-					Metadata: common.BuildPlanMetadata{
-						Build: true,
-					},
-				},
-			},
-		}
+		result, err = poetry.Detect()(context)
 
 	case uv.UvPlanEntry:
-		plan = packit.BuildPlan{
-			Provides: []packit.BuildPlanProvision{
-				{Name: uv.UvEnvPlanEntry},
-			},
-			Requires: []packit.BuildPlanRequirement{
-				{
-					Name: uv.UvPlanEntry,
-					Metadata: common.BuildPlanMetadata{
-						Build: true,
-					},
-				},
-			},
-		}
+		result, err = uv.Detect()(context)
 
 	default:
-		plan = packit.BuildPlan{}
+		result = packit.DetectResult{}
 		err = fmt.Errorf("unsupported installer: %s", installer)
 	}
 
-	return plan, err
+	return result, err
 }

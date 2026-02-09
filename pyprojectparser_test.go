@@ -10,11 +10,15 @@ import (
 	"path/filepath"
 	"testing"
 
+	"github.com/paketo-buildpacks/packit/v2"
 	"github.com/sclevine/spec"
 
 	. "github.com/onsi/gomega"
 
 	pythonpackagers "github.com/paketo-buildpacks/python-packagers"
+	pip "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pip"
+	poetry "github.com/paketo-buildpacks/python-packagers/pkg/packagers/poetry"
+	uv "github.com/paketo-buildpacks/python-packagers/pkg/packagers/uv"
 )
 
 func testPyProjectParser(t *testing.T, context spec.G, it spec.S) {
@@ -111,17 +115,58 @@ func testPyProjectParser(t *testing.T, context spec.G, it spec.S) {
 
 	context("Create plan", func() {
 		context("when the installer is known", func() {
-			it("creates a valid plan", func() {
-				parser := pythonpackagers.NewPyProjectParser()
-				plan, err := parser.CreatePlan("pip")
-				Expect(err).NotTo(HaveOccurred())
-				Expect(plan.Provides[0].Name).To(Equal("site-packages"))
+			context("pip", func() {
+				it("creates a plan", func() {
+					parser := pythonpackagers.NewPyProjectParser()
+					result, err := parser.CreatePlan("pip", packit.DetectContext{
+						WorkingDir: workingDir,
+					})
+					Expect(err).NotTo(HaveOccurred())
+					Expect(result.Plan.Provides[0].Name).To(Equal(pip.SitePackages))
+				})
 			})
+
+			context("poetry", func() {
+				it.Before(func() {
+					Expect(os.WriteFile(filepath.Join(workingDir, "pyproject.toml"), []byte(""), 0755)).To(Succeed())
+				})
+				it("creates a poetry plan", func() {
+					parser := pythonpackagers.NewPyProjectParser()
+					result, err := parser.CreatePlan("poetry", packit.DetectContext{
+						WorkingDir: workingDir,
+					})
+					Expect(err).NotTo(HaveOccurred())
+					Expect(result.Plan.Provides[0].Name).To(Equal(poetry.PoetryVenv))
+				})
+			})
+
+			context("uv", func() {
+				it.Before(func() {
+					content := []byte(`
+				[build-system]
+				requires = ["uv_build >= 0.9.28, <0.10.0"]
+				build-backend = "uv_build"
+				`)
+					Expect(os.WriteFile(filepath.Join(workingDir, "pyproject.toml"), content, 0755)).To(Succeed())
+					Expect(os.WriteFile(filepath.Join(workingDir, uv.LockfileName), []byte(""), 0755)).To(Succeed())
+				})
+				it("creates a uv plan", func() {
+					parser := pythonpackagers.NewPyProjectParser()
+					result, err := parser.CreatePlan("uv", packit.DetectContext{
+						WorkingDir: workingDir,
+					})
+					Expect(err).NotTo(HaveOccurred())
+					Expect(result.Plan.Provides[0].Name).To(Equal(uv.UvEnvPlanEntry))
+				})
+			})
+
 		})
 		context("failure cases", func() {
 			it("fails when the installer is unknown", func() {
 				parser := pythonpackagers.NewPyProjectParser()
-				_, err := parser.CreatePlan("dummy")
+				_, err := parser.CreatePlan("dummy", packit.DetectContext{
+					WorkingDir: workingDir,
+				})
 				Expect(err).To(MatchError("unsupported installer: dummy"))
 			})
 		})

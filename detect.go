@@ -38,10 +38,7 @@ func Detect(logger scribe.Emitter) packit.DetectFunc {
 			if err != nil {
 				return packit.DetectResult{}, err
 			}
-			plan, _ := parser.CreatePlan(installer)
-			return packit.DetectResult{
-				Plan: plan,
-			}, nil
+			return parser.CreatePlan(installer, context)
 		}
 
 		logger.Title("Checking for pip")
