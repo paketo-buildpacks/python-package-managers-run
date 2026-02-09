@@ -9,6 +9,8 @@ import (
 
 	"github.com/paketo-buildpacks/packit/v2"
 	"github.com/paketo-buildpacks/packit/v2/fs"
+
+	common "github.com/paketo-buildpacks/python-packagers/pkg/packagers/common"
 )
 
 // Detect returns a packit.DetectFunc that will be invoked during the
@@ -38,8 +40,8 @@ func Detect() packit.DetectFunc {
 		requires := []packit.BuildPlanRequirement{
 			{
 				Name: UvPlanEntry,
-				Metadata: map[string]interface{}{
-					"build": true,
+				Metadata: common.BuildPlanMetadata{
+					Build: true,
 				},
 			},
 		}
@@ -51,10 +53,10 @@ func Detect() packit.DetectFunc {
 			requires = append(requires,
 				packit.BuildPlanRequirement{
 					Name: "cpython",
-					Metadata: map[string]interface{}{
-						"build":   true,
-						"launch":  true,
-						"version": version,
+					Metadata: common.BuildPlanMetadata{
+						Build:   true,
+						Launch:  true,
+						Version: version,
 					},
 				},
 			)

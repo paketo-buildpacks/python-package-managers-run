@@ -21,6 +21,19 @@ func (f Generator) Generate(dir string) (sbom.SBOM, error) {
 	return sbom.Generate(dir)
 }
 
+// BuildPlanMetadata is the buildpack-specific data included in build plan
+// requirements.
+type BuildPlanMetadata struct {
+	// Build denotes the dependency is needed at build-time.
+	Build bool `toml:"build"`
+	// Launch denotes the dependency is needed at run-time.
+	Launch bool `toml:"launch"`
+	// Version denotes the version to request.
+	Version string `toml:"version"`
+	// VersionSource denotes the source of version request.
+	VersionSource string `toml:"version-source"`
+}
+
 // CommonBuildParameters are the parameters shared
 // by all packager build function implementation
 type CommonBuildParameters struct {

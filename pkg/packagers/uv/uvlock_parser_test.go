@@ -10,8 +10,9 @@ import (
 	"testing"
 
 	. "github.com/onsi/gomega"
-	"github.com/paketo-buildpacks/python-packagers/pkg/packagers/uv"
 	"github.com/sclevine/spec"
+
+	uvinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/uv"
 )
 
 func testUvLockParser(t *testing.T, context spec.G, it spec.S) {

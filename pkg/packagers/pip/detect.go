@@ -11,14 +11,9 @@ import (
 
 	"github.com/paketo-buildpacks/packit/v2"
 	"github.com/paketo-buildpacks/packit/v2/fs"
-)
 
-// BuildPlanMetadata is the buildpack specific data included in build plan
-// requirements.
-type BuildPlanMetadata struct {
-	// Build denotes the dependency is needed at build-time.
-	Build bool `toml:"build"`
-}
+	common "github.com/paketo-buildpacks/python-packagers/pkg/packagers/common"
+)
 
 // Detect will return a packit.DetectFunc that will be invoked during the
 // detect phase of the buildpack lifecycle.
@@ -63,19 +58,19 @@ func Detect() packit.DetectFunc {
 				Requires: []packit.BuildPlanRequirement{
 					{
 						Name: CPython,
-						Metadata: BuildPlanMetadata{
+						Metadata: common.BuildPlanMetadata{
 							Build: true,
 						},
 					},
 					{
 						Name: Pip,
-						Metadata: BuildPlanMetadata{
+						Metadata: common.BuildPlanMetadata{
 							Build: true,
 						},
 					},
 					{
 						Name: Manager,
-						Metadata: BuildPlanMetadata{
+						Metadata: common.BuildPlanMetadata{
 							Build: true,
 						},
 					},

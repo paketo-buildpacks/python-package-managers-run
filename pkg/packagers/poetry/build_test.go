@@ -16,10 +16,11 @@ import (
 	"github.com/paketo-buildpacks/packit/v2/chronos"
 	"github.com/paketo-buildpacks/packit/v2/sbom"
 	"github.com/paketo-buildpacks/packit/v2/scribe"
+	"github.com/sclevine/spec"
+
 	pythonpackagers "github.com/paketo-buildpacks/python-packagers/pkg/packagers/common"
 	poetryinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/poetry"
 	"github.com/paketo-buildpacks/python-packagers/pkg/packagers/poetry/fakes"
-	"github.com/sclevine/spec"
 
 	. "github.com/onsi/gomega"
 )

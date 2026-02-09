@@ -10,10 +10,12 @@ import (
 	"testing"
 
 	"github.com/paketo-buildpacks/packit/v2"
-	uvinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/uv"
 	"github.com/sclevine/spec"
 
 	. "github.com/onsi/gomega"
+
+	common "github.com/paketo-buildpacks/python-packagers/pkg/packagers/common"
+	uvinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/uv"
 )
 
 func testDetect(t *testing.T, context spec.G, it spec.S) {
@@ -56,8 +58,8 @@ func testDetect(t *testing.T, context spec.G, it spec.S) {
 				Requires: []packit.BuildPlanRequirement{
 					{
 						Name: uvinstall.UvPlanEntry,
-						Metadata: map[string]interface{}{
-							"build": true,
+						Metadata: common.BuildPlanMetadata{
+							Build: true,
 						},
 					},
 				},

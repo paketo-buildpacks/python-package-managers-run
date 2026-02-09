@@ -15,9 +15,10 @@ import (
 
 	"github.com/paketo-buildpacks/packit/v2/pexec"
 	"github.com/paketo-buildpacks/packit/v2/scribe"
+	"github.com/sclevine/spec"
+
 	uv "github.com/paketo-buildpacks/python-packagers/pkg/packagers/uv"
 	"github.com/paketo-buildpacks/python-packagers/pkg/packagers/uv/fakes"
-	"github.com/sclevine/spec"
 
 	. "github.com/onsi/gomega"
 	. "github.com/paketo-buildpacks/occam/matchers"
