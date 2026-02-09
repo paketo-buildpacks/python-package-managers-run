@@ -6,7 +6,10 @@
 package pythonpackagers
 
 import (
+	"path/filepath"
+
 	"github.com/paketo-buildpacks/packit/v2"
+	"github.com/paketo-buildpacks/packit/v2/fs"
 	"github.com/paketo-buildpacks/packit/v2/scribe"
 
 	conda "github.com/paketo-buildpacks/python-packagers/pkg/packagers/conda"
@@ -23,11 +26,28 @@ import (
 // it will pass detection.
 func Detect(logger scribe.Emitter) packit.DetectFunc {
 	return func(context packit.DetectContext) (packit.DetectResult, error) {
+		logger.Title("Checking for pyproject.toml")
+		pyprojectPath := filepath.Join(context.WorkingDir, "pyproject.toml")
+		found, err := fs.Exists(pyprojectPath)
+		if err != nil {
+			return packit.DetectResult{}, err
+		}
+		if found {
+			parser := NewPyProjectParser()
+			installer, err := parser.GetInstaller(pyprojectPath)
+			if err != nil {
+				return packit.DetectResult{}, err
+			}
+			plan, _ := parser.CreatePlan(installer)
+			return packit.DetectResult{
+				Plan: plan,
+			}, nil
+		}
+
 		logger.Title("Checking for pip")
 		pipResult, err := pipinstall.Detect()(context)
 
 		if err == nil {
-			// plans = append(plans, pipResult.Plan)
 			return packit.DetectResult{
 				Plan: pipResult.Plan,
 			}, nil
@@ -39,7 +59,6 @@ func Detect(logger scribe.Emitter) packit.DetectFunc {
 		condaResult, err := conda.Detect()(context)
 
 		if err == nil {
-			// plans = append(plans, condaResult.Plan)
 			return packit.DetectResult{
 				Plan: condaResult.Plan,
 			}, nil
@@ -54,7 +73,6 @@ func Detect(logger scribe.Emitter) packit.DetectFunc {
 		)(context)
 
 		if err == nil {
-			// plans = append(plans, pipenvResult.Plan)
 			return packit.DetectResult{
 				Plan: pipenvResult.Plan,
 			}, nil
@@ -66,7 +84,6 @@ func Detect(logger scribe.Emitter) packit.DetectFunc {
 		uvResult, err := uvinstall.Detect()(context)
 
 		if err == nil {
-			// plans = append(plans, uvResult.Plan)
 			return packit.DetectResult{
 				Plan: uvResult.Plan,
 			}, nil
@@ -78,7 +95,6 @@ func Detect(logger scribe.Emitter) packit.DetectFunc {
 		poetryResult, err := poetryinstall.Detect()(context)
 
 		if err == nil {
-			// plans = append(plans, poetryResult.Plan)
 			return packit.DetectResult{
 				Plan: poetryResult.Plan,
 			}, nil

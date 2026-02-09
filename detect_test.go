@@ -265,8 +265,13 @@ func testDetect(t *testing.T, context spec.G, it spec.S) {
 
 		context("When a uv.lock and pyproject.toml file is present", func() {
 			it.Before(func() {
+				content := []byte(`
+					[build-system]
+					requires = ["uv_build>=0.10.0,<0.11.0"]
+					build-backend = "uv_build"
+				`)
 				Expect(os.RemoveAll(filepath.Join(workingDir, "x.py"))).To(Succeed())
-				Expect(os.WriteFile(filepath.Join(workingDir, "pyproject.toml"), []byte{}, os.ModePerm)).To(Succeed())
+				Expect(os.WriteFile(filepath.Join(workingDir, "pyproject.toml"), content, os.ModePerm)).To(Succeed())
 				Expect(os.WriteFile(filepath.Join(workingDir, "uv.lock"), []byte{}, os.ModePerm)).To(Succeed())
 			})
 

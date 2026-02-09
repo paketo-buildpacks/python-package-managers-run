@@ -14,6 +14,7 @@ import (
 
 func TestUnitPythonPackagers(t *testing.T) {
 	suite := spec.New("python-packagers", spec.Report(report.Terminal{}), spec.Sequential())
+	suite("PyProject Parser", testPyProjectParser)
 	suite("Detect", testDetect)
 	suite("Build", testBuild)
 	suite.Run(t)
