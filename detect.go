@@ -34,10 +34,11 @@ func Detect(logger scribe.Emitter) packit.DetectFunc {
 		}
 		if found {
 			parser := NewPyProjectHandler()
-			installer, err := parser.GetInstaller(pyprojectPath)
+			installer, err := parser.GetInstaller(context.WorkingDir)
 			if err != nil {
 				return packit.DetectResult{}, err
 			}
+			logger.Detail("Doing detection for: %s", installer)
 			return parser.Detect(installer, context)
 		}
 

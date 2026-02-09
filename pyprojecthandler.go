@@ -7,9 +7,11 @@ package pythonpackagers
 
 import (
 	"fmt"
+	"path/filepath"
 
 	"github.com/BurntSushi/toml"
 	"github.com/paketo-buildpacks/packit/v2"
+	"github.com/paketo-buildpacks/packit/v2/fs"
 
 	common "github.com/paketo-buildpacks/python-packagers/pkg/packagers/common"
 	pip "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pip"
@@ -24,6 +26,8 @@ const (
 	PDG        = "pdm.backend"
 	UvBuild    = "uv_build"
 	Poetry     = "poetry.core.masonry.api"
+
+	ProjectFile = "pyproject.toml"
 )
 
 type BuildSystem struct {
@@ -49,9 +53,9 @@ func NewPyProjectHandler() PyProjectHandler {
 	return PyProjectHandler{}
 }
 
-func (p *PyProjectHandler) GetBuildBackend(path string) (string, error) {
+func (p *PyProjectHandler) GetBuildBackend(projectPath string) (string, error) {
 	var project Project
-	_, err := toml.DecodeFile(path, &project)
+	_, err := toml.DecodeFile(filepath.Join(projectPath, ProjectFile), &project)
 	if err != nil {
 		return "", err
 	}
@@ -59,10 +63,22 @@ func (p *PyProjectHandler) GetBuildBackend(path string) (string, error) {
 	return project.BuildSystem.BuildBackend, nil
 }
 
-func (p *PyProjectHandler) GetInstaller(path string) (string, error) {
-	backend, err := p.GetBuildBackend(path)
+func (p *PyProjectHandler) GetInstaller(projectPath string) (string, error) {
+	backend, err := p.GetBuildBackend(projectPath)
 	if err != nil {
 		return "", err
+	}
+
+	if backend == "" {
+		found, err := fs.Exists(filepath.Join(projectPath, uv.LockfileName))
+		if err != nil {
+			return "", err
+		}
+
+		if found {
+			backend = UvBuild
+		}
+
 	}
 
 	installer, ok := InstallerMap[backend]

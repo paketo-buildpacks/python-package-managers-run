@@ -51,12 +51,11 @@ func testPyProjectHandler(t *testing.T, context spec.G, it spec.S) {
 
 			it("returns uv", func() {
 				parser := pythonpackagers.NewPyProjectHandler()
-				pyproject := filepath.Join(workingDir, "pyproject.toml")
-				backend, err := parser.GetBuildBackend(pyproject)
+				backend, err := parser.GetBuildBackend(workingDir)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(backend).To(Equal("uv_build"))
 
-				installer, err := parser.GetInstaller(pyproject)
+				installer, err := parser.GetInstaller(workingDir)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(installer).To(Equal("uv"))
 			})
@@ -73,12 +72,11 @@ func testPyProjectHandler(t *testing.T, context spec.G, it spec.S) {
 
 			it("returns poetry", func() {
 				parser := pythonpackagers.NewPyProjectHandler()
-				pyproject := filepath.Join(workingDir, "pyproject.toml")
-				backend, err := parser.GetBuildBackend(pyproject)
+				backend, err := parser.GetBuildBackend(workingDir)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(backend).To(Equal(""))
 
-				installer, err := parser.GetInstaller(pyproject)
+				installer, err := parser.GetInstaller(workingDir)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(installer).To(Equal("poetry"))
 			})
@@ -100,12 +98,11 @@ func testPyProjectHandler(t *testing.T, context spec.G, it spec.S) {
 
 				it("returns an error", func() {
 					parser := pythonpackagers.NewPyProjectHandler()
-					pyproject := filepath.Join(workingDir, "pyproject.toml")
-					backend, err := parser.GetBuildBackend(pyproject)
+					backend, err := parser.GetBuildBackend(workingDir)
 					Expect(err).NotTo(HaveOccurred())
 					Expect(backend).To(Equal("dummy"))
 
-					installer, err := parser.GetInstaller(pyproject)
+					installer, err := parser.GetInstaller(workingDir)
 					Expect(err).To(MatchError("unsupported backend: dummy"))
 					Expect(installer).To(Equal(""))
 				})
@@ -141,22 +138,38 @@ func testPyProjectHandler(t *testing.T, context spec.G, it spec.S) {
 			})
 
 			context("uv", func() {
-				it.Before(func() {
-					content := []byte(`
-				[build-system]
-				requires = ["uv_build >= 0.9.28, <0.10.0"]
-				build-backend = "uv_build"
-				`)
-					Expect(os.WriteFile(filepath.Join(workingDir, "pyproject.toml"), content, 0755)).To(Succeed())
-					Expect(os.WriteFile(filepath.Join(workingDir, uv.LockfileName), []byte(""), 0755)).To(Succeed())
-				})
-				it("creates a uv plan", func() {
-					parser := pythonpackagers.NewPyProjectHandler()
-					result, err := parser.Detect("uv", packit.DetectContext{
-						WorkingDir: workingDir,
+				context("with build-system entry and lock file", func() {
+					it.Before(func() {
+						content := []byte(`
+					[build-system]
+					requires = ["uv_build >= 0.9.28, <0.10.0"]
+					build-backend = "uv_build"
+					`)
+						Expect(os.WriteFile(filepath.Join(workingDir, "pyproject.toml"), content, 0755)).To(Succeed())
+						Expect(os.WriteFile(filepath.Join(workingDir, uv.LockfileName), []byte(""), 0755)).To(Succeed())
 					})
-					Expect(err).NotTo(HaveOccurred())
-					Expect(result.Plan.Provides[0].Name).To(Equal(uv.UvEnvPlanEntry))
+					it("creates a uv plan", func() {
+						parser := pythonpackagers.NewPyProjectHandler()
+						result, err := parser.Detect("uv", packit.DetectContext{
+							WorkingDir: workingDir,
+						})
+						Expect(err).NotTo(HaveOccurred())
+						Expect(result.Plan.Provides[0].Name).To(Equal(uv.UvEnvPlanEntry))
+					})
+				})
+				context("without build-system entry but with a lock file", func() {
+					it.Before(func() {
+						Expect(os.WriteFile(filepath.Join(workingDir, "pyproject.toml"), []byte(""), 0755)).To(Succeed())
+						Expect(os.WriteFile(filepath.Join(workingDir, uv.LockfileName), []byte(""), 0755)).To(Succeed())
+					})
+					it("creates a uv plan", func() {
+						parser := pythonpackagers.NewPyProjectHandler()
+						result, err := parser.Detect("uv", packit.DetectContext{
+							WorkingDir: workingDir,
+						})
+						Expect(err).NotTo(HaveOccurred())
+						Expect(result.Plan.Provides[0].Name).To(Equal(uv.UvEnvPlanEntry))
+					})
 				})
 			})
 
