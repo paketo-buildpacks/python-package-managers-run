@@ -35,7 +35,7 @@ type Project struct {
 	BuildSystem BuildSystem `toml:"build-system"`
 }
 
-type PyProjectParser struct {
+type PyProjectHandler struct {
 }
 
 var InstallerMap = map[string]string{
@@ -45,11 +45,11 @@ var InstallerMap = map[string]string{
 	"":         poetry.Poetry, // To keep compatibility with original implementation and poetry v1
 }
 
-func NewPyProjectParser() PyProjectParser {
-	return PyProjectParser{}
+func NewPyProjectHandler() PyProjectHandler {
+	return PyProjectHandler{}
 }
 
-func (p *PyProjectParser) GetBuildBackend(path string) (string, error) {
+func (p *PyProjectHandler) GetBuildBackend(path string) (string, error) {
 	var project Project
 	_, err := toml.DecodeFile(path, &project)
 	if err != nil {
@@ -59,7 +59,7 @@ func (p *PyProjectParser) GetBuildBackend(path string) (string, error) {
 	return project.BuildSystem.BuildBackend, nil
 }
 
-func (p *PyProjectParser) GetInstaller(path string) (string, error) {
+func (p *PyProjectHandler) GetInstaller(path string) (string, error) {
 	backend, err := p.GetBuildBackend(path)
 	if err != nil {
 		return "", err
@@ -73,7 +73,7 @@ func (p *PyProjectParser) GetInstaller(path string) (string, error) {
 	return installer, nil
 }
 
-func (p *PyProjectParser) CreatePlan(installer string, context packit.DetectContext) (packit.DetectResult, error) {
+func (p *PyProjectHandler) Detect(installer string, context packit.DetectContext) (packit.DetectResult, error) {
 	var result packit.DetectResult
 	var err error
 

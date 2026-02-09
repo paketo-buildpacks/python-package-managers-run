@@ -21,7 +21,7 @@ import (
 	uv "github.com/paketo-buildpacks/python-packagers/pkg/packagers/uv"
 )
 
-func testPyProjectParser(t *testing.T, context spec.G, it spec.S) {
+func testPyProjectHandler(t *testing.T, context spec.G, it spec.S) {
 	var (
 		Expect = NewWithT(t).Expect
 
@@ -50,7 +50,7 @@ func testPyProjectParser(t *testing.T, context spec.G, it spec.S) {
 			})
 
 			it("returns uv", func() {
-				parser := pythonpackagers.NewPyProjectParser()
+				parser := pythonpackagers.NewPyProjectHandler()
 				pyproject := filepath.Join(workingDir, "pyproject.toml")
 				backend, err := parser.GetBuildBackend(pyproject)
 				Expect(err).NotTo(HaveOccurred())
@@ -72,7 +72,7 @@ func testPyProjectParser(t *testing.T, context spec.G, it spec.S) {
 			})
 
 			it("returns poetry", func() {
-				parser := pythonpackagers.NewPyProjectParser()
+				parser := pythonpackagers.NewPyProjectHandler()
 				pyproject := filepath.Join(workingDir, "pyproject.toml")
 				backend, err := parser.GetBuildBackend(pyproject)
 				Expect(err).NotTo(HaveOccurred())
@@ -99,7 +99,7 @@ func testPyProjectParser(t *testing.T, context spec.G, it spec.S) {
 				})
 
 				it("returns an error", func() {
-					parser := pythonpackagers.NewPyProjectParser()
+					parser := pythonpackagers.NewPyProjectHandler()
 					pyproject := filepath.Join(workingDir, "pyproject.toml")
 					backend, err := parser.GetBuildBackend(pyproject)
 					Expect(err).NotTo(HaveOccurred())
@@ -117,8 +117,8 @@ func testPyProjectParser(t *testing.T, context spec.G, it spec.S) {
 		context("when the installer is known", func() {
 			context("pip", func() {
 				it("creates a plan", func() {
-					parser := pythonpackagers.NewPyProjectParser()
-					result, err := parser.CreatePlan("pip", packit.DetectContext{
+					parser := pythonpackagers.NewPyProjectHandler()
+					result, err := parser.Detect("pip", packit.DetectContext{
 						WorkingDir: workingDir,
 					})
 					Expect(err).NotTo(HaveOccurred())
@@ -131,8 +131,8 @@ func testPyProjectParser(t *testing.T, context spec.G, it spec.S) {
 					Expect(os.WriteFile(filepath.Join(workingDir, "pyproject.toml"), []byte(""), 0755)).To(Succeed())
 				})
 				it("creates a poetry plan", func() {
-					parser := pythonpackagers.NewPyProjectParser()
-					result, err := parser.CreatePlan("poetry", packit.DetectContext{
+					parser := pythonpackagers.NewPyProjectHandler()
+					result, err := parser.Detect("poetry", packit.DetectContext{
 						WorkingDir: workingDir,
 					})
 					Expect(err).NotTo(HaveOccurred())
@@ -151,8 +151,8 @@ func testPyProjectParser(t *testing.T, context spec.G, it spec.S) {
 					Expect(os.WriteFile(filepath.Join(workingDir, uv.LockfileName), []byte(""), 0755)).To(Succeed())
 				})
 				it("creates a uv plan", func() {
-					parser := pythonpackagers.NewPyProjectParser()
-					result, err := parser.CreatePlan("uv", packit.DetectContext{
+					parser := pythonpackagers.NewPyProjectHandler()
+					result, err := parser.Detect("uv", packit.DetectContext{
 						WorkingDir: workingDir,
 					})
 					Expect(err).NotTo(HaveOccurred())
@@ -163,8 +163,8 @@ func testPyProjectParser(t *testing.T, context spec.G, it spec.S) {
 		})
 		context("failure cases", func() {
 			it("fails when the installer is unknown", func() {
-				parser := pythonpackagers.NewPyProjectParser()
-				_, err := parser.CreatePlan("dummy", packit.DetectContext{
+				parser := pythonpackagers.NewPyProjectHandler()
+				_, err := parser.Detect("dummy", packit.DetectContext{
 					WorkingDir: workingDir,
 				})
 				Expect(err).To(MatchError("unsupported installer: dummy"))

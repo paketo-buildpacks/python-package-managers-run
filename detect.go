@@ -33,12 +33,12 @@ func Detect(logger scribe.Emitter) packit.DetectFunc {
 			return packit.DetectResult{}, err
 		}
 		if found {
-			parser := NewPyProjectParser()
+			parser := NewPyProjectHandler()
 			installer, err := parser.GetInstaller(pyprojectPath)
 			if err != nil {
 				return packit.DetectResult{}, err
 			}
-			return parser.CreatePlan(installer, context)
+			return parser.Detect(installer, context)
 		}
 
 		logger.Title("Checking for pip")
