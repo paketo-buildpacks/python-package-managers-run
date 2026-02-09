@@ -1,4 +1,5 @@
-// SPDX-FileCopyrightText: Copyright (c) 2013-Present CloudFoundry.org Foundation, Inc. All Rights Reserved.
+// SPDX-FileCopyrightText: © 2026 Idiap Research Institute <contact@idiap.ch>
+// SPDX-FileContributor: Samuel Gaist <samuel.gaist@idiap.ch>
 //
 // SPDX-License-Identifier: Apache-2.0
 
@@ -16,9 +17,8 @@ import (
 // Detect returns a packit.DetectFunc that will be invoked during the
 // detect phase of the buildpack lifecycle.
 //
-// Detection passes when there is an environment.yml or package-list.txt file
-// in the app directory, and will contribute a Build Plan that provides
-// conda-environment and requires conda.
+// Detection passes when there is an uv.lock file in the app directory,
+// and will contribute a Build Plan that provides uv-environment and requires uv.
 func Detect() packit.DetectFunc {
 	return func(context packit.DetectContext) (packit.DetectResult, error) {
 

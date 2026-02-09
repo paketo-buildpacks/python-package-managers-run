@@ -1,4 +1,5 @@
-// SPDX-FileCopyrightText: Copyright (c) 2013-Present CloudFoundry.org Foundation, Inc. All Rights Reserved.
+// SPDX-FileCopyrightText: © 2026 Idiap Research Institute <contact@idiap.ch>
+// SPDX-FileContributor: Samuel Gaist <samuel.gaist@idiap.ch>
 //
 // SPDX-License-Identifier: Apache-2.0
 
@@ -79,9 +80,8 @@ func (c UvRunner) ShouldRun(workingDir string, metadata map[string]interface{}) 
 
 // Execute runs the uv environment setup command and cleans up unnecessary
 // artifacts. If a vendor directory is present, it uses vendored packages and
-// installs them in offline mode. If a packages-list.txt file is present, it creates a
-// new environment based on the packages list. Otherwise, it updates the
-// existing packages to their latest versions.
+// installs them in offline mode. In this case it will use the cpython layer
+// to create the virtual environment for the installation
 func (c UvRunner) Execute(uvLayerPath string, uvCachePath string, workingDir string) error {
 	lockfileExists, err := fs.Exists(filepath.Join(workingDir, LockfileName))
 	if err != nil {

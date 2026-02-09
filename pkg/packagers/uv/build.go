@@ -1,4 +1,5 @@
-// SPDX-FileCopyrightText: Copyright (c) 2013-Present CloudFoundry.org Foundation, Inc. All Rights Reserved.
+// SPDX-FileCopyrightText: © 2026 Idiap Research Institute <contact@idiap.ch>
+// SPDX-FileContributor: Samuel Gaist <samuel.gaist@idiap.ch>
 //
 // SPDX-License-Identifier: Apache-2.0
 
@@ -35,7 +36,7 @@ type UvBuildParameters struct {
 // Build will return a packit.BuildFunc that will be invoked during the build
 // phase of the buildpack lifecycle.
 //
-// Build updates the uv environment and stores the result in a layer. It may
+// Build creates an uv environment and stores the result in a layer. It may
 // reuse the environment layer from a previous build, depending on conditions
 // determined by the runner.
 func Build(
