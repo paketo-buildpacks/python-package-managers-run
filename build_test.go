@@ -26,6 +26,8 @@ import (
 	pipenvfakes "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pipenv/fakes"
 	poetryinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/poetry"
 	poetryfakes "github.com/paketo-buildpacks/python-packagers/pkg/packagers/poetry/fakes"
+	uvinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/uv"
+	uvfakes "github.com/paketo-buildpacks/python-packagers/pkg/packagers/uv/fakes"
 
 	"github.com/sclevine/spec"
 
@@ -64,6 +66,9 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 		poetryEntryResolver     *poetryfakes.EntryResolver
 		poetryInstallProcess    *poetryfakes.InstallProcess
 		poetryPythonPathProcess *poetryfakes.PythonPathLookupProcess
+
+		// uv
+		uvRunner *uvfakes.Runner
 
 		buildParameters pkgcommon.CommonBuildParameters
 
@@ -105,6 +110,9 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 		poetryPythonPathProcess = &poetryfakes.PythonPathLookupProcess{}
 		poetryPythonPathProcess.ExecuteCall.Returns.String = "some-python-path"
 
+		// uv
+		uvRunner = &uvfakes.Runner{}
+
 		buildParameters = pkgcommon.CommonBuildParameters{
 			SbomGenerator: pkgcommon.Generator{},
 			Clock:         chronos.DefaultClock,
@@ -128,6 +136,9 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 				EntryResolver:           poetryEntryResolver,
 				InstallProcess:          poetryInstallProcess,
 				PythonPathLookupProcess: poetryPythonPathProcess,
+			},
+			uvinstall.UvEnvPlanEntry: uvinstall.UvBuildParameters{
+				Runner: uvRunner,
 			},
 		}
 
@@ -162,6 +173,9 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 					{
 						Name: poetryinstall.PoetryVenv,
 					},
+					{
+						Name: uvinstall.UvEnvPlanEntry,
+					},
 				},
 			},
 			packit.BuildpackPlan{
@@ -191,6 +205,13 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 				Entries: []packit.BuildpackPlanEntry{
 					{
 						Name: conda.CondaEnvPlanEntry,
+					},
+				},
+			},
+			packit.BuildpackPlan{
+				Entries: []packit.BuildpackPlanEntry{
+					{
+						Name: uvinstall.UvEnvPlanEntry,
 					},
 				},
 			},

@@ -27,24 +27,13 @@ type BuildpackInfo struct {
 type TestSettings struct {
 	Buildpacks struct {
 		// Dependency buildpacks
-		Miniconda struct {
-			Online  string
-			Offline string
-		}
 		CPython struct {
 			Online  string
 			Offline string
 		}
-		Pip struct {
+		PythonInstallers struct {
 			Online  string
 			Offline string
-		}
-		Pipenv struct {
-			Online  string
-			Offline string
-		}
-		Poetry struct {
-			Online string
 		}
 		BuildPlan struct {
 			Online string
@@ -57,11 +46,8 @@ type TestSettings struct {
 	}
 
 	Config struct {
-		Miniconda string `json:"miniconda"`
-		CPython   string `json:"cpython"`
-		Pip       string `json:"pip"`
-		Pipenv    string `json:"pipenv"`
-		Poetry    string `json:"poetry"`
-		BuildPlan string `json:"build-plan"`
+		CPython          string `json:"cpython"`
+		PythonInstallers string `json:"python-installers"`
+		BuildPlan        string `json:"build-plan"`
 	}
 }

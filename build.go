@@ -13,6 +13,7 @@ import (
 	pipinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pip"
 	pipenvinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pipenv"
 	poetryinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/poetry"
+	uvinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/uv"
 
 	pythonpackagers "github.com/paketo-buildpacks/python-packagers/pkg/packagers/common"
 )
@@ -104,6 +105,21 @@ func Build(
 					}
 
 					layers = append(layers, poetryResult.Layers...)
+				} else {
+					return packit.BuildResult{}, packit.Fail.WithMessage("missing plan for: %s", entry.Name)
+				}
+			case uvinstall.UvEnvPlanEntry:
+				if parameters, ok := buildParameters[uvinstall.UvEnvPlanEntry]; ok {
+					uvResult, err := uvinstall.Build(
+						parameters.(uvinstall.UvBuildParameters),
+						commonBuildParameters,
+					)(context)
+
+					if err != nil {
+						return packit.BuildResult{}, err
+					}
+
+					layers = append(layers, uvResult.Layers...)
 				} else {
 					return packit.BuildResult{}, packit.Fail.WithMessage("missing plan for: %s", entry.Name)
 				}

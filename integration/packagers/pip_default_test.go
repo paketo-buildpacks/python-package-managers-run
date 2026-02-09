@@ -64,7 +64,7 @@ func pipTestDefault(t *testing.T, context spec.G, it spec.S) {
 				WithPullPolicy("never").
 				WithBuildpacks(
 					settings.Buildpacks.CPython.Online,
-					settings.Buildpacks.Pip.Online,
+					settings.Buildpacks.PythonInstallers.Online,
 					settings.Buildpacks.PythonPackagers.Online,
 					settings.Buildpacks.BuildPlan.Online,
 				).
@@ -115,7 +115,7 @@ func pipTestDefault(t *testing.T, context spec.G, it spec.S) {
 					WithPullPolicy("never").
 					WithBuildpacks(
 						settings.Buildpacks.CPython.Online,
-						settings.Buildpacks.Pip.Online,
+						settings.Buildpacks.PythonInstallers.Online,
 						settings.Buildpacks.PythonPackagers.Online,
 						settings.Buildpacks.BuildPlan.Online,
 					).
@@ -168,7 +168,7 @@ func pipTestDefault(t *testing.T, context spec.G, it spec.S) {
 					WithPullPolicy("never").
 					WithBuildpacks(
 						settings.Buildpacks.CPython.Online,
-						settings.Buildpacks.Pip.Online,
+						settings.Buildpacks.PythonInstallers.Online,
 						settings.Buildpacks.PythonPackagers.Online,
 						settings.Buildpacks.BuildPlan.Online,
 					).

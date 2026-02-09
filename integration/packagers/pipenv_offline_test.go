@@ -69,8 +69,7 @@ func pipenvTestOffline(t *testing.T, context spec.G, it spec.S) {
 				WithPullPolicy("never").
 				WithBuildpacks(
 					settings.Buildpacks.CPython.Offline,
-					settings.Buildpacks.Pip.Offline,
-					settings.Buildpacks.Pipenv.Offline,
+					settings.Buildpacks.PythonInstallers.Offline,
 					settings.Buildpacks.PythonPackagers.Offline,
 					settings.Buildpacks.BuildPlan.Online,
 				).
