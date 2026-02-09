@@ -13,7 +13,6 @@ import (
 	"github.com/paketo-buildpacks/packit/v2"
 	"github.com/paketo-buildpacks/packit/v2/fs"
 
-	common "github.com/paketo-buildpacks/python-packagers/pkg/packagers/common"
 	pip "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pip"
 	poetry "github.com/paketo-buildpacks/python-packagers/pkg/packagers/poetry"
 	uv "github.com/paketo-buildpacks/python-packagers/pkg/packagers/uv"
@@ -95,38 +94,7 @@ func (p *PyProjectHandler) Detect(installer string, context packit.DetectContext
 
 	switch installer {
 	case pip.Pip:
-		result = packit.DetectResult{
-			Plan: packit.BuildPlan{
-				Provides: []packit.BuildPlanProvision{
-					{
-						Name: pip.SitePackages,
-					},
-					{
-						Name: pip.Manager,
-					},
-				},
-				Requires: []packit.BuildPlanRequirement{
-					{
-						Name: pip.CPython,
-						Metadata: common.BuildPlanMetadata{
-							Build: true,
-						},
-					},
-					{
-						Name: pip.Pip,
-						Metadata: common.BuildPlanMetadata{
-							Build: true,
-						},
-					},
-					{
-						Name: pip.Manager,
-						Metadata: common.BuildPlanMetadata{
-							Build: true,
-						},
-					},
-				},
-			},
-		}
+		result, err = pip.Detect()(context)
 
 	case poetry.Poetry:
 		result, err = poetry.Detect()(context)

@@ -234,10 +234,11 @@ func testDetect(t *testing.T, context spec.G, it spec.S) {
 			})
 		})
 
-		context("When only a uv.lock file is present", func() {
+		context("When a uv.lock file is present", func() {
 			it.Before(func() {
 				Expect(os.RemoveAll(filepath.Join(workingDir, "x.py"))).To(Succeed())
 				Expect(os.WriteFile(filepath.Join(workingDir, "uv.lock"), []byte{}, os.ModePerm)).To(Succeed())
+				Expect(os.WriteFile(filepath.Join(workingDir, "pyproject.toml"), []byte{}, os.ModePerm)).To(Succeed())
 			})
 
 			it("passes detection", func() {

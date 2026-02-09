@@ -113,6 +113,9 @@ func testPyProjectHandler(t *testing.T, context spec.G, it spec.S) {
 	context("Create plan", func() {
 		context("when the installer is known", func() {
 			context("pip", func() {
+				it.Before(func() {
+					Expect(os.WriteFile(filepath.Join(workingDir, "requirements.txt"), []byte(""), 0755)).To(Succeed())
+				})
 				it("creates a plan", func() {
 					parser := pythonpackagers.NewPyProjectHandler()
 					result, err := parser.Detect("pip", packit.DetectContext{

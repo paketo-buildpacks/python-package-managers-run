@@ -15,8 +15,6 @@ import (
 	conda "github.com/paketo-buildpacks/python-packagers/pkg/packagers/conda"
 	pipinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pip"
 	pipenvinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pipenv"
-	poetryinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/poetry"
-	uvinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/uv"
 )
 
 // Detect will return a packit.DetectFunc that will be invoked during the
@@ -73,28 +71,6 @@ func Detect(logger scribe.Emitter) packit.DetectFunc {
 		if err == nil {
 			return packit.DetectResult{
 				Plan: pipenvResult.Plan,
-			}, nil
-		} else {
-			logger.Detail("%s", err)
-		}
-
-		logger.Title("Checking for uv")
-		uvResult, err := uvinstall.Detect()(context)
-
-		if err == nil {
-			return packit.DetectResult{
-				Plan: uvResult.Plan,
-			}, nil
-		} else {
-			logger.Detail("%s", err)
-		}
-
-		logger.Title("Checking for poetry")
-		poetryResult, err := poetryinstall.Detect()(context)
-
-		if err == nil {
-			return packit.DetectResult{
-				Plan: poetryResult.Plan,
 			}, nil
 		} else {
 			logger.Detail("%s", err)
