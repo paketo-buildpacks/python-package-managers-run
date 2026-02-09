@@ -12,9 +12,10 @@ import (
 	"testing"
 
 	"github.com/paketo-buildpacks/packit/v2/pexec"
+	"github.com/sclevine/spec"
+
 	pipinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pip"
 	"github.com/paketo-buildpacks/python-packagers/pkg/packagers/pip/fakes"
-	"github.com/sclevine/spec"
 
 	. "github.com/onsi/gomega"
 )

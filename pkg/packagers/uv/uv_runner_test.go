@@ -1,4 +1,5 @@
-// SPDX-FileCopyrightText: Copyright (c) 2013-Present CloudFoundry.org Foundation, Inc. All Rights Reserved.
+// SPDX-FileCopyrightText: © 2026 Idiap Research Institute <contact@idiap.ch>
+// SPDX-FileContributor: Samuel Gaist <samuel.gaist@idiap.ch>
 //
 // SPDX-License-Identifier: Apache-2.0
 
@@ -15,9 +16,10 @@ import (
 
 	"github.com/paketo-buildpacks/packit/v2/pexec"
 	"github.com/paketo-buildpacks/packit/v2/scribe"
+	"github.com/sclevine/spec"
+
 	uv "github.com/paketo-buildpacks/python-packagers/pkg/packagers/uv"
 	"github.com/paketo-buildpacks/python-packagers/pkg/packagers/uv/fakes"
-	"github.com/sclevine/spec"
 
 	. "github.com/onsi/gomega"
 	. "github.com/paketo-buildpacks/occam/matchers"

@@ -10,11 +10,13 @@ import (
 	"testing"
 
 	"github.com/paketo-buildpacks/packit/v2"
-	poetryinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/poetry"
 
 	"github.com/sclevine/spec"
 
 	. "github.com/onsi/gomega"
+
+	common "github.com/paketo-buildpacks/python-packagers/pkg/packagers/common"
+	poetryinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/poetry"
 )
 
 func testDetect(t *testing.T, context spec.G, it spec.S) {
@@ -49,13 +51,13 @@ func testDetect(t *testing.T, context spec.G, it spec.S) {
 				Requires: []packit.BuildPlanRequirement{
 					{
 						Name: poetryinstall.CPython,
-						Metadata: poetryinstall.BuildPlanMetadata{
+						Metadata: common.BuildPlanMetadata{
 							Build: true,
 						},
 					},
 					{
 						Name: poetryinstall.Poetry,
-						Metadata: poetryinstall.BuildPlanMetadata{
+						Metadata: common.BuildPlanMetadata{
 							Build: true,
 						},
 					},

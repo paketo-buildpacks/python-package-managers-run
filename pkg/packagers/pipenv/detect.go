@@ -11,18 +11,9 @@ import (
 
 	"github.com/paketo-buildpacks/packit/v2"
 	"github.com/paketo-buildpacks/packit/v2/fs"
-)
 
-// BuildPlanMetadata is the buildpack-specific data included in build plan
-// requirements.
-type BuildPlanMetadata struct {
-	// Build denotes the dependency is needed at build-time.
-	Build bool `toml:"build"`
-	// Version denotes the version to request.
-	Version string `toml:"version"`
-	// VersionSource denotes the source of version request.
-	VersionSource string `toml:"version-source"`
-}
+	common "github.com/paketo-buildpacks/python-packagers/pkg/packagers/common"
+)
 
 //go:generate faux --interface Parser --output fakes/parser.go
 
@@ -50,7 +41,7 @@ func Detect(pipfileParser, pipfileLockParser Parser) packit.DetectFunc {
 
 		cpythonRequirement := packit.BuildPlanRequirement{
 			Name: CPython,
-			Metadata: BuildPlanMetadata{
+			Metadata: common.BuildPlanMetadata{
 				Build: true,
 			},
 		}
@@ -69,7 +60,7 @@ func Detect(pipfileParser, pipfileLockParser Parser) packit.DetectFunc {
 			}
 
 			if cpythonVersion != "" {
-				cpythonRequirement.Metadata = BuildPlanMetadata{
+				cpythonRequirement.Metadata = common.BuildPlanMetadata{
 					Build:         true,
 					Version:       cpythonVersion,
 					VersionSource: "Pipfile.lock",
@@ -84,7 +75,7 @@ func Detect(pipfileParser, pipfileLockParser Parser) packit.DetectFunc {
 			}
 
 			if cpythonVersion != "" {
-				cpythonRequirement.Metadata = BuildPlanMetadata{
+				cpythonRequirement.Metadata = common.BuildPlanMetadata{
 					Build:         true,
 					Version:       cpythonVersion,
 					VersionSource: "Pipfile",
@@ -106,13 +97,13 @@ func Detect(pipfileParser, pipfileLockParser Parser) packit.DetectFunc {
 					cpythonRequirement,
 					{
 						Name: Pipenv,
-						Metadata: BuildPlanMetadata{
+						Metadata: common.BuildPlanMetadata{
 							Build: true,
 						},
 					},
 					{
 						Name: Manager,
-						Metadata: BuildPlanMetadata{
+						Metadata: common.BuildPlanMetadata{
 							Build: true,
 						},
 					},

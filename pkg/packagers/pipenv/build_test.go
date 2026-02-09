@@ -16,10 +16,11 @@ import (
 	"github.com/paketo-buildpacks/packit/v2/chronos"
 	"github.com/paketo-buildpacks/packit/v2/sbom"
 	"github.com/paketo-buildpacks/packit/v2/scribe"
+	"github.com/sclevine/spec"
+
 	pythonpackagers "github.com/paketo-buildpacks/python-packagers/pkg/packagers/common"
 	pipenvinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pipenv"
 	"github.com/paketo-buildpacks/python-packagers/pkg/packagers/pipenv/fakes"
-	"github.com/sclevine/spec"
 
 	. "github.com/onsi/gomega"
 )

@@ -9,6 +9,8 @@ import (
 
 	"github.com/paketo-buildpacks/packit/v2"
 	"github.com/paketo-buildpacks/packit/v2/fs"
+
+	common "github.com/paketo-buildpacks/python-packagers/pkg/packagers/common"
 )
 
 // Detect returns a packit.DetectFunc that will be invoked during the
@@ -40,8 +42,8 @@ func Detect() packit.DetectFunc {
 				Requires: []packit.BuildPlanRequirement{
 					{
 						Name: CondaPlanEntry,
-						Metadata: map[string]interface{}{
-							"build": true,
+						Metadata: common.BuildPlanMetadata{
+							Build: true,
 						},
 					},
 				},

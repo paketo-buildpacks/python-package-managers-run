@@ -15,10 +15,11 @@ import (
 	"github.com/paketo-buildpacks/packit/v2/chronos"
 	"github.com/paketo-buildpacks/packit/v2/sbom"
 	"github.com/paketo-buildpacks/packit/v2/scribe"
+	"github.com/sclevine/spec"
+
 	pythonpackagers "github.com/paketo-buildpacks/python-packagers/pkg/packagers/common"
 	pipinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pip"
 	"github.com/paketo-buildpacks/python-packagers/pkg/packagers/pip/fakes"
-	"github.com/sclevine/spec"
 
 	. "github.com/onsi/gomega"
 )

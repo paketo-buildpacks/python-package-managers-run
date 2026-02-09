@@ -1,4 +1,5 @@
-// SPDX-FileCopyrightText: Copyright (c) 2013-Present CloudFoundry.org Foundation, Inc. All Rights Reserved.
+// SPDX-FileCopyrightText: © 2026 Idiap Research Institute <contact@idiap.ch>
+// SPDX-FileContributor: Samuel Gaist <samuel.gaist@idiap.ch>
 //
 // SPDX-License-Identifier: Apache-2.0
 
@@ -9,14 +10,15 @@ import (
 
 	"github.com/paketo-buildpacks/packit/v2"
 	"github.com/paketo-buildpacks/packit/v2/fs"
+
+	common "github.com/paketo-buildpacks/python-packagers/pkg/packagers/common"
 )
 
 // Detect returns a packit.DetectFunc that will be invoked during the
 // detect phase of the buildpack lifecycle.
 //
-// Detection passes when there is an environment.yml or package-list.txt file
-// in the app directory, and will contribute a Build Plan that provides
-// conda-environment and requires conda.
+// Detection passes when there is an uv.lock file in the app directory,
+// and will contribute a Build Plan that provides uv-environment and requires uv.
 func Detect() packit.DetectFunc {
 	return func(context packit.DetectContext) (packit.DetectResult, error) {
 
@@ -38,8 +40,8 @@ func Detect() packit.DetectFunc {
 		requires := []packit.BuildPlanRequirement{
 			{
 				Name: UvPlanEntry,
-				Metadata: map[string]interface{}{
-					"build": true,
+				Metadata: common.BuildPlanMetadata{
+					Build: true,
 				},
 			},
 		}
@@ -51,10 +53,10 @@ func Detect() packit.DetectFunc {
 			requires = append(requires,
 				packit.BuildPlanRequirement{
 					Name: "cpython",
-					Metadata: map[string]interface{}{
-						"build":   true,
-						"launch":  true,
-						"version": version,
+					Metadata: common.BuildPlanMetadata{
+						Build:   true,
+						Launch:  true,
+						Version: version,
 					},
 				},
 			)
