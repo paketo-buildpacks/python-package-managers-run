@@ -10,11 +10,13 @@ import (
 	"testing"
 
 	"github.com/paketo-buildpacks/packit/v2"
-	pipenvinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pipenv"
-	"github.com/paketo-buildpacks/python-packagers/pkg/packagers/pipenv/fakes"
 	"github.com/sclevine/spec"
 
 	. "github.com/onsi/gomega"
+
+	common "github.com/paketo-buildpacks/python-packagers/pkg/packagers/common"
+	pipenvinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pipenv"
+	"github.com/paketo-buildpacks/python-packagers/pkg/packagers/pipenv/fakes"
 )
 
 func testDetect(t *testing.T, context spec.G, it spec.S) {
@@ -55,19 +57,19 @@ func testDetect(t *testing.T, context spec.G, it spec.S) {
 				Requires: []packit.BuildPlanRequirement{
 					{
 						Name: pipenvinstall.CPython,
-						Metadata: pipenvinstall.BuildPlanMetadata{
+						Metadata: common.BuildPlanMetadata{
 							Build: true,
 						},
 					},
 					{
 						Name: pipenvinstall.Pipenv,
-						Metadata: pipenvinstall.BuildPlanMetadata{
+						Metadata: common.BuildPlanMetadata{
 							Build: true,
 						},
 					},
 					{
 						Name: pipenvinstall.Manager,
-						Metadata: pipenvinstall.BuildPlanMetadata{
+						Metadata: common.BuildPlanMetadata{
 							Build: true,
 						},
 					},

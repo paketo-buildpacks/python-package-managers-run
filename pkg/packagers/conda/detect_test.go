@@ -10,10 +10,12 @@ import (
 	"testing"
 
 	"github.com/paketo-buildpacks/packit/v2"
-	condaenvupdate "github.com/paketo-buildpacks/python-packagers/pkg/packagers/conda"
 	"github.com/sclevine/spec"
 
 	. "github.com/onsi/gomega"
+
+	common "github.com/paketo-buildpacks/python-packagers/pkg/packagers/common"
+	condaenvupdate "github.com/paketo-buildpacks/python-packagers/pkg/packagers/conda"
 )
 
 func testDetect(t *testing.T, context spec.G, it spec.S) {
@@ -56,8 +58,8 @@ func testDetect(t *testing.T, context spec.G, it spec.S) {
 				Requires: []packit.BuildPlanRequirement{
 					{
 						Name: "conda",
-						Metadata: map[string]interface{}{
-							"build": true,
+						Metadata: common.BuildPlanMetadata{
+							Build: true,
 						},
 					},
 				},
@@ -85,8 +87,8 @@ func testDetect(t *testing.T, context spec.G, it spec.S) {
 				Requires: []packit.BuildPlanRequirement{
 					{
 						Name: "conda",
-						Metadata: map[string]interface{}{
-							"build": true,
+						Metadata: common.BuildPlanMetadata{
+							Build: true,
 						},
 					},
 				},

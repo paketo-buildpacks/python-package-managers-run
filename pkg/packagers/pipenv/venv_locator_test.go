@@ -9,8 +9,9 @@ import (
 	"path/filepath"
 	"testing"
 
-	pipenvinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pipenv"
 	"github.com/sclevine/spec"
+
+	pipenvinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pipenv"
 
 	. "github.com/onsi/gomega"
 )

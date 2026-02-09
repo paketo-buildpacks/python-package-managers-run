@@ -14,6 +14,7 @@ import (
 	"github.com/paketo-buildpacks/packit/v2"
 	"github.com/paketo-buildpacks/packit/v2/scribe"
 	pythonpackagers "github.com/paketo-buildpacks/python-packagers"
+	common "github.com/paketo-buildpacks/python-packagers/pkg/packagers/common"
 	conda "github.com/paketo-buildpacks/python-packagers/pkg/packagers/conda"
 	pip "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pip"
 	pipenv "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pipenv"
@@ -71,8 +72,8 @@ func testDetect(t *testing.T, context spec.G, it spec.S) {
 					Requires: []packit.BuildPlanRequirement{
 						{
 							Name: conda.CondaPlanEntry,
-							Metadata: map[string]interface{}{
-								"build": true,
+							Metadata: common.BuildPlanMetadata{
+								Build: true,
 							},
 						},
 					},
@@ -101,8 +102,8 @@ func testDetect(t *testing.T, context spec.G, it spec.S) {
 					Requires: []packit.BuildPlanRequirement{
 						{
 							Name: conda.CondaPlanEntry,
-							Metadata: map[string]interface{}{
-								"build": true,
+							Metadata: common.BuildPlanMetadata{
+								Build: true,
 							},
 						},
 					},
@@ -133,19 +134,19 @@ func testDetect(t *testing.T, context spec.G, it spec.S) {
 					Requires: []packit.BuildPlanRequirement{
 						{
 							Name: pip.CPython,
-							Metadata: pip.BuildPlanMetadata{
+							Metadata: common.BuildPlanMetadata{
 								Build: true,
 							},
 						},
 						{
 							Name: pip.Pip,
-							Metadata: pip.BuildPlanMetadata{
+							Metadata: common.BuildPlanMetadata{
 								Build: true,
 							},
 						},
 						{
 							Name: pip.Manager,
-							Metadata: pip.BuildPlanMetadata{
+							Metadata: common.BuildPlanMetadata{
 								Build: true,
 							},
 						},
@@ -177,19 +178,19 @@ func testDetect(t *testing.T, context spec.G, it spec.S) {
 					Requires: []packit.BuildPlanRequirement{
 						{
 							Name: pipenv.CPython,
-							Metadata: pipenv.BuildPlanMetadata{
+							Metadata: common.BuildPlanMetadata{
 								Build: true,
 							},
 						},
 						{
 							Name: pipenv.Pipenv,
-							Metadata: pipenv.BuildPlanMetadata{
+							Metadata: common.BuildPlanMetadata{
 								Build: true,
 							},
 						},
 						{
 							Name: pipenv.Manager,
-							Metadata: pipenv.BuildPlanMetadata{
+							Metadata: common.BuildPlanMetadata{
 								Build: true,
 							},
 						},
@@ -218,13 +219,13 @@ func testDetect(t *testing.T, context spec.G, it spec.S) {
 					Requires: []packit.BuildPlanRequirement{
 						{
 							Name: poetry.CPython,
-							Metadata: poetry.BuildPlanMetadata{
+							Metadata: common.BuildPlanMetadata{
 								Build: true,
 							},
 						},
 						{
 							Name: poetry.Poetry,
-							Metadata: poetry.BuildPlanMetadata{
+							Metadata: common.BuildPlanMetadata{
 								Build: true,
 							},
 						},
@@ -233,10 +234,11 @@ func testDetect(t *testing.T, context spec.G, it spec.S) {
 			})
 		})
 
-		context("When only a uv.lock file is present", func() {
+		context("When a uv.lock file is present", func() {
 			it.Before(func() {
 				Expect(os.RemoveAll(filepath.Join(workingDir, "x.py"))).To(Succeed())
 				Expect(os.WriteFile(filepath.Join(workingDir, "uv.lock"), []byte{}, os.ModePerm)).To(Succeed())
+				Expect(os.WriteFile(filepath.Join(workingDir, "pyproject.toml"), []byte{}, os.ModePerm)).To(Succeed())
 			})
 
 			it("passes detection", func() {
@@ -253,8 +255,8 @@ func testDetect(t *testing.T, context spec.G, it spec.S) {
 					Requires: []packit.BuildPlanRequirement{
 						{
 							Name: uv.UvPlanEntry,
-							Metadata: map[string]interface{}{
-								"build": true,
+							Metadata: common.BuildPlanMetadata{
+								Build: true,
 							},
 						},
 					},
@@ -264,8 +266,13 @@ func testDetect(t *testing.T, context spec.G, it spec.S) {
 
 		context("When a uv.lock and pyproject.toml file is present", func() {
 			it.Before(func() {
+				content := []byte(`
+					[build-system]
+					requires = ["uv_build>=0.10.0,<0.11.0"]
+					build-backend = "uv_build"
+				`)
 				Expect(os.RemoveAll(filepath.Join(workingDir, "x.py"))).To(Succeed())
-				Expect(os.WriteFile(filepath.Join(workingDir, "pyproject.toml"), []byte{}, os.ModePerm)).To(Succeed())
+				Expect(os.WriteFile(filepath.Join(workingDir, "pyproject.toml"), content, os.ModePerm)).To(Succeed())
 				Expect(os.WriteFile(filepath.Join(workingDir, "uv.lock"), []byte{}, os.ModePerm)).To(Succeed())
 			})
 
@@ -283,8 +290,8 @@ func testDetect(t *testing.T, context spec.G, it spec.S) {
 					Requires: []packit.BuildPlanRequirement{
 						{
 							Name: uv.UvPlanEntry,
-							Metadata: map[string]interface{}{
-								"build": true,
+							Metadata: common.BuildPlanMetadata{
+								Build: true,
 							},
 						},
 					},
