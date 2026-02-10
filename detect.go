@@ -44,9 +44,7 @@ func Detect(logger scribe.Emitter) packit.DetectFunc {
 		pipResult, err := pipinstall.Detect()(context)
 
 		if err == nil {
-			return packit.DetectResult{
-				Plan: pipResult.Plan,
-			}, nil
+			return pipResult, nil
 		} else {
 			logger.Detail("%s", err)
 		}
@@ -55,9 +53,7 @@ func Detect(logger scribe.Emitter) packit.DetectFunc {
 		condaResult, err := conda.Detect()(context)
 
 		if err == nil {
-			return packit.DetectResult{
-				Plan: condaResult.Plan,
-			}, nil
+			return condaResult, nil
 		} else {
 			logger.Detail("%s", err)
 		}
@@ -69,9 +65,7 @@ func Detect(logger scribe.Emitter) packit.DetectFunc {
 		)(context)
 
 		if err == nil {
-			return packit.DetectResult{
-				Plan: pipenvResult.Plan,
-			}, nil
+			return pipenvResult, nil
 		} else {
 			logger.Detail("%s", err)
 		}
