@@ -94,7 +94,7 @@ func (c UvRunner) Execute(uvLayerPath string, uvCachePath string, workingDir str
 
 	vendorDir := filepath.Join(workingDir, "vendor")
 
-	exists, err := fs.Exists(vendorDir)
+	vendorExists, err := fs.Exists(vendorDir)
 	if err != nil {
 		return err
 	}
@@ -107,7 +107,7 @@ func (c UvRunner) Execute(uvLayerPath string, uvCachePath string, workingDir str
 
 	env := append(os.Environ(), fmt.Sprintf("HOME=%s", uvLayerPath))
 
-	if exists {
+	if vendorExists {
 		args = append(args, "--offline", "--python", "/layers/paketo-buildpacks_cpython/cpython/bin/python")
 		env = append(env, "LD_LIBRARY_PATH=/layers/paketo-buildpacks_cpython/cpython/lib")
 	}
@@ -130,7 +130,7 @@ func (c UvRunner) Execute(uvLayerPath string, uvCachePath string, workingDir str
 
 	combinedFindLinks := []string{userFindLinks, findLinks}
 
-	if exists {
+	if vendorExists {
 		combinedFindLinks = append(combinedFindLinks, vendorDir)
 		args = offlineArgs(venvPath, workingDir)
 	} else {

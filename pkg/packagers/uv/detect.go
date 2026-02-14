@@ -23,18 +23,18 @@ func Detect() packit.DetectFunc {
 	return func(context packit.DetectContext) (packit.DetectResult, error) {
 
 		lockfilePath := filepath.Join(context.WorkingDir, LockfileName)
-		lockFile, err := fs.Exists(lockfilePath)
+		lockfileExists, err := fs.Exists(lockfilePath)
 		if err != nil {
 			return packit.DetectResult{}, packit.Fail.WithMessage("failed trying to stat %s: %w", LockfileName, err)
 		}
 
-		if !lockFile {
-			return packit.DetectResult{}, packit.Fail.WithMessage("no 'uv.lock' found")
+		if !lockfileExists {
+			return packit.DetectResult{}, packit.Fail.WithMessage("no '%s' found", LockfileName)
 		}
 
-		vendor, err := fs.Exists(filepath.Join(context.WorkingDir, "vendor"))
+		vendorExists, err := fs.Exists(filepath.Join(context.WorkingDir, "vendor"))
 		if err != nil {
-			return packit.DetectResult{}, packit.Fail.WithMessage("failed trying to stat %s: %w", LockfileName, err)
+			return packit.DetectResult{}, packit.Fail.WithMessage("failed trying to stat vendor dir: %w", err)
 		}
 
 		requires := []packit.BuildPlanRequirement{
@@ -46,7 +46,7 @@ func Detect() packit.DetectFunc {
 			},
 		}
 
-		if vendor {
+		if vendorExists {
 			parser := NewLockfileParser()
 			version, _ := parser.ParsePythonVersion(lockfilePath)
 
