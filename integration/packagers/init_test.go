@@ -123,5 +123,9 @@ func TestIntegration(t *testing.T) {
 	suite("uv Offline", uvTestOffline)
 	suite("uv Reused", uvTestReused)
 
+	// pixi
+	suite("pixi Default", pixiTestDefault)
+	suite("pixi Reused", pixiTestLayerReuse)
+
 	suite.Run(t)
 }

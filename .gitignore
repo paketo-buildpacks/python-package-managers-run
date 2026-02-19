@@ -29,5 +29,6 @@ go.work.sum
 /.bin
 /bin
 /build
+/linux/
 .idea/
 .DS_Store

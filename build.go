@@ -12,6 +12,7 @@ import (
 	conda "github.com/paketo-buildpacks/python-packagers/pkg/packagers/conda"
 	pipinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pip"
 	pipenvinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pipenv"
+	pixiinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pixi"
 	poetryinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/poetry"
 	uvinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/uv"
 
@@ -120,6 +121,21 @@ func Build(
 					}
 
 					layers = append(layers, uvResult.Layers...)
+				} else {
+					return packit.BuildResult{}, packit.Fail.WithMessage("missing plan for: %s", entry.Name)
+				}
+			case pixiinstall.PixiEnvPlanEntry:
+				if parameters, ok := buildParameters[pixiinstall.PixiEnvPlanEntry]; ok {
+					pixiResult, err := pixiinstall.Build(
+						parameters.(pixiinstall.PixiBuildParameters),
+						commonBuildParameters,
+					)(context)
+
+					if err != nil {
+						return packit.BuildResult{}, err
+					}
+
+					layers = append(layers, pixiResult.Layers...)
 				} else {
 					return packit.BuildResult{}, packit.Fail.WithMessage("missing plan for: %s", entry.Name)
 				}

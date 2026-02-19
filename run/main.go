@@ -19,6 +19,7 @@ import (
 	conda "github.com/paketo-buildpacks/python-packagers/pkg/packagers/conda"
 	pipinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pip"
 	pipenvinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pipenv"
+	pixiinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pixi"
 	poetryinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/poetry"
 	uvinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/uv"
 )
@@ -52,6 +53,9 @@ func main() {
 		},
 		uvinstall.UvEnvPlanEntry: uvinstall.UvBuildParameters{
 			Runner: uvinstall.NewUvRunner(pexec.NewExecutable("uv"), fs.NewChecksumCalculator(), logger),
+		},
+		pixiinstall.PixiEnvPlanEntry: pixiinstall.PixiBuildParameters{
+			Runner: pixiinstall.NewPixiRunner(pexec.NewExecutable("pixi"), fs.NewChecksumCalculator(), logger),
 		},
 	}
 
