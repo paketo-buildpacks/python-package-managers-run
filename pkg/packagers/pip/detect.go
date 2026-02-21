@@ -12,7 +12,7 @@ import (
 	"github.com/paketo-buildpacks/packit/v2"
 	"github.com/paketo-buildpacks/packit/v2/fs"
 
-	common "github.com/paketo-buildpacks/python-packagers/pkg/packagers/common"
+	"github.com/paketo-buildpacks/python-packagers/pkg/build"
 )
 
 // Detect will return a packit.DetectFunc that will be invoked during the
@@ -58,19 +58,19 @@ func Detect() packit.DetectFunc {
 				Requires: []packit.BuildPlanRequirement{
 					{
 						Name: CPython,
-						Metadata: common.BuildPlanMetadata{
+						Metadata: build.BuildPlanMetadata{
 							Build: true,
 						},
 					},
 					{
 						Name: Pip,
-						Metadata: common.BuildPlanMetadata{
+						Metadata: build.BuildPlanMetadata{
 							Build: true,
 						},
 					},
 					{
 						Name: Manager,
-						Metadata: common.BuildPlanMetadata{
+						Metadata: build.BuildPlanMetadata{
 							Build: true,
 						},
 					},

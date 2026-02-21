@@ -14,13 +14,12 @@ import (
 	"github.com/paketo-buildpacks/packit/v2/fs"
 	"github.com/paketo-buildpacks/packit/v2/sbom"
 
-	pythonpackagers "github.com/paketo-buildpacks/python-packagers/pkg/packagers/common"
+	"github.com/paketo-buildpacks/python-packagers/pkg/build"
 )
 
 //go:generate faux --interface InstallProcess --output fakes/install_process.go
 //go:generate faux --interface SitePackagesProcess --output fakes/site_packages_process.go
 //go:generate faux --interface VenvDirLocator --output fakes/venv_dir_locator.go
-//go:generate faux --interface SBOMGenerator --output fakes/sbom_generator.go
 
 // SitePackagesProcess defines the interface for determining the site-packages path.
 type SitePackagesProcess interface {
@@ -52,7 +51,7 @@ type PipEnvBuildParameters struct {
 // cache.
 func Build(
 	buildParameters PipEnvBuildParameters,
-	parameters pythonpackagers.CommonBuildParameters,
+	parameters build.CommonBuildParameters,
 ) packit.BuildFunc {
 	return func(context packit.BuildContext) (packit.BuildResult, error) {
 		installProcess := buildParameters.InstallProcess

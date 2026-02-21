@@ -14,7 +14,7 @@ import (
 
 	. "github.com/onsi/gomega"
 
-	common "github.com/paketo-buildpacks/python-packagers/pkg/packagers/common"
+	"github.com/paketo-buildpacks/python-packagers/pkg/build"
 	pipinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pip"
 )
 
@@ -49,19 +49,19 @@ func testDetect(t *testing.T, context spec.G, it spec.S) {
 				Requires: []packit.BuildPlanRequirement{
 					{
 						Name: pipinstall.CPython,
-						Metadata: common.BuildPlanMetadata{
+						Metadata: build.BuildPlanMetadata{
 							Build: true,
 						},
 					},
 					{
 						Name: pipinstall.Pip,
-						Metadata: common.BuildPlanMetadata{
+						Metadata: build.BuildPlanMetadata{
 							Build: true,
 						},
 					},
 					{
 						Name: pipinstall.Manager,
-						Metadata: common.BuildPlanMetadata{
+						Metadata: build.BuildPlanMetadata{
 							Build: true,
 						},
 					},
@@ -94,19 +94,19 @@ func testDetect(t *testing.T, context spec.G, it spec.S) {
 					Requires: []packit.BuildPlanRequirement{
 						{
 							Name: pipinstall.CPython,
-							Metadata: common.BuildPlanMetadata{
+							Metadata: build.BuildPlanMetadata{
 								Build: true,
 							},
 						},
 						{
 							Name: pipinstall.Pip,
-							Metadata: common.BuildPlanMetadata{
+							Metadata: build.BuildPlanMetadata{
 								Build: true,
 							},
 						},
 						{
 							Name: pipinstall.Manager,
-							Metadata: common.BuildPlanMetadata{
+							Metadata: build.BuildPlanMetadata{
 								Build: true,
 							},
 						},
@@ -152,19 +152,19 @@ func testDetect(t *testing.T, context spec.G, it spec.S) {
 						Requires: []packit.BuildPlanRequirement{
 							{
 								Name: pipinstall.CPython,
-								Metadata: common.BuildPlanMetadata{
+								Metadata: build.BuildPlanMetadata{
 									Build: true,
 								},
 							},
 							{
 								Name: pipinstall.Pip,
-								Metadata: common.BuildPlanMetadata{
+								Metadata: build.BuildPlanMetadata{
 									Build: true,
 								},
 							},
 							{
 								Name: pipinstall.Manager,
-								Metadata: common.BuildPlanMetadata{
+								Metadata: build.BuildPlanMetadata{
 									Build: true,
 								},
 							},

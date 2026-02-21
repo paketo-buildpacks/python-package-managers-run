@@ -17,7 +17,7 @@ import (
 	"github.com/paketo-buildpacks/packit/v2/scribe"
 
 	pythonpackagers "github.com/paketo-buildpacks/python-packagers"
-	pkgcommon "github.com/paketo-buildpacks/python-packagers/pkg/packagers/common"
+	"github.com/paketo-buildpacks/python-packagers/pkg/build"
 	conda "github.com/paketo-buildpacks/python-packagers/pkg/packagers/conda"
 	condafakes "github.com/paketo-buildpacks/python-packagers/pkg/packagers/conda/fakes"
 	pipinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pip"
@@ -28,6 +28,7 @@ import (
 	poetryfakes "github.com/paketo-buildpacks/python-packagers/pkg/packagers/poetry/fakes"
 	uvinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/uv"
 	uvfakes "github.com/paketo-buildpacks/python-packagers/pkg/packagers/uv/fakes"
+	sbomfakes "github.com/paketo-buildpacks/python-packagers/pkg/sbom/fakes"
 
 	"github.com/sclevine/spec"
 
@@ -44,11 +45,11 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 
 		buffer       *bytes.Buffer
 		logger       scribe.Emitter
-		build        packit.BuildFunc
+		buildFunc    packit.BuildFunc
 		buildContext packit.BuildContext
 
 		// common
-		sbomGenerator *pipfakes.SBOMGenerator
+		sbomGenerator *sbomfakes.SBOMGenerator
 
 		// conda
 		runner *condafakes.Runner
@@ -70,7 +71,7 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 		// uv
 		uvRunner *uvfakes.Runner
 
-		buildParameters pkgcommon.CommonBuildParameters
+		buildParameters build.CommonBuildParameters
 
 		plans []packit.BuildpackPlan
 	)
@@ -83,7 +84,7 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 		buffer = bytes.NewBuffer(nil)
 		logger = scribe.NewEmitter(buffer)
 
-		sbomGenerator = &pipfakes.SBOMGenerator{}
+		sbomGenerator = &sbomfakes.SBOMGenerator{}
 		sbomGenerator.GenerateCall.Returns.SBOM = sbom.SBOM{}
 
 		// conda
@@ -113,8 +114,8 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 		// uv
 		uvRunner = &uvfakes.Runner{}
 
-		buildParameters = pkgcommon.CommonBuildParameters{
-			SbomGenerator: pkgcommon.Generator{},
+		buildParameters = build.CommonBuildParameters{
+			SbomGenerator: sbomGenerator,
 			Clock:         chronos.DefaultClock,
 			Logger:        logger,
 		}
@@ -142,7 +143,7 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 			},
 		}
 
-		build = pythonpackagers.Build(logger, buildParameters, packagerParameters)
+		buildFunc = pythonpackagers.Build(logger, buildParameters, packagerParameters)
 
 		buildContext = packit.BuildContext{
 			BuildpackInfo: packit.BuildpackInfo{
@@ -221,7 +222,7 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 	it("runs the build process and returns expected layers", func() {
 		for _, plan := range plans {
 			buildContext.Plan = plan
-			result, err := build(buildContext)
+			result, err := buildFunc(buildContext)
 			Expect(err).NotTo(HaveOccurred())
 
 			layers := result.Layers
@@ -232,11 +233,11 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 	it("fails if packager parameters is missing", func() {
 		packagerParameters := map[string]pythonpackagers.PackagerParameters{}
 
-		build = pythonpackagers.Build(logger, buildParameters, packagerParameters)
+		buildFunc = pythonpackagers.Build(logger, buildParameters, packagerParameters)
 
 		for _, plan := range plans {
 			buildContext.Plan = plan
-			_, err := build(buildContext)
+			_, err := buildFunc(buildContext)
 			Expect(err).To(HaveOccurred())
 		}
 	})

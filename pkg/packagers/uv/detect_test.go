@@ -15,7 +15,7 @@ import (
 
 	. "github.com/onsi/gomega"
 
-	common "github.com/paketo-buildpacks/python-packagers/pkg/packagers/common"
+	"github.com/paketo-buildpacks/python-packagers/pkg/build"
 	uvinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/uv"
 )
 
@@ -59,7 +59,7 @@ func testDetect(t *testing.T, context spec.G, it spec.S) {
 				Requires: []packit.BuildPlanRequirement{
 					{
 						Name: uvinstall.UvPlanEntry,
-						Metadata: common.BuildPlanMetadata{
+						Metadata: build.BuildPlanMetadata{
 							Build: true,
 						},
 					},

@@ -12,7 +12,7 @@ import (
 	"github.com/paketo-buildpacks/packit/v2"
 	"github.com/paketo-buildpacks/packit/v2/fs"
 
-	common "github.com/paketo-buildpacks/python-packagers/pkg/packagers/common"
+	"github.com/paketo-buildpacks/python-packagers/pkg/build"
 )
 
 //go:generate faux --interface Parser --output fakes/parser.go
@@ -41,7 +41,7 @@ func Detect(pipfileParser, pipfileLockParser Parser) packit.DetectFunc {
 
 		cpythonRequirement := packit.BuildPlanRequirement{
 			Name: CPython,
-			Metadata: common.BuildPlanMetadata{
+			Metadata: build.BuildPlanMetadata{
 				Build: true,
 			},
 		}
@@ -60,7 +60,7 @@ func Detect(pipfileParser, pipfileLockParser Parser) packit.DetectFunc {
 			}
 
 			if cpythonVersion != "" {
-				cpythonRequirement.Metadata = common.BuildPlanMetadata{
+				cpythonRequirement.Metadata = build.BuildPlanMetadata{
 					Build:         true,
 					Version:       cpythonVersion,
 					VersionSource: "Pipfile.lock",
@@ -75,7 +75,7 @@ func Detect(pipfileParser, pipfileLockParser Parser) packit.DetectFunc {
 			}
 
 			if cpythonVersion != "" {
-				cpythonRequirement.Metadata = common.BuildPlanMetadata{
+				cpythonRequirement.Metadata = build.BuildPlanMetadata{
 					Build:         true,
 					Version:       cpythonVersion,
 					VersionSource: "Pipfile",
@@ -97,13 +97,13 @@ func Detect(pipfileParser, pipfileLockParser Parser) packit.DetectFunc {
 					cpythonRequirement,
 					{
 						Name: Pipenv,
-						Metadata: common.BuildPlanMetadata{
+						Metadata: build.BuildPlanMetadata{
 							Build: true,
 						},
 					},
 					{
 						Name: Manager,
-						Metadata: common.BuildPlanMetadata{
+						Metadata: build.BuildPlanMetadata{
 							Build: true,
 						},
 					},
