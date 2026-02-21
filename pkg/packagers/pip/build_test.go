@@ -17,9 +17,10 @@ import (
 	"github.com/paketo-buildpacks/packit/v2/scribe"
 	"github.com/sclevine/spec"
 
-	pythonpackagers "github.com/paketo-buildpacks/python-packagers/pkg/packagers/common"
+	"github.com/paketo-buildpacks/python-packagers/pkg/build"
 	pipinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pip"
 	"github.com/paketo-buildpacks/python-packagers/pkg/packagers/pip/fakes"
+	sbomfakes "github.com/paketo-buildpacks/python-packagers/pkg/sbom/fakes"
 
 	. "github.com/onsi/gomega"
 )
@@ -34,11 +35,11 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 
 		installProcess      *fakes.InstallProcess
 		sitePackagesProcess *fakes.SitePackagesProcess
-		sbomGenerator       *fakes.SBOMGenerator
+		sbomGenerator       *sbomfakes.SBOMGenerator
 
 		buffer *bytes.Buffer
 
-		build        packit.BuildFunc
+		buildFunc    packit.BuildFunc
 		buildContext packit.BuildContext
 	)
 
@@ -51,17 +52,17 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 		sitePackagesProcess = &fakes.SitePackagesProcess{}
 		sitePackagesProcess.ExecuteCall.Returns.SitePackagesPath = "some-site-packages-path"
 
-		sbomGenerator = &fakes.SBOMGenerator{}
+		sbomGenerator = &sbomfakes.SBOMGenerator{}
 		sbomGenerator.GenerateCall.Returns.SBOM = sbom.SBOM{}
 
 		buffer = bytes.NewBuffer(nil)
 
-		build = pipinstall.Build(
+		buildFunc = pipinstall.Build(
 			pipinstall.PipBuildParameters{
 				installProcess,
 				sitePackagesProcess,
 			},
-			pythonpackagers.CommonBuildParameters{
+			build.CommonBuildParameters{
 				SbomGenerator: sbomGenerator,
 				Clock:         chronos.DefaultClock,
 				Logger:        scribe.NewEmitter(buffer),
@@ -91,7 +92,7 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 	})
 
 	it("runs the build process and returns expected layers", func() {
-		result, err := build(buildContext)
+		result, err := buildFunc(buildContext)
 		Expect(err).NotTo(HaveOccurred())
 
 		layers := result.Layers
@@ -139,7 +140,7 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 		})
 
 		it("layer's build, launch, cache flags must be set", func() {
-			result, err := build(buildContext)
+			result, err := buildFunc(buildContext)
 			Expect(err).NotTo(HaveOccurred())
 
 			Expect(result.Layers).To(HaveLen(1))
@@ -160,7 +161,7 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 		})
 
 		it("layer's build, cache flags must be set", func() {
-			result, err := build(buildContext)
+			result, err := buildFunc(buildContext)
 			Expect(err).NotTo(HaveOccurred())
 
 			Expect(result.Layers).To(HaveLen(1))
@@ -185,7 +186,7 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 		})
 
 		it("result should include a cache layer", func() {
-			result, err := build(buildContext)
+			result, err := buildFunc(buildContext)
 			Expect(err).NotTo(HaveOccurred())
 
 			Expect(result.Layers).To(HaveLen(2))
@@ -219,7 +220,7 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 			})
 
 			it("returns an error", func() {
-				_, err := build(buildContext)
+				_, err := buildFunc(buildContext)
 				Expect(err).To(MatchError(ContainSubstring("permission denied")))
 			})
 		})
@@ -230,7 +231,7 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 			})
 
 			it("returns an error", func() {
-				_, err := build(buildContext)
+				_, err := buildFunc(buildContext)
 				Expect(err).To(MatchError("could not run install process"))
 			})
 		})
@@ -241,7 +242,7 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 			})
 
 			it("returns an error", func() {
-				_, err := build(buildContext)
+				_, err := buildFunc(buildContext)
 				Expect(err).To(MatchError("could not find site-packages path"))
 			})
 		})
@@ -252,7 +253,7 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 			})
 
 			it("returns an error", func() {
-				_, err := build(buildContext)
+				_, err := buildFunc(buildContext)
 				Expect(err).To(MatchError(`unsupported SBOM format: 'random-format'`))
 			})
 		})
@@ -263,7 +264,7 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 			})
 
 			it("returns an error", func() {
-				_, err := build(buildContext)
+				_, err := buildFunc(buildContext)
 				Expect(err).To(MatchError(ContainSubstring("failed to generate SBOM")))
 			})
 		})

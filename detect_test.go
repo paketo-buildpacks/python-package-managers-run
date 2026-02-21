@@ -13,8 +13,9 @@ import (
 
 	"github.com/paketo-buildpacks/packit/v2"
 	"github.com/paketo-buildpacks/packit/v2/scribe"
+
 	pythonpackagers "github.com/paketo-buildpacks/python-packagers"
-	common "github.com/paketo-buildpacks/python-packagers/pkg/packagers/common"
+	"github.com/paketo-buildpacks/python-packagers/pkg/build"
 	conda "github.com/paketo-buildpacks/python-packagers/pkg/packagers/conda"
 	pip "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pip"
 	pipenv "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pipenv"
@@ -72,7 +73,7 @@ func testDetect(t *testing.T, context spec.G, it spec.S) {
 					Requires: []packit.BuildPlanRequirement{
 						{
 							Name: conda.CondaPlanEntry,
-							Metadata: common.BuildPlanMetadata{
+							Metadata: build.BuildPlanMetadata{
 								Build: true,
 							},
 						},
@@ -102,7 +103,7 @@ func testDetect(t *testing.T, context spec.G, it spec.S) {
 					Requires: []packit.BuildPlanRequirement{
 						{
 							Name: conda.CondaPlanEntry,
-							Metadata: common.BuildPlanMetadata{
+							Metadata: build.BuildPlanMetadata{
 								Build: true,
 							},
 						},
@@ -134,19 +135,19 @@ func testDetect(t *testing.T, context spec.G, it spec.S) {
 					Requires: []packit.BuildPlanRequirement{
 						{
 							Name: pip.CPython,
-							Metadata: common.BuildPlanMetadata{
+							Metadata: build.BuildPlanMetadata{
 								Build: true,
 							},
 						},
 						{
 							Name: pip.Pip,
-							Metadata: common.BuildPlanMetadata{
+							Metadata: build.BuildPlanMetadata{
 								Build: true,
 							},
 						},
 						{
 							Name: pip.Manager,
-							Metadata: common.BuildPlanMetadata{
+							Metadata: build.BuildPlanMetadata{
 								Build: true,
 							},
 						},
@@ -178,19 +179,19 @@ func testDetect(t *testing.T, context spec.G, it spec.S) {
 					Requires: []packit.BuildPlanRequirement{
 						{
 							Name: pipenv.CPython,
-							Metadata: common.BuildPlanMetadata{
+							Metadata: build.BuildPlanMetadata{
 								Build: true,
 							},
 						},
 						{
 							Name: pipenv.Pipenv,
-							Metadata: common.BuildPlanMetadata{
+							Metadata: build.BuildPlanMetadata{
 								Build: true,
 							},
 						},
 						{
 							Name: pipenv.Manager,
-							Metadata: common.BuildPlanMetadata{
+							Metadata: build.BuildPlanMetadata{
 								Build: true,
 							},
 						},
@@ -219,13 +220,13 @@ func testDetect(t *testing.T, context spec.G, it spec.S) {
 					Requires: []packit.BuildPlanRequirement{
 						{
 							Name: poetry.CPython,
-							Metadata: common.BuildPlanMetadata{
+							Metadata: build.BuildPlanMetadata{
 								Build: true,
 							},
 						},
 						{
 							Name: poetry.Poetry,
-							Metadata: common.BuildPlanMetadata{
+							Metadata: build.BuildPlanMetadata{
 								Build: true,
 							},
 						},
@@ -255,7 +256,7 @@ func testDetect(t *testing.T, context spec.G, it spec.S) {
 					Requires: []packit.BuildPlanRequirement{
 						{
 							Name: uv.UvPlanEntry,
-							Metadata: common.BuildPlanMetadata{
+							Metadata: build.BuildPlanMetadata{
 								Build: true,
 							},
 						},
@@ -290,7 +291,7 @@ func testDetect(t *testing.T, context spec.G, it spec.S) {
 					Requires: []packit.BuildPlanRequirement{
 						{
 							Name: uv.UvPlanEntry,
-							Metadata: common.BuildPlanMetadata{
+							Metadata: build.BuildPlanMetadata{
 								Build: true,
 							},
 						},

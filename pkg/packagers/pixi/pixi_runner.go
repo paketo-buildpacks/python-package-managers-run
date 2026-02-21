@@ -15,14 +15,9 @@ import (
 	"github.com/paketo-buildpacks/packit/v2/fs"
 	"github.com/paketo-buildpacks/packit/v2/pexec"
 	"github.com/paketo-buildpacks/packit/v2/scribe"
+
+	"github.com/paketo-buildpacks/python-packagers/pkg/executable"
 )
-
-//go:generate faux --interface Executable --output fakes/executable.go
-
-// Executable defines the interface for invoking an executable.
-type Executable interface {
-	Execute(pexec.Execution) error
-}
 
 // Summer defines the interface for computing a SHA256 for a set of files
 // and/or directories.
@@ -35,7 +30,7 @@ type Summer interface {
 // PixiRunner implements the Runner interface.
 type PixiRunner struct {
 	logger     scribe.Emitter
-	executable Executable
+	executable executable.Executable
 	summer     Summer
 }
 
@@ -46,7 +41,7 @@ type Package struct {
 }
 
 // NewPixiRunner creates an instance of PixiRunner given an Executable, a Summer, and a Logger.
-func NewPixiRunner(executable Executable, summer Summer, logger scribe.Emitter) PixiRunner {
+func NewPixiRunner(executable executable.Executable, summer Summer, logger scribe.Emitter) PixiRunner {
 	return PixiRunner{
 		executable: executable,
 		summer:     summer,

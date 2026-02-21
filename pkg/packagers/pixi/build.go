@@ -15,20 +15,15 @@ import (
 	"github.com/paketo-buildpacks/packit/v2/fs"
 	"github.com/paketo-buildpacks/packit/v2/sbom"
 
-	pythonpackagers "github.com/paketo-buildpacks/python-packagers/pkg/packagers/common"
+	"github.com/paketo-buildpacks/python-packagers/pkg/build"
 )
 
 //go:generate faux --interface Runner --output fakes/runner.go
-//go:generate faux --interface SBOMGenerator --output fakes/sbom_generator.go
 
 // Runner defines the interface for setting up the pixi environment.
 type Runner interface {
 	Execute(pixiEnvPath string, pixiCachePath string, workingDir string) error
 	ShouldRun(workingDir string, metadata map[string]interface{}) (bool, string, error)
-}
-
-type SBOMGenerator interface {
-	Generate(dir string) (sbom.SBOM, error)
 }
 
 // PixiBuildParameters encapsulates the pixi specific parameters for the
@@ -45,7 +40,7 @@ type PixiBuildParameters struct {
 // determined by the runner.
 func Build(
 	buildParameters PixiBuildParameters,
-	parameters pythonpackagers.CommonBuildParameters,
+	parameters build.CommonBuildParameters,
 ) packit.BuildFunc {
 	return func(context packit.BuildContext) (packit.BuildResult, error) {
 		runner := buildParameters.Runner

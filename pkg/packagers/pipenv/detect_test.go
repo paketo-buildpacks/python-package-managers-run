@@ -14,7 +14,7 @@ import (
 
 	. "github.com/onsi/gomega"
 
-	common "github.com/paketo-buildpacks/python-packagers/pkg/packagers/common"
+	"github.com/paketo-buildpacks/python-packagers/pkg/build"
 	pipenvinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pipenv"
 	"github.com/paketo-buildpacks/python-packagers/pkg/packagers/pipenv/fakes"
 )
@@ -57,19 +57,19 @@ func testDetect(t *testing.T, context spec.G, it spec.S) {
 				Requires: []packit.BuildPlanRequirement{
 					{
 						Name: pipenvinstall.CPython,
-						Metadata: common.BuildPlanMetadata{
+						Metadata: build.BuildPlanMetadata{
 							Build: true,
 						},
 					},
 					{
 						Name: pipenvinstall.Pipenv,
-						Metadata: common.BuildPlanMetadata{
+						Metadata: build.BuildPlanMetadata{
 							Build: true,
 						},
 					},
 					{
 						Name: pipenvinstall.Manager,
-						Metadata: common.BuildPlanMetadata{
+						Metadata: build.BuildPlanMetadata{
 							Build: true,
 						},
 					},

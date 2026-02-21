@@ -15,11 +15,10 @@ import (
 	"github.com/paketo-buildpacks/packit/v2/fs"
 	"github.com/paketo-buildpacks/packit/v2/sbom"
 
-	pythonpackagers "github.com/paketo-buildpacks/python-packagers/pkg/packagers/common"
+	"github.com/paketo-buildpacks/python-packagers/pkg/build"
 )
 
 //go:generate faux --interface Runner --output fakes/runner.go
-//go:generate faux --interface SBOMGenerator --output fakes/sbom_generator.go
 
 // Runner defines the interface for setting up the uv environment.
 type Runner interface {
@@ -41,7 +40,7 @@ type UvBuildParameters struct {
 // determined by the runner.
 func Build(
 	buildParameters UvBuildParameters,
-	parameters pythonpackagers.CommonBuildParameters,
+	parameters build.CommonBuildParameters,
 ) packit.BuildFunc {
 	return func(context packit.BuildContext) (packit.BuildResult, error) {
 		runner := buildParameters.Runner

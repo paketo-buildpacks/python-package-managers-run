@@ -14,8 +14,8 @@ import (
 	"github.com/paketo-buildpacks/packit/v2/pexec"
 	"github.com/sclevine/spec"
 
+	"github.com/paketo-buildpacks/python-packagers/pkg/executable/fakes"
 	pipinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pip"
-	"github.com/paketo-buildpacks/python-packagers/pkg/packagers/pip/fakes"
 
 	. "github.com/onsi/gomega"
 )

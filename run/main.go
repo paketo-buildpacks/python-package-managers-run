@@ -14,21 +14,23 @@ import (
 	"github.com/paketo-buildpacks/packit/v2/fs"
 	"github.com/paketo-buildpacks/packit/v2/pexec"
 	"github.com/paketo-buildpacks/packit/v2/scribe"
+
 	pythonpackagers "github.com/paketo-buildpacks/python-packagers"
-	pkgcommon "github.com/paketo-buildpacks/python-packagers/pkg/packagers/common"
+	"github.com/paketo-buildpacks/python-packagers/pkg/build"
 	conda "github.com/paketo-buildpacks/python-packagers/pkg/packagers/conda"
 	pipinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pip"
 	pipenvinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pipenv"
 	pixiinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pixi"
 	poetryinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/poetry"
 	uvinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/uv"
+	"github.com/paketo-buildpacks/python-packagers/pkg/sbom"
 )
 
 func main() {
 	logger := scribe.NewEmitter(os.Stdout).WithLevel(os.Getenv("BP_LOG_LEVEL"))
 
-	buildParameters := pkgcommon.CommonBuildParameters{
-		SbomGenerator: pkgcommon.Generator{},
+	buildParameters := build.CommonBuildParameters{
+		SbomGenerator: sbom.Generator{},
 		Clock:         chronos.DefaultClock,
 		Logger:        logger,
 	}

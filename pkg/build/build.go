@@ -3,23 +3,14 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-package pythonpackagers
+package build
 
 import (
 	"github.com/paketo-buildpacks/packit/v2/chronos"
-	"github.com/paketo-buildpacks/packit/v2/sbom"
 	"github.com/paketo-buildpacks/packit/v2/scribe"
+
+	"github.com/paketo-buildpacks/python-packagers/pkg/sbom"
 )
-
-type SBOMGenerator interface {
-	Generate(dir string) (sbom.SBOM, error)
-}
-
-type Generator struct{}
-
-func (f Generator) Generate(dir string) (sbom.SBOM, error) {
-	return sbom.Generate(dir)
-}
 
 // BuildPlanMetadata is the buildpack-specific data included in build plan
 // requirements.
@@ -37,7 +28,7 @@ type BuildPlanMetadata struct {
 // CommonBuildParameters are the parameters shared
 // by all packager build function implementation
 type CommonBuildParameters struct {
-	SbomGenerator SBOMGenerator
+	SbomGenerator sbom.SBOMGenerator
 	Clock         chronos.Clock
 	Logger        scribe.Emitter
 }

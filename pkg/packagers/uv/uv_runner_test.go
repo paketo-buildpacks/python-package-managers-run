@@ -18,8 +18,9 @@ import (
 	"github.com/paketo-buildpacks/packit/v2/scribe"
 	"github.com/sclevine/spec"
 
+	executablefakes "github.com/paketo-buildpacks/python-packagers/pkg/executable/fakes"
 	uv "github.com/paketo-buildpacks/python-packagers/pkg/packagers/uv"
-	"github.com/paketo-buildpacks/python-packagers/pkg/packagers/uv/fakes"
+	summerfakes "github.com/paketo-buildpacks/python-packagers/pkg/summer/fakes"
 
 	. "github.com/onsi/gomega"
 	. "github.com/paketo-buildpacks/occam/matchers"
@@ -33,9 +34,9 @@ func testUvRunner(t *testing.T, context spec.G, it spec.S) {
 		uvLayerPath string
 		uvCachePath string
 
-		executable *fakes.Executable
+		executable *executablefakes.Executable
 		executions []pexec.Execution
-		summer     *fakes.Summer
+		summer     *summerfakes.Summer
 		runner     uv.UvRunner
 		buffer     *bytes.Buffer
 		logger     scribe.Emitter
@@ -48,7 +49,7 @@ func testUvRunner(t *testing.T, context spec.G, it spec.S) {
 		uvLayerPath = filepath.Join(layersDir, "a-uv-layer")
 		uvCachePath = filepath.Join(layersDir, "a-uv-cache-path")
 
-		executable = &fakes.Executable{}
+		executable = &executablefakes.Executable{}
 		executions = []pexec.Execution{}
 		executable.ExecuteCall.Stub = func(ex pexec.Execution) error {
 			executions = append(executions, ex)
@@ -63,7 +64,7 @@ func testUvRunner(t *testing.T, context spec.G, it spec.S) {
 			return nil
 		}
 
-		summer = &fakes.Summer{}
+		summer = &summerfakes.Summer{}
 		buffer = bytes.NewBuffer(nil)
 		logger = scribe.NewEmitter(buffer)
 		runner = uv.NewUvRunner(executable, summer, logger)

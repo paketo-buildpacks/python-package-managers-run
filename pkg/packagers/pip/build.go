@@ -13,13 +13,12 @@ import (
 	"github.com/paketo-buildpacks/packit/v2/fs"
 	"github.com/paketo-buildpacks/packit/v2/sbom"
 
-	pythonpackagers "github.com/paketo-buildpacks/python-packagers/pkg/packagers/common"
+	"github.com/paketo-buildpacks/python-packagers/pkg/build"
 )
 
 //go:generate faux --interface EntryResolver --output fakes/entry_resolver.go
 //go:generate faux --interface InstallProcess --output fakes/install_process.go
 //go:generate faux --interface SitePackagesProcess --output fakes/site_packages_process.go
-//go:generate faux --interface SBOMGenerator --output fakes/sbom_generator.go
 
 // EntryResolver defines the interface for picking the most relevant entry from
 // the Buildpack Plan entries.
@@ -52,7 +51,7 @@ type PipBuildParameters struct {
 // cache.
 func Build(
 	buildParameters PipBuildParameters,
-	parameters pythonpackagers.CommonBuildParameters,
+	parameters build.CommonBuildParameters,
 ) packit.BuildFunc {
 	return func(context packit.BuildContext) (packit.BuildResult, error) {
 		installProcess := buildParameters.InstallProcess

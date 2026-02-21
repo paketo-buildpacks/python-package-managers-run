@@ -15,8 +15,8 @@ import (
 	"github.com/paketo-buildpacks/packit/v2/scribe"
 	"github.com/sclevine/spec"
 
+	"github.com/paketo-buildpacks/python-packagers/pkg/executable/fakes"
 	poetryinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/poetry"
-	"github.com/paketo-buildpacks/python-packagers/pkg/packagers/poetry/fakes"
 
 	. "github.com/onsi/gomega"
 	. "github.com/onsi/gomega/gstruct"

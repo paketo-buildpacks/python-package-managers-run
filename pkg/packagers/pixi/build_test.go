@@ -18,9 +18,10 @@ import (
 	"github.com/paketo-buildpacks/packit/v2/scribe"
 	"github.com/sclevine/spec"
 
-	pythonpackagers "github.com/paketo-buildpacks/python-packagers/pkg/packagers/common"
+	"github.com/paketo-buildpacks/python-packagers/pkg/build"
 	pixiinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pixi"
 	"github.com/paketo-buildpacks/python-packagers/pkg/packagers/pixi/fakes"
+	sbomfakes "github.com/paketo-buildpacks/python-packagers/pkg/sbom/fakes"
 
 	. "github.com/onsi/gomega"
 )
@@ -36,9 +37,9 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 		buffer *bytes.Buffer
 
 		runner        *fakes.Runner
-		sbomGenerator *fakes.SBOMGenerator
+		sbomGenerator *sbomfakes.SBOMGenerator
 
-		build        packit.BuildFunc
+		buildFunc    packit.BuildFunc
 		buildContext packit.BuildContext
 	)
 
@@ -54,7 +55,7 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 		Expect(err).NotTo(HaveOccurred())
 
 		runner = &fakes.Runner{}
-		sbomGenerator = &fakes.SBOMGenerator{}
+		sbomGenerator = &sbomfakes.SBOMGenerator{}
 
 		runner.ShouldRunCall.Returns.Bool = true
 		runner.ShouldRunCall.Returns.String = "some-sha"
@@ -64,11 +65,11 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 		buffer = bytes.NewBuffer(nil)
 		logger := scribe.NewEmitter(buffer)
 
-		build = pixiinstall.Build(
+		buildFunc = pixiinstall.Build(
 			pixiinstall.PixiBuildParameters{
 				runner,
 			},
-			pythonpackagers.CommonBuildParameters{
+			build.CommonBuildParameters{
 				SbomGenerator: sbomGenerator,
 				Clock:         chronos.DefaultClock,
 				Logger:        logger,
@@ -102,7 +103,7 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 	})
 
 	it("returns a result that builds correctly", func() {
-		result, err := build(buildContext)
+		result, err := buildFunc(buildContext)
 		Expect(err).NotTo(HaveOccurred())
 
 		layers := result.Layers
@@ -155,7 +156,7 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 		})
 
 		it("cache layer is exported", func() {
-			result, err := build(buildContext)
+			result, err := buildFunc(buildContext)
 			Expect(err).NotTo(HaveOccurred())
 
 			layers := result.Layers
@@ -182,7 +183,7 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 		})
 
 		it("assigns the flag to the pixi env layer", func() {
-			result, err := build(buildContext)
+			result, err := buildFunc(buildContext)
 			Expect(err).NotTo(HaveOccurred())
 
 			layers := result.Layers
@@ -205,7 +206,7 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 		})
 
 		it("assigns build and cache to the pixi env layer", func() {
-			result, err := build(buildContext)
+			result, err := buildFunc(buildContext)
 			Expect(err).NotTo(HaveOccurred())
 
 			layers := result.Layers
@@ -227,7 +228,7 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 		})
 
 		it("reuses cached pixi env layer instead of running build process", func() {
-			result, err := build(buildContext)
+			result, err := buildFunc(buildContext)
 			Expect(err).NotTo(HaveOccurred())
 
 			layers := result.Layers
@@ -247,7 +248,7 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 			})
 
 			it("returns an error", func() {
-				_, err := build(buildContext)
+				_, err := buildFunc(buildContext)
 				Expect(err).To(MatchError(ContainSubstring("permission denied")))
 			})
 		})
@@ -258,7 +259,7 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 			})
 
 			it("returns an error", func() {
-				_, err := build(buildContext)
+				_, err := buildFunc(buildContext)
 				Expect(err).To(MatchError(ContainSubstring("permission denied")))
 			})
 		})
@@ -269,7 +270,7 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 			})
 
 			it("returns an error", func() {
-				_, err := build(buildContext)
+				_, err := buildFunc(buildContext)
 				Expect(err).To(MatchError("some-shouldrun-error"))
 			})
 		})
@@ -285,7 +286,7 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 			})
 
 			it("returns an error", func() {
-				_, err := build(buildContext)
+				_, err := buildFunc(buildContext)
 				Expect(err).To(MatchError(ContainSubstring("error could not create directory")))
 			})
 		})
@@ -297,7 +298,7 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 			})
 
 			it("returns an error", func() {
-				_, err := build(buildContext)
+				_, err := buildFunc(buildContext)
 				Expect(err).To(MatchError(ContainSubstring("some execution error")))
 			})
 		})
@@ -308,7 +309,7 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 			})
 
 			it("returns an error", func() {
-				_, err := build(buildContext)
+				_, err := buildFunc(buildContext)
 				Expect(err).To(MatchError(`unsupported SBOM format: 'random-format'`))
 			})
 		})
@@ -319,7 +320,7 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 			})
 
 			it("returns an error", func() {
-				_, err := build(buildContext)
+				_, err := buildFunc(buildContext)
 				Expect(err).To(MatchError(ContainSubstring("failed to generate SBOM")))
 			})
 		})

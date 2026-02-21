@@ -16,7 +16,7 @@ import (
 	poetryinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/poetry"
 	uvinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/uv"
 
-	pythonpackagers "github.com/paketo-buildpacks/python-packagers/pkg/packagers/common"
+	"github.com/paketo-buildpacks/python-packagers/pkg/build"
 )
 
 // filtered returns the slice passed in parameter with the needle removed
@@ -37,7 +37,7 @@ type PackagerParameters interface {
 
 func Build(
 	logger scribe.Emitter,
-	commonBuildParameters pythonpackagers.CommonBuildParameters,
+	commonBuildParameters build.CommonBuildParameters,
 	buildParameters map[string]PackagerParameters,
 ) packit.BuildFunc {
 	return func(context packit.BuildContext) (packit.BuildResult, error) {
