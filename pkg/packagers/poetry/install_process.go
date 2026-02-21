@@ -13,23 +13,18 @@ import (
 
 	"github.com/paketo-buildpacks/packit/v2/pexec"
 	"github.com/paketo-buildpacks/packit/v2/scribe"
+
+	"github.com/paketo-buildpacks/python-packagers/pkg/executable"
 )
-
-//go:generate faux --interface Executable --output fakes/executable.go
-
-// Executable defines the interface for invoking an executable.
-type Executable interface {
-	Execute(pexec.Execution) error
-}
 
 // PoetryInstallProcess implements the InstallProcess interface.
 type PoetryInstallProcess struct {
-	executable Executable
+	executable executable.Executable
 	logger     scribe.Emitter
 }
 
 // NewPoetryInstallProcess creates an instance of the PoetryInstallProcess given an Executable.
-func NewPoetryInstallProcess(executable Executable, logger scribe.Emitter) PoetryInstallProcess {
+func NewPoetryInstallProcess(executable executable.Executable, logger scribe.Emitter) PoetryInstallProcess {
 	return PoetryInstallProcess{
 		executable: executable,
 		logger:     logger,

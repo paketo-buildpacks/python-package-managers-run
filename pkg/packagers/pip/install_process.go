@@ -13,23 +13,18 @@ import (
 	"github.com/paketo-buildpacks/packit/v2/fs"
 	"github.com/paketo-buildpacks/packit/v2/pexec"
 	"github.com/paketo-buildpacks/packit/v2/scribe"
+
+	"github.com/paketo-buildpacks/python-packagers/pkg/executable"
 )
-
-//go:generate faux --interface Executable --output fakes/executable.go
-
-// Executable defines the interface for invoking an executable.
-type Executable interface {
-	Execute(pexec.Execution) error
-}
 
 // PipInstallProcess implements the InstallProcess interface.
 type PipInstallProcess struct {
-	executable Executable
+	executable executable.Executable
 	logger     scribe.Emitter
 }
 
 // NewPipInstallProcess creates an instance of the PipInstallProcess given an Executable.
-func NewPipInstallProcess(executable Executable, logger scribe.Emitter) PipInstallProcess {
+func NewPipInstallProcess(executable executable.Executable, logger scribe.Emitter) PipInstallProcess {
 	return PipInstallProcess{
 		executable: executable,
 		logger:     logger,

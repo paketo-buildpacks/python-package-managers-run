@@ -15,14 +15,9 @@ import (
 	"github.com/paketo-buildpacks/packit/v2/fs"
 	"github.com/paketo-buildpacks/packit/v2/pexec"
 	"github.com/paketo-buildpacks/packit/v2/scribe"
+
+	"github.com/paketo-buildpacks/python-packagers/pkg/executable"
 )
-
-//go:generate faux --interface Executable --output fakes/executable.go
-
-// Executable defines the interface for invoking an executable.
-type Executable interface {
-	Execute(pexec.Execution) error
-}
 
 // Summer defines the interface for computing a SHA256 for a set of files
 // and/or directories.
@@ -34,13 +29,13 @@ type Summer interface {
 
 // UvRunner implements the Runner interface.
 type UvRunner struct {
-	executable Executable
+	executable executable.Executable
 	summer     Summer
 	logger     scribe.Emitter
 }
 
 // NewUvRunner creates an instance of UvRunner given an Executable and a Logger.
-func NewUvRunner(executable Executable, summer Summer, logger scribe.Emitter) UvRunner {
+func NewUvRunner(executable executable.Executable, summer Summer, logger scribe.Emitter) UvRunner {
 	return UvRunner{
 		executable: executable,
 		summer:     summer,

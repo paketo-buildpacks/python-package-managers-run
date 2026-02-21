@@ -20,6 +20,7 @@ import (
 	. "github.com/onsi/gomega"
 	. "github.com/paketo-buildpacks/occam/matchers"
 
+	executablefakes "github.com/paketo-buildpacks/python-packagers/pkg/executable/fakes"
 	pixiinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pixi"
 	"github.com/paketo-buildpacks/python-packagers/pkg/packagers/pixi/fakes"
 )
@@ -32,7 +33,7 @@ func testPixiRunner(t *testing.T, context spec.G, it spec.S) {
 		pixiLayerPath string
 		pixiCachePath string
 
-		executable *fakes.Executable
+		executable *executablefakes.Executable
 		executions []pexec.Execution
 		summer     *fakes.Summer
 		runner     pixiinstall.PixiRunner
@@ -47,7 +48,7 @@ func testPixiRunner(t *testing.T, context spec.G, it spec.S) {
 		pixiLayerPath = filepath.Join(layersDir, "a-pixi-layer")
 		pixiCachePath = filepath.Join(layersDir, "a-pixi-cache-path")
 
-		executable = &fakes.Executable{}
+		executable = &executablefakes.Executable{}
 		executions = []pexec.Execution{}
 		executable.ExecuteCall.Stub = func(ex pexec.Execution) error {
 			executions = append(executions, ex)

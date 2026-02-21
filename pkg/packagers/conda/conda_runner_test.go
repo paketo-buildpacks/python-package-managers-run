@@ -17,6 +17,7 @@ import (
 	"github.com/paketo-buildpacks/packit/v2/scribe"
 	"github.com/sclevine/spec"
 
+	executablefakes "github.com/paketo-buildpacks/python-packagers/pkg/executable/fakes"
 	condaenvupdate "github.com/paketo-buildpacks/python-packagers/pkg/packagers/conda"
 	"github.com/paketo-buildpacks/python-packagers/pkg/packagers/conda/fakes"
 
@@ -32,7 +33,7 @@ func testCondaRunner(t *testing.T, context spec.G, it spec.S) {
 		condaLayerPath string
 		condaCachePath string
 
-		executable *fakes.Executable
+		executable *executablefakes.Executable
 		executions []pexec.Execution
 		summer     *fakes.Summer
 		runner     condaenvupdate.CondaRunner
@@ -47,7 +48,7 @@ func testCondaRunner(t *testing.T, context spec.G, it spec.S) {
 		condaLayerPath = filepath.Join(layersDir, "a-conda-layer")
 		condaCachePath = filepath.Join(layersDir, "a-conda-cache-path")
 
-		executable = &fakes.Executable{}
+		executable = &executablefakes.Executable{}
 		executions = []pexec.Execution{}
 		executable.ExecuteCall.Stub = func(ex pexec.Execution) error {
 			executions = append(executions, ex)
