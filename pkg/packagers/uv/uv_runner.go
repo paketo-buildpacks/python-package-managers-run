@@ -17,25 +17,18 @@ import (
 	"github.com/paketo-buildpacks/packit/v2/scribe"
 
 	"github.com/paketo-buildpacks/python-packagers/pkg/executable"
+	"github.com/paketo-buildpacks/python-packagers/pkg/summer"
 )
-
-// Summer defines the interface for computing a SHA256 for a set of files
-// and/or directories.
-//
-//go:generate faux --interface Summer --output fakes/summer.go
-type Summer interface {
-	Sum(arg ...string) (string, error)
-}
 
 // UvRunner implements the Runner interface.
 type UvRunner struct {
 	executable executable.Executable
-	summer     Summer
+	summer     summer.Summer
 	logger     scribe.Emitter
 }
 
 // NewUvRunner creates an instance of UvRunner given an Executable and a Logger.
-func NewUvRunner(executable executable.Executable, summer Summer, logger scribe.Emitter) UvRunner {
+func NewUvRunner(executable executable.Executable, summer summer.Summer, logger scribe.Emitter) UvRunner {
 	return UvRunner{
 		executable: executable,
 		summer:     summer,

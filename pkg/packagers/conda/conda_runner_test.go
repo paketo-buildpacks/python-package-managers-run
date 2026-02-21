@@ -19,7 +19,7 @@ import (
 
 	executablefakes "github.com/paketo-buildpacks/python-packagers/pkg/executable/fakes"
 	condaenvupdate "github.com/paketo-buildpacks/python-packagers/pkg/packagers/conda"
-	"github.com/paketo-buildpacks/python-packagers/pkg/packagers/conda/fakes"
+	summerfakes "github.com/paketo-buildpacks/python-packagers/pkg/summer/fakes"
 
 	. "github.com/onsi/gomega"
 	. "github.com/paketo-buildpacks/occam/matchers"
@@ -35,7 +35,7 @@ func testCondaRunner(t *testing.T, context spec.G, it spec.S) {
 
 		executable *executablefakes.Executable
 		executions []pexec.Execution
-		summer     *fakes.Summer
+		summer     *summerfakes.Summer
 		runner     condaenvupdate.CondaRunner
 		buffer     *bytes.Buffer
 		logger     scribe.Emitter
@@ -63,7 +63,7 @@ func testCondaRunner(t *testing.T, context spec.G, it spec.S) {
 			return nil
 		}
 
-		summer = &fakes.Summer{}
+		summer = &summerfakes.Summer{}
 		buffer = bytes.NewBuffer(nil)
 		logger = scribe.NewEmitter(buffer)
 		runner = condaenvupdate.NewCondaRunner(executable, summer, logger)

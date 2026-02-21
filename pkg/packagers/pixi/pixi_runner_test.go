@@ -22,7 +22,7 @@ import (
 
 	executablefakes "github.com/paketo-buildpacks/python-packagers/pkg/executable/fakes"
 	pixiinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pixi"
-	"github.com/paketo-buildpacks/python-packagers/pkg/packagers/pixi/fakes"
+	summerfakes "github.com/paketo-buildpacks/python-packagers/pkg/summer/fakes"
 )
 
 func testPixiRunner(t *testing.T, context spec.G, it spec.S) {
@@ -35,7 +35,7 @@ func testPixiRunner(t *testing.T, context spec.G, it spec.S) {
 
 		executable *executablefakes.Executable
 		executions []pexec.Execution
-		summer     *fakes.Summer
+		summer     *summerfakes.Summer
 		runner     pixiinstall.PixiRunner
 		buffer     *bytes.Buffer
 		logger     scribe.Emitter
@@ -61,7 +61,7 @@ func testPixiRunner(t *testing.T, context spec.G, it spec.S) {
 			return nil
 		}
 
-		summer = &fakes.Summer{}
+		summer = &summerfakes.Summer{}
 		buffer = bytes.NewBuffer(nil)
 		logger = scribe.NewEmitter(buffer)
 		runner = pixiinstall.NewPixiRunner(executable, summer, logger)

@@ -20,7 +20,7 @@ import (
 
 	executablefakes "github.com/paketo-buildpacks/python-packagers/pkg/executable/fakes"
 	uv "github.com/paketo-buildpacks/python-packagers/pkg/packagers/uv"
-	"github.com/paketo-buildpacks/python-packagers/pkg/packagers/uv/fakes"
+	summerfakes "github.com/paketo-buildpacks/python-packagers/pkg/summer/fakes"
 
 	. "github.com/onsi/gomega"
 	. "github.com/paketo-buildpacks/occam/matchers"
@@ -36,7 +36,7 @@ func testUvRunner(t *testing.T, context spec.G, it spec.S) {
 
 		executable *executablefakes.Executable
 		executions []pexec.Execution
-		summer     *fakes.Summer
+		summer     *summerfakes.Summer
 		runner     uv.UvRunner
 		buffer     *bytes.Buffer
 		logger     scribe.Emitter
@@ -64,7 +64,7 @@ func testUvRunner(t *testing.T, context spec.G, it spec.S) {
 			return nil
 		}
 
-		summer = &fakes.Summer{}
+		summer = &summerfakes.Summer{}
 		buffer = bytes.NewBuffer(nil)
 		logger = scribe.NewEmitter(buffer)
 		runner = uv.NewUvRunner(executable, summer, logger)
