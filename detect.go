@@ -15,6 +15,7 @@ import (
 	conda "github.com/paketo-buildpacks/python-packagers/pkg/packagers/conda"
 	pipinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pip"
 	pipenvinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pipenv"
+	pixiinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pixi"
 )
 
 // Detect will return a packit.DetectFunc that will be invoked during the
@@ -49,15 +50,6 @@ func Detect(logger scribe.Emitter) packit.DetectFunc {
 			logger.Detail("%s", err)
 		}
 
-		logger.Title("Checking for conda")
-		condaResult, err := conda.Detect()(context)
-
-		if err == nil {
-			return condaResult, nil
-		} else {
-			logger.Detail("%s", err)
-		}
-
 		logger.Title("Checking for pipenv")
 		pipenvResult, err := pipenvinstall.Detect(
 			pipenvinstall.NewPipfileParser(),
@@ -66,6 +58,24 @@ func Detect(logger scribe.Emitter) packit.DetectFunc {
 
 		if err == nil {
 			return pipenvResult, nil
+		} else {
+			logger.Detail("%s", err)
+		}
+
+		logger.Title("Checking for pixi")
+		pixiResult, err := pixiinstall.Detect()(context)
+
+		if err == nil {
+			return pixiResult, nil
+		} else {
+			logger.Detail("%s", err)
+		}
+
+		logger.Title("Checking for conda")
+		condaResult, err := conda.Detect()(context)
+
+		if err == nil {
+			return condaResult, nil
 		} else {
 			logger.Detail("%s", err)
 		}
