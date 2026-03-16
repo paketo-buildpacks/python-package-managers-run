@@ -1,4 +1,4 @@
 {
-    "dockerhub": false,
+    "dockerhub": true,
     "GCR": false
 }
