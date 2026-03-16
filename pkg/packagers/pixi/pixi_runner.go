@@ -16,7 +16,7 @@ import (
 	"github.com/paketo-buildpacks/packit/v2/pexec"
 	"github.com/paketo-buildpacks/packit/v2/scribe"
 
-	"github.com/paketo-buildpacks/python-packagers/pkg/executable"
+	"github.com/paketo-buildpacks/python-package-managers-run/pkg/executable"
 )
 
 // Summer defines the interface for computing a SHA256 for a set of files

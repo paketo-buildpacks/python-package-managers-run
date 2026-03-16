@@ -9,7 +9,7 @@ import (
 	"github.com/paketo-buildpacks/packit/v2/chronos"
 	"github.com/paketo-buildpacks/packit/v2/scribe"
 
-	"github.com/paketo-buildpacks/python-packagers/pkg/sbom"
+	"github.com/paketo-buildpacks/python-package-managers-run/pkg/sbom"
 )
 
 // BuildPlanMetadata is the buildpack-specific data included in build plan

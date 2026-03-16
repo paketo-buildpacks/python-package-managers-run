@@ -11,7 +11,7 @@ import (
 
 	"github.com/sclevine/spec"
 
-	pipenvinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pipenv"
+	pipenvinstall "github.com/paketo-buildpacks/python-package-managers-run/pkg/packagers/pipenv"
 
 	. "github.com/onsi/gomega"
 )

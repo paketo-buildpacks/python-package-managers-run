@@ -12,7 +12,7 @@ import (
 
 	"github.com/paketo-buildpacks/packit/v2/pexec"
 
-	"github.com/paketo-buildpacks/python-packagers/pkg/executable"
+	"github.com/paketo-buildpacks/python-package-managers-run/pkg/executable"
 )
 
 // SiteProcess implements the Executable interface.

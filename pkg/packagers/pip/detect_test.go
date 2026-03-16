@@ -14,8 +14,8 @@ import (
 
 	. "github.com/onsi/gomega"
 
-	"github.com/paketo-buildpacks/python-packagers/pkg/build"
-	pipinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pip"
+	"github.com/paketo-buildpacks/python-package-managers-run/pkg/build"
+	pipinstall "github.com/paketo-buildpacks/python-package-managers-run/pkg/packagers/pip"
 )
 
 func testDetect(t *testing.T, context spec.G, it spec.S) {

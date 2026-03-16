@@ -16,8 +16,8 @@ import (
 	"github.com/paketo-buildpacks/packit/v2/scribe"
 	"github.com/sclevine/spec"
 
-	"github.com/paketo-buildpacks/python-packagers/pkg/executable/fakes"
-	pipinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pip"
+	"github.com/paketo-buildpacks/python-package-managers-run/pkg/executable/fakes"
+	pipinstall "github.com/paketo-buildpacks/python-package-managers-run/pkg/packagers/pip"
 
 	. "github.com/onsi/gomega"
 	. "github.com/onsi/gomega/gstruct"

@@ -12,10 +12,10 @@ import (
 	"github.com/paketo-buildpacks/packit/v2/fs"
 	"github.com/paketo-buildpacks/packit/v2/scribe"
 
-	conda "github.com/paketo-buildpacks/python-packagers/pkg/packagers/conda"
-	pipinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pip"
-	pipenvinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pipenv"
-	pixiinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pixi"
+	conda "github.com/paketo-buildpacks/python-package-managers-run/pkg/packagers/conda"
+	pipinstall "github.com/paketo-buildpacks/python-package-managers-run/pkg/packagers/pip"
+	pipenvinstall "github.com/paketo-buildpacks/python-package-managers-run/pkg/packagers/pipenv"
+	pixiinstall "github.com/paketo-buildpacks/python-package-managers-run/pkg/packagers/pixi"
 )
 
 // Detect will return a packit.DetectFunc that will be invoked during the

@@ -12,8 +12,8 @@ installs packages using the adequate tool selected based on the content of the
 application sources and makes it available to it.
 
 The buildpack is published for consumption at
-`gcr.io/paketo-buildpacks/python-packagers` and
-`paketobuildpacks/python-packagers`.
+`gcr.io/paketo-buildpacks/python-package-managers-run` and
+`paketobuildpacks/python-package-managers-run`.
 
 ## Behavior
 This buildpack participates if one of the following detection succeeds:

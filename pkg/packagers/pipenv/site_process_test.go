@@ -14,8 +14,8 @@ import (
 	"github.com/paketo-buildpacks/packit/v2/pexec"
 	"github.com/sclevine/spec"
 
-	"github.com/paketo-buildpacks/python-packagers/pkg/executable/fakes"
-	pipenvinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pipenv"
+	"github.com/paketo-buildpacks/python-package-managers-run/pkg/executable/fakes"
+	pipenvinstall "github.com/paketo-buildpacks/python-package-managers-run/pkg/packagers/pipenv"
 
 	. "github.com/onsi/gomega"
 )

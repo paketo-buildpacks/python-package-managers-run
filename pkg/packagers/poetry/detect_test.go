@@ -15,8 +15,8 @@ import (
 
 	. "github.com/onsi/gomega"
 
-	"github.com/paketo-buildpacks/python-packagers/pkg/build"
-	poetryinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/poetry"
+	"github.com/paketo-buildpacks/python-package-managers-run/pkg/build"
+	poetryinstall "github.com/paketo-buildpacks/python-package-managers-run/pkg/packagers/poetry"
 )
 
 func testDetect(t *testing.T, context spec.G, it spec.S) {

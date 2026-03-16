@@ -13,7 +13,7 @@ import (
 	"github.com/paketo-buildpacks/packit/v2/fs"
 	"github.com/paketo-buildpacks/packit/v2/sbom"
 
-	"github.com/paketo-buildpacks/python-packagers/pkg/build"
+	"github.com/paketo-buildpacks/python-package-managers-run/pkg/build"
 )
 
 //go:generate faux --interface EntryResolver --output fakes/entry_resolver.go

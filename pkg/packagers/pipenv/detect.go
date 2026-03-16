@@ -12,7 +12,7 @@ import (
 	"github.com/paketo-buildpacks/packit/v2"
 	"github.com/paketo-buildpacks/packit/v2/fs"
 
-	"github.com/paketo-buildpacks/python-packagers/pkg/build"
+	"github.com/paketo-buildpacks/python-package-managers-run/pkg/build"
 )
 
 //go:generate faux --interface Parser --output fakes/parser.go
