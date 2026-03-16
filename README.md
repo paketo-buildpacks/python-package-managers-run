@@ -21,7 +21,9 @@ This buildpack participates if one of the following detection succeeds:
 - [conda](pkg/conda/README.md) -> `environment.yml`
 - [pip](pkg/pip/README.md) -> `requirements.txt`
 - [pipenv](pkg/pipenv/README.md) -> `Pipfile`
+- [pixi](pkg/pixi/README.md) -> `pixi.lock`
 - [poetry](pkg/poetry/README.md) -> `pyproject.toml`
+- [uv](pkg/uv/README.md) -> `uv.lock`
 
 is present in the root folder.
 
