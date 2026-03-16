@@ -17,10 +17,10 @@ import (
 	"github.com/paketo-buildpacks/packit/v2/scribe"
 	"github.com/sclevine/spec"
 
-	"github.com/paketo-buildpacks/python-packagers/pkg/build"
-	condaenvupdate "github.com/paketo-buildpacks/python-packagers/pkg/packagers/conda"
-	"github.com/paketo-buildpacks/python-packagers/pkg/packagers/conda/fakes"
-	sbomfakes "github.com/paketo-buildpacks/python-packagers/pkg/sbom/fakes"
+	"github.com/paketo-buildpacks/python-package-managers-run/pkg/build"
+	condaenvupdate "github.com/paketo-buildpacks/python-package-managers-run/pkg/packagers/conda"
+	"github.com/paketo-buildpacks/python-package-managers-run/pkg/packagers/conda/fakes"
+	sbomfakes "github.com/paketo-buildpacks/python-package-managers-run/pkg/sbom/fakes"
 
 	. "github.com/onsi/gomega"
 )

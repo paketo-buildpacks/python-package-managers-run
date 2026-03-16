@@ -9,14 +9,14 @@ import (
 	"github.com/paketo-buildpacks/packit/v2"
 	"github.com/paketo-buildpacks/packit/v2/scribe"
 
-	conda "github.com/paketo-buildpacks/python-packagers/pkg/packagers/conda"
-	pipinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pip"
-	pipenvinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pipenv"
-	pixiinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pixi"
-	poetryinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/poetry"
-	uvinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/uv"
+	conda "github.com/paketo-buildpacks/python-package-managers-run/pkg/packagers/conda"
+	pipinstall "github.com/paketo-buildpacks/python-package-managers-run/pkg/packagers/pip"
+	pipenvinstall "github.com/paketo-buildpacks/python-package-managers-run/pkg/packagers/pipenv"
+	pixiinstall "github.com/paketo-buildpacks/python-package-managers-run/pkg/packagers/pixi"
+	poetryinstall "github.com/paketo-buildpacks/python-package-managers-run/pkg/packagers/poetry"
+	uvinstall "github.com/paketo-buildpacks/python-package-managers-run/pkg/packagers/uv"
 
-	"github.com/paketo-buildpacks/python-packagers/pkg/build"
+	"github.com/paketo-buildpacks/python-package-managers-run/pkg/build"
 )
 
 // filtered returns the slice passed in parameter with the needle removed

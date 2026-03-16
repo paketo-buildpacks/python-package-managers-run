@@ -16,8 +16,8 @@ import (
 	"github.com/paketo-buildpacks/packit/v2/pexec"
 	"github.com/paketo-buildpacks/packit/v2/scribe"
 
-	"github.com/paketo-buildpacks/python-packagers/pkg/executable"
-	"github.com/paketo-buildpacks/python-packagers/pkg/summer"
+	"github.com/paketo-buildpacks/python-package-managers-run/pkg/executable"
+	"github.com/paketo-buildpacks/python-package-managers-run/pkg/summer"
 )
 
 // UvRunner implements the Runner interface.

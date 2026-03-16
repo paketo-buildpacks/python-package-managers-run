@@ -20,9 +20,9 @@ import (
 	. "github.com/onsi/gomega"
 	. "github.com/paketo-buildpacks/occam/matchers"
 
-	executablefakes "github.com/paketo-buildpacks/python-packagers/pkg/executable/fakes"
-	pixiinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pixi"
-	summerfakes "github.com/paketo-buildpacks/python-packagers/pkg/summer/fakes"
+	executablefakes "github.com/paketo-buildpacks/python-package-managers-run/pkg/executable/fakes"
+	pixiinstall "github.com/paketo-buildpacks/python-package-managers-run/pkg/packagers/pixi"
+	summerfakes "github.com/paketo-buildpacks/python-package-managers-run/pkg/summer/fakes"
 )
 
 func testPixiRunner(t *testing.T, context spec.G, it spec.S) {

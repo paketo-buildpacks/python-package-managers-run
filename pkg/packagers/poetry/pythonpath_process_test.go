@@ -12,7 +12,7 @@ import (
 
 	"github.com/sclevine/spec"
 
-	poetryinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/poetry"
+	poetryinstall "github.com/paketo-buildpacks/python-package-managers-run/pkg/packagers/poetry"
 
 	. "github.com/onsi/gomega"
 )

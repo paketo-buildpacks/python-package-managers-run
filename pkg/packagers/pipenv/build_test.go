@@ -18,10 +18,10 @@ import (
 	"github.com/paketo-buildpacks/packit/v2/scribe"
 	"github.com/sclevine/spec"
 
-	"github.com/paketo-buildpacks/python-packagers/pkg/build"
-	pipenvinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pipenv"
-	"github.com/paketo-buildpacks/python-packagers/pkg/packagers/pipenv/fakes"
-	sbomfakes "github.com/paketo-buildpacks/python-packagers/pkg/sbom/fakes"
+	"github.com/paketo-buildpacks/python-package-managers-run/pkg/build"
+	pipenvinstall "github.com/paketo-buildpacks/python-package-managers-run/pkg/packagers/pipenv"
+	"github.com/paketo-buildpacks/python-package-managers-run/pkg/packagers/pipenv/fakes"
+	sbomfakes "github.com/paketo-buildpacks/python-package-managers-run/pkg/sbom/fakes"
 
 	. "github.com/onsi/gomega"
 )

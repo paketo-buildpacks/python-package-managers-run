@@ -18,10 +18,10 @@ import (
 	"github.com/paketo-buildpacks/packit/v2/scribe"
 	"github.com/sclevine/spec"
 
-	"github.com/paketo-buildpacks/python-packagers/pkg/build"
-	uvinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/uv"
-	"github.com/paketo-buildpacks/python-packagers/pkg/packagers/uv/fakes"
-	sbomfakes "github.com/paketo-buildpacks/python-packagers/pkg/sbom/fakes"
+	"github.com/paketo-buildpacks/python-package-managers-run/pkg/build"
+	uvinstall "github.com/paketo-buildpacks/python-package-managers-run/pkg/packagers/uv"
+	"github.com/paketo-buildpacks/python-package-managers-run/pkg/packagers/uv/fakes"
+	sbomfakes "github.com/paketo-buildpacks/python-package-managers-run/pkg/sbom/fakes"
 
 	. "github.com/onsi/gomega"
 )

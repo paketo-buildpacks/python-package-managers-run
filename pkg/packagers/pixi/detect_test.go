@@ -15,8 +15,8 @@ import (
 
 	. "github.com/onsi/gomega"
 
-	"github.com/paketo-buildpacks/python-packagers/pkg/build"
-	pixiinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pixi"
+	"github.com/paketo-buildpacks/python-package-managers-run/pkg/build"
+	pixiinstall "github.com/paketo-buildpacks/python-package-managers-run/pkg/packagers/pixi"
 )
 
 func testDetect(t *testing.T, context spec.G, it spec.S) {

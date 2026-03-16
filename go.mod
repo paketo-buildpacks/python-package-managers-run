@@ -1,4 +1,4 @@
-module github.com/paketo-buildpacks/python-packagers
+module github.com/paketo-buildpacks/python-package-managers-run
 
 go 1.26.1
 

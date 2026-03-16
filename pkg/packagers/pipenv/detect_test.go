@@ -14,9 +14,9 @@ import (
 
 	. "github.com/onsi/gomega"
 
-	"github.com/paketo-buildpacks/python-packagers/pkg/build"
-	pipenvinstall "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pipenv"
-	"github.com/paketo-buildpacks/python-packagers/pkg/packagers/pipenv/fakes"
+	"github.com/paketo-buildpacks/python-package-managers-run/pkg/build"
+	pipenvinstall "github.com/paketo-buildpacks/python-package-managers-run/pkg/packagers/pipenv"
+	"github.com/paketo-buildpacks/python-package-managers-run/pkg/packagers/pipenv/fakes"
 )
 
 func testDetect(t *testing.T, context spec.G, it spec.S) {

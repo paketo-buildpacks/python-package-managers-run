@@ -19,7 +19,7 @@ import (
 	. "github.com/onsi/gomega"
 	"github.com/onsi/gomega/format"
 
-	integration_helpers "github.com/paketo-buildpacks/python-packagers/integration"
+	integration_helpers "github.com/paketo-buildpacks/python-package-managers-run/integration"
 )
 
 var (

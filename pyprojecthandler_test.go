@@ -15,10 +15,10 @@ import (
 
 	. "github.com/onsi/gomega"
 
-	pythonpackagers "github.com/paketo-buildpacks/python-packagers"
-	pip "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pip"
-	poetry "github.com/paketo-buildpacks/python-packagers/pkg/packagers/poetry"
-	uv "github.com/paketo-buildpacks/python-packagers/pkg/packagers/uv"
+	pythonpackagers "github.com/paketo-buildpacks/python-package-managers-run"
+	pip "github.com/paketo-buildpacks/python-package-managers-run/pkg/packagers/pip"
+	poetry "github.com/paketo-buildpacks/python-package-managers-run/pkg/packagers/poetry"
+	uv "github.com/paketo-buildpacks/python-package-managers-run/pkg/packagers/uv"
 )
 
 func testPyProjectHandler(t *testing.T, context spec.G, it spec.S) {

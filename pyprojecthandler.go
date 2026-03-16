@@ -13,9 +13,9 @@ import (
 	"github.com/paketo-buildpacks/packit/v2"
 	"github.com/paketo-buildpacks/packit/v2/fs"
 
-	pip "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pip"
-	poetry "github.com/paketo-buildpacks/python-packagers/pkg/packagers/poetry"
-	uv "github.com/paketo-buildpacks/python-packagers/pkg/packagers/uv"
+	pip "github.com/paketo-buildpacks/python-package-managers-run/pkg/packagers/pip"
+	poetry "github.com/paketo-buildpacks/python-package-managers-run/pkg/packagers/poetry"
+	uv "github.com/paketo-buildpacks/python-package-managers-run/pkg/packagers/uv"
 )
 
 const (

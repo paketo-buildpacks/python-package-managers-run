@@ -14,13 +14,13 @@ import (
 	"github.com/paketo-buildpacks/packit/v2"
 	"github.com/paketo-buildpacks/packit/v2/scribe"
 
-	pythonpackagers "github.com/paketo-buildpacks/python-packagers"
-	"github.com/paketo-buildpacks/python-packagers/pkg/build"
-	conda "github.com/paketo-buildpacks/python-packagers/pkg/packagers/conda"
-	pip "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pip"
-	pipenv "github.com/paketo-buildpacks/python-packagers/pkg/packagers/pipenv"
-	poetry "github.com/paketo-buildpacks/python-packagers/pkg/packagers/poetry"
-	uv "github.com/paketo-buildpacks/python-packagers/pkg/packagers/uv"
+	pythonpackagers "github.com/paketo-buildpacks/python-package-managers-run"
+	"github.com/paketo-buildpacks/python-package-managers-run/pkg/build"
+	conda "github.com/paketo-buildpacks/python-package-managers-run/pkg/packagers/conda"
+	pip "github.com/paketo-buildpacks/python-package-managers-run/pkg/packagers/pip"
+	pipenv "github.com/paketo-buildpacks/python-package-managers-run/pkg/packagers/pipenv"
+	poetry "github.com/paketo-buildpacks/python-package-managers-run/pkg/packagers/poetry"
+	uv "github.com/paketo-buildpacks/python-package-managers-run/pkg/packagers/uv"
 
 	"github.com/sclevine/spec"
 

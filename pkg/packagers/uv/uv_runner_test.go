@@ -18,9 +18,9 @@ import (
 	"github.com/paketo-buildpacks/packit/v2/scribe"
 	"github.com/sclevine/spec"
 
-	executablefakes "github.com/paketo-buildpacks/python-packagers/pkg/executable/fakes"
-	uv "github.com/paketo-buildpacks/python-packagers/pkg/packagers/uv"
-	summerfakes "github.com/paketo-buildpacks/python-packagers/pkg/summer/fakes"
+	executablefakes "github.com/paketo-buildpacks/python-package-managers-run/pkg/executable/fakes"
+	uv "github.com/paketo-buildpacks/python-package-managers-run/pkg/packagers/uv"
+	summerfakes "github.com/paketo-buildpacks/python-package-managers-run/pkg/summer/fakes"
 
 	. "github.com/onsi/gomega"
 	. "github.com/paketo-buildpacks/occam/matchers"
