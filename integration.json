@@ -5,6 +5,6 @@
         "index.docker.io/paketobuildpacks/ubuntu-noble-builder-buildpackless:latest"
     ],
     "cpython": "index.docker.io/paketobuildpacks/cpython",
-    "python-installers": "github.com/idiap/python-installers",
+    "python-package-managers-install": "index.docker.io/paketobuildpacks/python-package-managers-install",
     "build-plan": "index.docker.io/paketocommunity/build-plan"
 }

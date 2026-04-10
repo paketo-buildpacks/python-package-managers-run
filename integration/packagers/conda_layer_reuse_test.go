@@ -74,8 +74,8 @@ func condaTestLayerReuse(t *testing.T, context spec.G, it spec.S) {
 				firstImage, logs, err = pack.WithNoColor().Build.
 					WithPullPolicy("never").
 					WithBuildpacks(
-						settings.Buildpacks.PythonInstallers.Online,
-						settings.Buildpacks.PythonPackagers.Online,
+						settings.Buildpacks.PythonPackageManagersInstall.Online,
+						settings.Buildpacks.PythonPackageManagersRun.Online,
 						settings.Buildpacks.BuildPlan.Online,
 					).
 					Execute(name, source)
@@ -98,8 +98,8 @@ func condaTestLayerReuse(t *testing.T, context spec.G, it spec.S) {
 				secondImage, logs, err = pack.WithNoColor().Build.
 					WithPullPolicy("never").
 					WithBuildpacks(
-						settings.Buildpacks.PythonInstallers.Online,
-						settings.Buildpacks.PythonPackagers.Online,
+						settings.Buildpacks.PythonPackageManagersInstall.Online,
+						settings.Buildpacks.PythonPackageManagersRun.Online,
 						settings.Buildpacks.BuildPlan.Online,
 					).
 					Execute(name, source)
@@ -139,8 +139,8 @@ func condaTestLayerReuse(t *testing.T, context spec.G, it spec.S) {
 				firstImage, logs, err = pack.WithNoColor().Build.
 					WithPullPolicy("never").
 					WithBuildpacks(
-						settings.Buildpacks.PythonInstallers.Online,
-						settings.Buildpacks.PythonPackagers.Online,
+						settings.Buildpacks.PythonPackageManagersInstall.Online,
+						settings.Buildpacks.PythonPackageManagersRun.Online,
 						settings.Buildpacks.BuildPlan.Online,
 					).
 					Execute(name, source)
@@ -163,8 +163,8 @@ func condaTestLayerReuse(t *testing.T, context spec.G, it spec.S) {
 				secondImage, logs, err = pack.WithNoColor().Build.
 					WithPullPolicy("never").
 					WithBuildpacks(
-						settings.Buildpacks.PythonInstallers.Online,
-						settings.Buildpacks.PythonPackagers.Online,
+						settings.Buildpacks.PythonPackageManagersInstall.Online,
+						settings.Buildpacks.PythonPackageManagersRun.Online,
 						settings.Buildpacks.BuildPlan.Online,
 					).
 					Execute(name, source)

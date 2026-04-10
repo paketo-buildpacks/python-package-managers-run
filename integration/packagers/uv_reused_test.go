@@ -63,8 +63,8 @@ func uvTestReused(t *testing.T, context spec.G, it spec.S) {
 			image1, logs1, err := pack.WithNoColor().Build.
 				WithPullPolicy("never").
 				WithBuildpacks(
-					settings.Buildpacks.PythonInstallers.Online,
-					settings.Buildpacks.PythonPackagers.Online,
+					settings.Buildpacks.PythonPackageManagersInstall.Online,
+					settings.Buildpacks.PythonPackageManagersRun.Online,
 					settings.Buildpacks.BuildPlan.Online,
 				).
 				Execute(name, source)
@@ -74,8 +74,8 @@ func uvTestReused(t *testing.T, context spec.G, it spec.S) {
 			image2, logs2, err := pack.WithNoColor().Build.
 				WithPullPolicy("never").
 				WithBuildpacks(
-					settings.Buildpacks.PythonInstallers.Online,
-					settings.Buildpacks.PythonPackagers.Online,
+					settings.Buildpacks.PythonPackageManagersInstall.Online,
+					settings.Buildpacks.PythonPackageManagersRun.Online,
 					settings.Buildpacks.BuildPlan.Online,
 				).
 				Execute(name, source)
