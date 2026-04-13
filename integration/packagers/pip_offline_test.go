@@ -64,8 +64,8 @@ func pipTestOffline(t *testing.T, context spec.G, it spec.S) {
 				WithPullPolicy("never").
 				WithBuildpacks(
 					settings.Buildpacks.CPython.Offline,
-					settings.Buildpacks.PythonInstallers.Offline,
-					settings.Buildpacks.PythonPackagers.Offline,
+					settings.Buildpacks.PythonPackageManagersInstall.Offline,
+					settings.Buildpacks.PythonPackageManagersRun.Offline,
 					settings.Buildpacks.BuildPlan.Online,
 				).
 				WithNetwork("none").

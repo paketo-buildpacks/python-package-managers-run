@@ -63,8 +63,8 @@ func pipTestReused(t *testing.T, context spec.G, it spec.S) {
 				WithPullPolicy("never").
 				WithBuildpacks(
 					settings.Buildpacks.CPython.Online,
-					settings.Buildpacks.PythonInstallers.Online,
-					settings.Buildpacks.PythonPackagers.Online,
+					settings.Buildpacks.PythonPackageManagersInstall.Online,
+					settings.Buildpacks.PythonPackageManagersRun.Online,
 					settings.Buildpacks.BuildPlan.Online,
 				).
 				Execute(name, source)
@@ -75,8 +75,8 @@ func pipTestReused(t *testing.T, context spec.G, it spec.S) {
 				WithPullPolicy("never").
 				WithBuildpacks(
 					settings.Buildpacks.CPython.Online,
-					settings.Buildpacks.PythonInstallers.Online,
-					settings.Buildpacks.PythonPackagers.Online,
+					settings.Buildpacks.PythonPackageManagersInstall.Online,
+					settings.Buildpacks.PythonPackageManagersRun.Online,
 					settings.Buildpacks.BuildPlan.Online,
 				).
 				Execute(name, source)

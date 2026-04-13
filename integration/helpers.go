@@ -31,7 +31,7 @@ type TestSettings struct {
 			Online  string
 			Offline string
 		}
-		PythonInstallers struct {
+		PythonPackageManagersInstall struct {
 			Online  string
 			Offline string
 		}
@@ -39,15 +39,15 @@ type TestSettings struct {
 			Online string
 		}
 		// This buildpack
-		PythonPackagers struct {
+		PythonPackageManagersRun struct {
 			Online  string
 			Offline string
 		}
 	}
 
 	Config struct {
-		CPython          string `json:"cpython"`
-		PythonInstallers string `json:"python-installers"`
-		BuildPlan        string `json:"build-plan"`
+		CPython                      string `json:"cpython"`
+		PythonPackageManagersInstall string `json:"python-package-managers-install"`
+		BuildPlan                    string `json:"build-plan"`
 	}
 }

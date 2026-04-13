@@ -12,7 +12,7 @@ import (
 	"github.com/sclevine/spec/report"
 )
 
-func TestUnitPythonPackagers(t *testing.T) {
+func TestUnitPythonPackageManagersRun(t *testing.T) {
 	suite := spec.New("python-package-managers-run", spec.Report(report.Terminal{}), spec.Sequential())
 	suite("PyProjectHandler", testPyProjectHandler)
 	suite("Detect", testDetect)
