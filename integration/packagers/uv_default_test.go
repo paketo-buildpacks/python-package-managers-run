@@ -80,6 +80,39 @@ func uvTestDefault(t *testing.T, context spec.G, it spec.S) {
 			Eventually(container).Should(Serve(ContainSubstring("Hello, world!")).OnPort(8080))
 		})
 
+		it("builds an oci image that has the correct behavior with dev group deps", func() {
+			var err error
+
+			var logs fmt.Stringer
+			image, logs, err = pack.WithNoColor().Build.
+				WithPullPolicy("never").
+				WithBuildpacks(
+					settings.Buildpacks.PythonPackageManagersInstall.Online,
+					settings.Buildpacks.PythonPackageManagersRun.Online,
+					settings.Buildpacks.BuildPlan.Online,
+				).
+				WithEnv(map[string]string{
+					"BP_UV_INSTALL_GROUPS": "dev",
+				}).
+				Execute(name, source)
+			Expect(err).NotTo(HaveOccurred(), logs.String())
+
+			container, err = docker.Container.Run.
+				WithEnv(map[string]string{"PORT": "8080"}).
+				WithPublish("8080").
+				WithPublishAll().
+				WithCommand("python server.py").
+				Execute(image.ID)
+			Expect(err).NotTo(HaveOccurred())
+
+			Eventually(container).Should(Serve(ContainSubstring("Hello, world!")).OnPort(8080))
+			Expect(docker.Container.Remove.Execute(container.ID)).To(Succeed())
+			container, err = docker.Container.Run.
+				WithCommand("ruff --version").
+				Execute(image.ID)
+			Expect(err).NotTo(HaveOccurred())
+		})
+
 		context("validating SBOM", func() {
 			var (
 				sbomDir string
@@ -111,7 +144,8 @@ func uvTestDefault(t *testing.T, context spec.G, it spec.S) {
 						settings.Buildpacks.BuildPlan.Online,
 					).
 					WithEnv(map[string]string{
-						"BP_LOG_LEVEL": "DEBUG",
+						"BP_LOG_LEVEL":         "DEBUG",
+						"BP_UV_INSTALL_GROUPS": "dev",
 					}).
 					WithSBOMOutputDir(sbomDir).
 					Execute(name, source)
@@ -147,6 +181,7 @@ func uvTestDefault(t *testing.T, context spec.G, it spec.S) {
 				contents, err := os.ReadFile(filepath.Join(sbomDir, "sbom", "launch", strings.ReplaceAll(buildpackInfo.Buildpack.ID, "/", "_"), "uv-env", "sbom.cdx.json"))
 				Expect(err).NotTo(HaveOccurred())
 				Expect(string(contents)).To(ContainSubstring(`"name": "flask"`))
+				Expect(string(contents)).To(ContainSubstring(`"name": "ruff"`))
 			})
 		})
 	})

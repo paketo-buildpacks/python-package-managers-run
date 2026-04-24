@@ -19,7 +19,7 @@ The buildpack will do the following:
   - Installs the application packages to a layer made available to the app.
   - If a vendor directory is available:
     - the cpython buildpack will be used to provide the base python environment
-    - will attempt to run `uv pip install` in an offline manner.
+    - will attempt to run `uv sync` in an offline manner.
 * At run time:
   - Does nothing
 
@@ -64,4 +64,13 @@ to pass to `--find-links`. This should be a local path or `file://` URL.
 
 ```shell
 BP_UV_FIND_LINKS=./vendor-dir
+```
+
+### `BP_UV_INSTALL_GROUPS`
+
+The `BP_UV_INSTALL_GROUPS` variable allows you to specify one or more groups
+to install. This should be a comma-separated list of group names.
+
+```shell
+BP_UV_INSTALL_GROUPS=dev,test
 ```
