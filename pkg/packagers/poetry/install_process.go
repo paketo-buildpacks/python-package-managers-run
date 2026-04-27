@@ -34,7 +34,21 @@ func NewPoetryInstallProcess(executable executable.Executable, logger scribe.Emi
 // Execute installs the poetry dependencies from workingDir/pyproject.toml into
 // a virtual env in the targetPath.
 func (p PoetryInstallProcess) Execute(workingDir, targetPath, cachePath string) (string, error) {
-	args := []string{"install"}
+	installOnly, exists := os.LookupEnv("BP_POETRY_INSTALL_ONLY")
+	if !exists {
+		installOnly = "main"
+	}
+	poetryVersion, exists := os.LookupEnv("BP_POETRY_VERSION")
+	if !exists {
+		poetryVersion = "2.*"
+	}
+	installCmd := []string{"sync"}
+	// Can be remove once support for poetry v1 is removed
+	if strings.HasPrefix(poetryVersion, "1") {
+		installCmd = []string{"install", "--sync"}
+	}
+
+	args := append(installCmd, "--only", installOnly)
 
 	env := append(
 		os.Environ(),
@@ -42,8 +56,7 @@ func (p PoetryInstallProcess) Execute(workingDir, targetPath, cachePath string) 
 		fmt.Sprintf("POETRY_VIRTUALENVS_PATH=%s", targetPath),
 	)
 
-	p.logger.Subprocess(fmt.Sprintf("Running 'POETRY_CACHE_DIR=%s POETRY_VIRTUALENVS_PATH=%s poetry %s'", cachePath, targetPath, strings.Join(args, " ")))
-
+	p.logger.Subprocess("%s\nRunning 'poetry %s'", strings.Join(env, "\n"), strings.Join(args, " "))
 	err := p.executable.Execute(pexec.Execution{
 		Args:   args,
 		Env:    env,

@@ -74,11 +74,11 @@ func poetryTestDefault(t *testing.T, context spec.G, it spec.S) {
 			Expect(logs).To(ContainLines(
 				MatchRegexp(fmt.Sprintf(`%s \d+\.\d+\.\d+`, buildpackInfo.Buildpack.Name)),
 				"  Executing build process",
-				MatchRegexp(fmt.Sprintf(
-					"    Running 'POETRY_CACHE_DIR=/layers/%s/cache POETRY_VIRTUALENVS_PATH=/layers/%s/poetry-venv poetry install'",
-					strings.ReplaceAll(buildpackInfo.Buildpack.ID, "/", "_"),
-					strings.ReplaceAll(buildpackInfo.Buildpack.ID, "/", "_"),
-				)),
+			))
+			Expect(logs).To(ContainLines(
+				MatchRegexp(fmt.Sprintf("    POETRY_CACHE_DIR=/layers/%s/cache", strings.ReplaceAll(buildpackInfo.Buildpack.ID, "/", "_"))),
+				MatchRegexp(fmt.Sprintf("    POETRY_VIRTUALENVS_PATH=/layers/%s/poetry-venv", strings.ReplaceAll(buildpackInfo.Buildpack.ID, "/", "_"))),
+				MatchRegexp("    Running 'poetry sync --only main'"),
 			))
 			Expect(logs).To(ContainLines(MatchRegexp(`      Completed in \d+\.\d+`)))
 			Expect(logs).To(ContainLines(
@@ -102,6 +102,121 @@ func poetryTestDefault(t *testing.T, context spec.G, it spec.S) {
 
 			Eventually(container).Should(BeAvailable())
 			Eventually(container).Should(Serve(ContainSubstring("Hello, World!")).OnPort(8080))
+		})
+
+		it("builds and runs successfully with develop dependencies", func() {
+			var err error
+			var logs fmt.Stringer
+
+			image, logs, err = pack.WithNoColor().Build.
+				WithPullPolicy("never").
+				WithEnv(map[string]string{
+					"BP_POETRY_INSTALL_ONLY": "main,dev",
+				}).
+				WithBuildpacks(
+					settings.Buildpacks.CPython.Online,
+					settings.Buildpacks.PythonPackageManagersInstall.Online,
+					settings.Buildpacks.PythonPackageManagersRun.Online,
+					settings.Buildpacks.BuildPlan.Online,
+				).
+				Execute(name, source)
+			Expect(err).ToNot(HaveOccurred(), logs.String)
+
+			Expect(logs).To(ContainLines(
+				MatchRegexp(fmt.Sprintf(`%s \d+\.\d+\.\d+`, buildpackInfo.Buildpack.Name)),
+				"  Executing build process",
+			))
+			Expect(logs).To(ContainLines(
+				MatchRegexp(fmt.Sprintf("    POETRY_CACHE_DIR=/layers/%s/cache", strings.ReplaceAll(buildpackInfo.Buildpack.ID, "/", "_"))),
+				MatchRegexp(fmt.Sprintf("    POETRY_VIRTUALENVS_PATH=/layers/%s/poetry-venv", strings.ReplaceAll(buildpackInfo.Buildpack.ID, "/", "_"))),
+				MatchRegexp("    Running 'poetry sync --only main,dev'"),
+			))
+			Expect(logs).To(ContainLines(MatchRegexp(`      Completed in \d+\.\d+`)))
+			Expect(logs).To(ContainLines(
+				"  Configuring build environment",
+				MatchRegexp(fmt.Sprintf(`    PATH                    -> "/layers/%s/poetry-venv/default-app-.*-py\d+\.\d+/bin:\$PATH"`, strings.ReplaceAll(buildpackInfo.Buildpack.ID, "/", "_"))),
+				MatchRegexp(fmt.Sprintf(`    POETRY_VIRTUALENVS_PATH -> "/layers/%s/poetry-venv"`, strings.ReplaceAll(buildpackInfo.Buildpack.ID, "/", "_"))),
+				MatchRegexp(fmt.Sprintf(`    PYTHONPATH              -> "/layers/%s/poetry-venv/default-app-.*-py\d+\.\d+/lib/python\d+\.\d+/site-packages:\$PYTHONPATH"`, strings.ReplaceAll(buildpackInfo.Buildpack.ID, "/", "_"))),
+				"",
+				"  Configuring launch environment",
+				MatchRegexp(fmt.Sprintf(`    PATH                    -> "/layers/%s/poetry-venv/default-app-.*-py\d+\.\d+/bin:\$PATH"`, strings.ReplaceAll(buildpackInfo.Buildpack.ID, "/", "_"))),
+				MatchRegexp(fmt.Sprintf(`    POETRY_VIRTUALENVS_PATH -> "/layers/%s/poetry-venv"`, strings.ReplaceAll(buildpackInfo.Buildpack.ID, "/", "_"))),
+				MatchRegexp(fmt.Sprintf(`    PYTHONPATH              -> "/layers/%s/poetry-venv/default-app-.*-py\d+\.\d+/lib/python\d+\.\d+/site-packages:\$PYTHONPATH"`, strings.ReplaceAll(buildpackInfo.Buildpack.ID, "/", "_"))),
+			))
+
+			container, err = docker.Container.Run.
+				WithCommand("gunicorn server:app").
+				WithEnv(map[string]string{"PORT": "8080"}).
+				WithPublish("8080").
+				Execute(image.ID)
+			Expect(err).ToNot(HaveOccurred())
+
+			Eventually(container).Should(BeAvailable())
+			Eventually(container).Should(Serve(ContainSubstring("Hello, World!")).OnPort(8080))
+
+			Expect(docker.Container.Remove.Execute(container.ID)).To(Succeed())
+			container, err = docker.Container.Run.
+				WithCommand("ruff --version").
+				Execute(image.ID)
+			Expect(err).NotTo(HaveOccurred())
+		})
+
+		it("builds and runs successfully with develop dependencies (poetry v1)", func() {
+			var err error
+			var logs fmt.Stringer
+
+			image, logs, err = pack.WithNoColor().Build.
+				WithPullPolicy("never").
+				WithEnv(map[string]string{
+					"BP_POETRY_VERSION":      "1.8.5",
+					"BP_POETRY_INSTALL_ONLY": "main,dev",
+				}).
+				WithBuildpacks(
+					settings.Buildpacks.CPython.Online,
+					settings.Buildpacks.PythonPackageManagersInstall.Online,
+					settings.Buildpacks.PythonPackageManagersRun.Online,
+					settings.Buildpacks.BuildPlan.Online,
+				).
+				Execute(name, source)
+			Expect(err).ToNot(HaveOccurred(), logs.String)
+
+			Expect(logs).To(ContainLines(
+				MatchRegexp(fmt.Sprintf(`%s \d+\.\d+\.\d+`, buildpackInfo.Buildpack.Name)),
+				"  Executing build process",
+			))
+			Expect(logs).To(ContainLines(
+				MatchRegexp(fmt.Sprintf("    POETRY_CACHE_DIR=/layers/%s/cache", strings.ReplaceAll(buildpackInfo.Buildpack.ID, "/", "_"))),
+				MatchRegexp(fmt.Sprintf("    POETRY_VIRTUALENVS_PATH=/layers/%s/poetry-venv", strings.ReplaceAll(buildpackInfo.Buildpack.ID, "/", "_"))),
+				MatchRegexp("    Running 'poetry install --sync --only main,dev'"),
+			))
+			Expect(logs).To(ContainLines(MatchRegexp(`      Completed in \d+\.\d+`)))
+			Expect(logs).To(ContainLines(
+				"  Configuring build environment",
+				MatchRegexp(fmt.Sprintf(`    PATH                    -> "/layers/%s/poetry-venv/default-app-.*-py\d+\.\d+/bin:\$PATH"`, strings.ReplaceAll(buildpackInfo.Buildpack.ID, "/", "_"))),
+				MatchRegexp(fmt.Sprintf(`    POETRY_VIRTUALENVS_PATH -> "/layers/%s/poetry-venv"`, strings.ReplaceAll(buildpackInfo.Buildpack.ID, "/", "_"))),
+				MatchRegexp(fmt.Sprintf(`    PYTHONPATH              -> "/layers/%s/poetry-venv/default-app-.*-py\d+\.\d+/lib/python\d+\.\d+/site-packages:\$PYTHONPATH"`, strings.ReplaceAll(buildpackInfo.Buildpack.ID, "/", "_"))),
+				"",
+				"  Configuring launch environment",
+				MatchRegexp(fmt.Sprintf(`    PATH                    -> "/layers/%s/poetry-venv/default-app-.*-py\d+\.\d+/bin:\$PATH"`, strings.ReplaceAll(buildpackInfo.Buildpack.ID, "/", "_"))),
+				MatchRegexp(fmt.Sprintf(`    POETRY_VIRTUALENVS_PATH -> "/layers/%s/poetry-venv"`, strings.ReplaceAll(buildpackInfo.Buildpack.ID, "/", "_"))),
+				MatchRegexp(fmt.Sprintf(`    PYTHONPATH              -> "/layers/%s/poetry-venv/default-app-.*-py\d+\.\d+/lib/python\d+\.\d+/site-packages:\$PYTHONPATH"`, strings.ReplaceAll(buildpackInfo.Buildpack.ID, "/", "_"))),
+			))
+
+			container, err = docker.Container.Run.
+				WithCommand("gunicorn server:app").
+				WithEnv(map[string]string{"PORT": "8080"}).
+				WithPublish("8080").
+				Execute(image.ID)
+			Expect(err).ToNot(HaveOccurred())
+
+			Eventually(container).Should(BeAvailable())
+			Eventually(container).Should(Serve(ContainSubstring("Hello, World!")).OnPort(8080))
+
+			Expect(docker.Container.Remove.Execute(container.ID)).To(Succeed())
+			container, err = docker.Container.Run.
+				WithCommand("ruff --version").
+				Execute(image.ID)
+			Expect(err).NotTo(HaveOccurred())
 		})
 
 		context("validating SBOM", func() {
