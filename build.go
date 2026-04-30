@@ -42,6 +42,9 @@ func Build(
 ) packit.BuildFunc {
 	return func(context packit.BuildContext) (packit.BuildResult, error) {
 		planEntries := filtered(context.Plan.Entries, pipinstall.SitePackages)
+		// Ignore entry as it is used to opt into using only the
+		// python-package-managers-* duo of buildpacks
+		planEntries = filtered(planEntries, PackageManagersPlanEntry)
 		layers := []packit.Layer{}
 
 		for _, entry := range planEntries {

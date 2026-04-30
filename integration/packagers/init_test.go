@@ -127,5 +127,8 @@ func TestIntegration(t *testing.T) {
 	suite("pixi Default", pixiTestDefault)
 	suite("pixi Reused", pixiTestLayerReuse)
 
+	// Make package-managers mandatory
+	suite("mandatory package managers", pmTestMandatory)
+
 	suite.Run(t)
 }

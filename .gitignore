@@ -32,3 +32,4 @@ go.work.sum
 /linux/
 .idea/
 .DS_Store
+tmp.*/
