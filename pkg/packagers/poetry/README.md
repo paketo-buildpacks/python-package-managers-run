@@ -59,6 +59,17 @@ file that looks like the following:
     launch = true
 ```
 
+## Configuration
+
+### `BP_POETRY_INSTALL_ONLY`
+
+The `BP_POETRY_INSTALL_ONLY` let's you configure which groups from pyproject.toml
+file will be installed, default is main.
+
+```shell
+BP_POETRY_INSTALL_ONLY=main,dev
+```
+
 ## Known issues and limitations
 
 * This buildpack will not work in an offline/air-gapped environment: vendoring

@@ -13,7 +13,7 @@ import (
 )
 
 func TestUnitUvInstall(t *testing.T) {
-	suite := spec.New("uvinstall", spec.Report(report.Terminal{}), spec.Parallel())
+	suite := spec.New("uvinstall", spec.Report(report.Terminal{}))
 	suite("Build", testBuild)
 	suite("UvRunner", testUvRunner)
 	suite("UvLockParser", testUvLockParser)

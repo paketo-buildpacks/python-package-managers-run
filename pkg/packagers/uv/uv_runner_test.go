@@ -151,22 +151,30 @@ func testUvRunner(t *testing.T, context spec.G, it spec.S) {
 				Expect(os.WriteFile(filepath.Join(workingDir, uv.LockfileName), nil, os.ModePerm)).To(Succeed())
 			})
 
-			it("runs uv pip install with additional vendor args and WITHOUT cache layer args", func() {
+			it("runs uv sync with additional vendor venv and WITHOUT cache layer args", func() {
 				err := runner.Execute(uvLayerPath, uvCachePath, workingDir)
 				Expect(err).NotTo(HaveOccurred())
 
 				args := []string{
-					"pip",
-					"install",
+					"sync",
 					"--no-index",
-					"--python",
-					filepath.Join(uvLayerPath, "venv", "bin", "python"),
-					workingDir,
-					"--offline",
 				}
 
-				Expect(executions[1].Args).To(Equal(args))
-				Expect(executable.ExecuteCall.CallCount).To(Equal(2))
+				Expect(executions[0].Args).To(Equal(args))
+				venvPath := filepath.Join(uvLayerPath, "venv")
+				Expect(executions[0].Env).To(ContainElement(fmt.Sprintf("HOME=%s", uvLayerPath)))
+				Expect(executions[0].Env).To(ContainElement(fmt.Sprintf("VIRTUAL_ENV=%s", venvPath)))
+				Expect(executions[0].Env).To(ContainElement(fmt.Sprintf("UV_PROJECT_ENVIRONMENT=%s", venvPath)))
+				Expect(executions[0].Env).To(ContainElement(fmt.Sprintf("UV_WORKING_DIR=%s", workingDir)))
+				Expect(executions[0].Env).To(ContainElement("UV_PYTHON=/layers/paketo-buildpacks_cpython/cpython/bin/python"))
+				Expect(executions[0].Env).To(ContainElement("UV_OFFLINE=1"))
+				Expect(executions[0].Env).To(ContainElement("LD_LIBRARY_PATH=/layers/paketo-buildpacks_cpython/cpython/lib"))
+				userFindLinks, _ := os.LookupEnv("BP_UV_FIND_LINKS")
+				findLinks, _ := os.LookupEnv("UV_FIND_LINKS")
+				combinedFindLinks := []string{userFindLinks, findLinks}
+				combinedFindLinks = append(combinedFindLinks, vendorPath)
+				Expect(executions[0].Env).To(ContainElement(fmt.Sprintf("UV_FIND_LINKS=%s", strings.TrimLeft(strings.Join(combinedFindLinks, " "), " "))))
+				Expect(executable.ExecuteCall.CallCount).To(Equal(1))
 				Expect(buffer.String()).To(ContainLines(
 					fmt.Sprintf("    Running 'uv %s'", strings.Join(args, " ")),
 					"      stdout output",
@@ -191,11 +199,8 @@ func testUvRunner(t *testing.T, context spec.G, it spec.S) {
 						Expect(err).To(MatchError("failed to run uv command: some uv failure"))
 
 						args := []string{
-							"venv",
-							filepath.Join(uvLayerPath, "venv"),
-							"--offline",
-							"--python",
-							"/layers/paketo-buildpacks_cpython/cpython/bin/python",
+							"sync",
+							"--no-index",
 						}
 						Expect(buffer.String()).To(ContainLines(
 							fmt.Sprintf("    Running 'uv %s'", strings.Join(args, " ")),
@@ -220,25 +225,22 @@ func testUvRunner(t *testing.T, context spec.G, it spec.S) {
 				err := runner.Execute(uvLayerPath, uvCachePath, workingDir)
 				Expect(err).NotTo(HaveOccurred())
 
-				Expect(executable.ExecuteCall.CallCount).To(Equal(2))
+				Expect(executable.ExecuteCall.CallCount).To(Equal(1))
 
 				Expect(executions[0].Args).To(Equal([]string{
-					"venv",
-					filepath.Join(uvLayerPath, "venv"),
+					"sync",
 				}))
+				venvPath := filepath.Join(uvLayerPath, "venv")
 				Expect(executions[0].Env).To(ContainElement(fmt.Sprintf("HOME=%s", uvLayerPath)))
-
-				Expect(executions[1].Args).To(Equal([]string{
-					"pip",
-					"install",
-					"--python",
-					filepath.Join(uvLayerPath, "venv", "bin", "python"),
-					"--cache-dir",
-					uvCachePath,
-					workingDir,
-				}))
-				Expect(executions[1].Env).To(ContainElement("UV_FIND_LINKS="))
-				Expect(executable.ExecuteCall.CallCount).To(Equal(2))
+				Expect(executions[0].Env).To(ContainElement(fmt.Sprintf("HOME=%s", uvLayerPath)))
+				Expect(executions[0].Env).To(ContainElement(fmt.Sprintf("VIRTUAL_ENV=%s", venvPath)))
+				Expect(executions[0].Env).To(ContainElement(fmt.Sprintf("UV_PROJECT_ENVIRONMENT=%s", venvPath)))
+				Expect(executions[0].Env).To(ContainElement(fmt.Sprintf("UV_WORKING_DIR=%s", workingDir)))
+				Expect(executions[0].Env).To(ContainElement(fmt.Sprintf("UV_CACHE_DIR=%s", uvCachePath)))
+				userFindLinks, _ := os.LookupEnv("BP_UV_FIND_LINKS")
+				findLinks, _ := os.LookupEnv("UV_FIND_LINKS")
+				combinedFindLinks := []string{userFindLinks, findLinks}
+				Expect(executions[0].Env).To(ContainElement(fmt.Sprintf("UV_FIND_LINKS=%s", strings.TrimLeft(strings.Join(combinedFindLinks, " "), " "))))
 			})
 
 			context("failure cases", func() {
@@ -257,10 +259,68 @@ func testUvRunner(t *testing.T, context spec.G, it spec.S) {
 						err := runner.Execute(uvLayerPath, uvCachePath, workingDir)
 						Expect(err).To(MatchError("failed to run uv command: some uv failure"))
 						Expect(buffer.String()).To(ContainLines(
-							fmt.Sprintf(
-								"    Running 'uv venv %s'",
-								filepath.Join(uvLayerPath, "venv"),
-							),
+							"    Running 'uv sync'",
+							"      uv error stdout",
+							"      uv error stderr",
+						))
+					})
+				})
+			})
+
+		})
+
+		context("when a lockfile exists with groups specified", func() {
+			it.Before(func() {
+				Expect(os.Setenv("BP_UV_INSTALL_GROUPS", "dev,local")).To(Succeed())
+				Expect(os.WriteFile(filepath.Join(workingDir, uv.LockfileName), nil, os.ModePerm)).To(Succeed())
+			})
+
+			it.After(func() {
+				Expect(os.RemoveAll(filepath.Join(workingDir, uv.LockfileName))).To(Succeed())
+				Expect(os.Unsetenv("BP_UV_INSTALL_GROUPS")).To(Succeed())
+			})
+
+			it("runs uv create with the cache layer available in the environment", func() {
+				err := runner.Execute(uvLayerPath, uvCachePath, workingDir)
+				Expect(err).NotTo(HaveOccurred())
+
+				Expect(executable.ExecuteCall.CallCount).To(Equal(1))
+
+				Expect(executions[0].Args).To(Equal([]string{
+					"sync",
+					"--group=dev",
+					"--group=local",
+				}))
+				venvPath := filepath.Join(uvLayerPath, "venv")
+				Expect(executions[0].Env).To(ContainElement(fmt.Sprintf("HOME=%s", uvLayerPath)))
+				Expect(executions[0].Env).To(ContainElement(fmt.Sprintf("HOME=%s", uvLayerPath)))
+				Expect(executions[0].Env).To(ContainElement(fmt.Sprintf("VIRTUAL_ENV=%s", venvPath)))
+				Expect(executions[0].Env).To(ContainElement(fmt.Sprintf("UV_PROJECT_ENVIRONMENT=%s", venvPath)))
+				Expect(executions[0].Env).To(ContainElement(fmt.Sprintf("UV_WORKING_DIR=%s", workingDir)))
+				Expect(executions[0].Env).To(ContainElement(fmt.Sprintf("UV_CACHE_DIR=%s", uvCachePath)))
+				userFindLinks, _ := os.LookupEnv("BP_UV_FIND_LINKS")
+				findLinks, _ := os.LookupEnv("UV_FIND_LINKS")
+				combinedFindLinks := []string{userFindLinks, findLinks}
+				Expect(executions[0].Env).To(ContainElement(fmt.Sprintf("UV_FIND_LINKS=%s", strings.TrimLeft(strings.Join(combinedFindLinks, " "), " "))))
+			})
+
+			context("failure cases", func() {
+				context("when the uv env command fails to run", func() {
+					it.Before(func() {
+						executable.ExecuteCall.Stub = func(ex pexec.Execution) error {
+							_, err := fmt.Fprintln(ex.Stdout, "uv error stdout")
+							Expect(err).NotTo(HaveOccurred())
+							_, err = fmt.Fprintln(ex.Stderr, "uv error stderr")
+							Expect(err).NotTo(HaveOccurred())
+							return errors.New("some uv failure")
+						}
+					})
+
+					it("returns an error and logs the stdout and stderr output from the command", func() {
+						err := runner.Execute(uvLayerPath, uvCachePath, workingDir)
+						Expect(err).To(MatchError("failed to run uv command: some uv failure"))
+						Expect(buffer.String()).To(ContainLines(
+							"    Running 'uv sync --group=dev --group=local'",
 							"      uv error stdout",
 							"      uv error stderr",
 						))

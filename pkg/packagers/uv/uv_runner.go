@@ -80,58 +80,50 @@ func (c UvRunner) Execute(uvLayerPath string, uvCachePath string, workingDir str
 		return errors.New("missing lock file")
 	}
 
-	vendorDir := filepath.Join(workingDir, "vendor")
-
-	vendorExists, err := fs.Exists(vendorDir)
-	if err != nil {
-		return err
-	}
-
 	venvPath := filepath.Join(uvLayerPath, "venv")
-	args := []string{
-		"venv",
-		venvPath,
-	}
-
-	env := append(os.Environ(), fmt.Sprintf("HOME=%s", uvLayerPath))
-
-	if vendorExists {
-		args = append(args, "--offline", "--python", "/layers/paketo-buildpacks_cpython/cpython/bin/python")
-		env = append(env, "LD_LIBRARY_PATH=/layers/paketo-buildpacks_cpython/cpython/lib")
-	}
-
-	c.logger.Subprocess("Running 'uv %s'", strings.Join(args, " "))
-
-	err = c.executable.Execute(pexec.Execution{
-		Args:   args,
-		Env:    env,
-		Stdout: c.logger.ActionWriter,
-		Stderr: c.logger.ActionWriter,
-	})
-
-	if err != nil {
-		return fmt.Errorf("failed to run uv command: %w", err)
-	}
 
 	userFindLinks, _ := os.LookupEnv("BP_UV_FIND_LINKS")
 	findLinks, _ := os.LookupEnv("UV_FIND_LINKS")
 
 	combinedFindLinks := []string{userFindLinks, findLinks}
 
+	env := append(os.Environ(), fmt.Sprintf("HOME=%s", uvLayerPath))
+	env = append(env, fmt.Sprintf("VIRTUAL_ENV=%s", venvPath))
+	env = append(env, fmt.Sprintf("UV_PROJECT_ENVIRONMENT=%s", venvPath))
+	env = append(env, fmt.Sprintf("UV_WORKING_DIR=%s", workingDir))
+
+	args := []string{
+		"sync",
+	}
+	vendorDir := filepath.Join(workingDir, "vendor")
+
+	vendorExists, err := fs.Exists(vendorDir)
+	if err != nil {
+		return err
+	}
 	if vendorExists {
+		env = append(env, "LD_LIBRARY_PATH=/layers/paketo-buildpacks_cpython/cpython/lib")
+		env = append(env, "UV_OFFLINE=1")
+		env = append(env, "UV_PYTHON=/layers/paketo-buildpacks_cpython/cpython/bin/python")
 		combinedFindLinks = append(combinedFindLinks, vendorDir)
-		args = offlineArgs(venvPath, workingDir)
+		args = append(args, "--no-index")
 	} else {
-		args = onlineArgs(venvPath, uvCachePath, workingDir)
+		env = append(env, fmt.Sprintf("UV_CACHE_DIR=%s", uvCachePath))
+	}
+	env = append(env, fmt.Sprintf("UV_FIND_LINKS=%s", strings.TrimLeft(strings.Join(combinedFindLinks, " "), " ")))
+
+	installGroups, installGroupsPresent := os.LookupEnv("BP_UV_INSTALL_GROUPS")
+	if installGroupsPresent {
+		for _, group := range strings.Split(installGroups, ",") {
+			args = append(args, fmt.Sprintf("--group=%s", group))
+		}
 	}
 
-	c.logger.Subprocess("Running 'uv %s'", strings.Join(args, " "))
+	c.logger.Subprocess("%s\nRunning 'uv %s'", strings.Join(env, "\n"), strings.Join(args, " "))
 
 	err = c.executable.Execute(pexec.Execution{
 		Args: args,
-		Env: append(env,
-			fmt.Sprintf("UV_FIND_LINKS=%s", strings.TrimLeft(strings.Join(combinedFindLinks, " "), " ")),
-		),
+		Env:  env,
 
 		Stdout: c.logger.ActionWriter,
 		Stderr: c.logger.ActionWriter,
@@ -142,28 +134,4 @@ func (c UvRunner) Execute(uvLayerPath string, uvCachePath string, workingDir str
 	}
 
 	return nil
-}
-
-func onlineArgs(venvPath string, cachePath string, workingDir string) []string {
-	return []string{
-		"pip",
-		"install",
-		"--python",
-		filepath.Join(venvPath, "bin", "python"),
-		"--cache-dir",
-		cachePath,
-		workingDir,
-	}
-}
-
-func offlineArgs(venvPath string, workingDir string) []string {
-	return []string{
-		"pip",
-		"install",
-		"--no-index",
-		"--python",
-		filepath.Join(venvPath, "bin", "python"),
-		workingDir,
-		"--offline",
-	}
 }

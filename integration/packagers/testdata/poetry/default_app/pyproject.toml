@@ -11,7 +11,8 @@ Flask = "^2.0.3"
 gunicorn = "^20.1.0"
 setuptools = "^68.0.0"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.15.12"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
