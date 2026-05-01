@@ -242,4 +242,19 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 		}
 	})
 
+	it("handles python-packagers opt-in", func() {
+		for _, plan := range plans {
+			buildContext.Plan = plan
+			buildContext.Plan.Entries = append(buildContext.Plan.Entries,
+				packit.BuildpackPlanEntry{
+					Name: pythonpackagers.PackageManagersPlanEntry,
+				},
+			)
+			result, err := buildFunc(buildContext)
+			Expect(err).NotTo(HaveOccurred())
+
+			layers := result.Layers
+			Expect(layers).To(HaveLen(len(plan.Entries)))
+		}
+	})
 }

@@ -6,7 +6,10 @@
 package pythonpackagers
 
 import (
+	"fmt"
+	"os"
 	"path/filepath"
+	"strconv"
 
 	"github.com/paketo-buildpacks/packit/v2"
 	"github.com/paketo-buildpacks/packit/v2/fs"
@@ -23,8 +26,9 @@ import (
 //
 // If this buildpack detects files that indicate your app is a Python project,
 // it will pass detection.
+
 func Detect(logger scribe.Emitter) packit.DetectFunc {
-	return func(context packit.DetectContext) (packit.DetectResult, error) {
+	detect := func(context packit.DetectContext) (packit.DetectResult, error) {
 		logger.Title("Checking for pyproject.toml")
 		pyprojectPath := filepath.Join(context.WorkingDir, "pyproject.toml")
 		found, err := fs.Exists(pyprojectPath)
@@ -81,5 +85,30 @@ func Detect(logger scribe.Emitter) packit.DetectFunc {
 		}
 
 		return packit.DetectResult{}, packit.Fail.WithMessage("No python packager manager related files found")
+	}
+
+	return func(context packit.DetectContext) (packit.DetectResult, error) {
+		result, err := detect(context)
+
+		if err != nil {
+			return result, err
+		}
+
+		shouldUsePackageManagers := false
+
+		if usePackageManagers, ok := os.LookupEnv(PackageManagersEnv); ok {
+			shouldUsePackageManagers, err = strconv.ParseBool(usePackageManagers)
+			if err != nil {
+				return packit.DetectResult{}, fmt.Errorf("failed to parse %s value %s: %w", PackageManagersEnv, usePackageManagers, err)
+			}
+		}
+
+		if shouldUsePackageManagers {
+			result.Plan.Provides = append(result.Plan.Provides, packit.BuildPlanProvision{
+				Name: PackageManagersPlanEntry,
+			})
+		}
+
+		return result, err
 	}
 }

@@ -1,0 +1,7 @@
+[[requires]]
+name = "conda-environment"
+  [requires.metadata]
+    launch = true
+
+[[requires]]
+name = "package-managers"

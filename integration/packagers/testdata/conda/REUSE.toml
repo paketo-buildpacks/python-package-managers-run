@@ -15,6 +15,7 @@ SPDX-License-Identifier = "LicenseRef-vendored"
 [[annotations]]
 path = [
      "default_app/*",
+     "pm_mandatory_app/*",
      "vendored_app/*",
      "with_lock_file/*"
 ]
