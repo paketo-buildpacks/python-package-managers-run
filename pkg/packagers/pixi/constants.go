@@ -30,6 +30,10 @@ const (
 	// ProjectFilename is the name of the pixi environment file.
 	ProjectFilename = "pixi.toml"
 
-	// PixiEnvironmentName is the name of environment created out of the project
-	PixiEnvironmentName = "default"
+	// PixiDefaultEnvironmentName is the name of environment created out of the project
+	PixiDefaultEnvironmentName = "default"
+
+	// PixiEnvironmentEnvVarName is the name of the environment variable used to set the
+	// pixi environment to deploy
+	PixiEnvironmentEnvVarName = "BP_PIXI_ENVIRONMENT_NAME"
 )

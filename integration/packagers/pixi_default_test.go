@@ -149,5 +149,41 @@ func pixiTestDefault(t *testing.T, context spec.G, it spec.S) {
 				Expect(string(contents)).To(ContainSubstring(`"name": "flask"`))
 			})
 		})
+
+		context("when selecting an environment with BP_PIXI_ENVIRONMENT_NAME", func() {
+			it("builds an oci image that has the correct behavior and environment", func() {
+				const environment = "test"
+
+				var err error
+
+				var logs fmt.Stringer
+				image, logs, err = pack.WithNoColor().Build.
+					WithPullPolicy("never").
+					WithBuildpacks(
+						settings.Buildpacks.PythonPackageManagersInstall.Online,
+						settings.Buildpacks.PythonPackageManagersRun.Online,
+						settings.Buildpacks.BuildPlan.Online,
+					).
+					WithEnv(map[string]string{
+						"BP_PIXI_ENVIRONMENT_NAME": environment,
+					}).
+					Execute(name, source)
+				Expect(err).NotTo(HaveOccurred(), logs.String())
+
+				Expect(logs).To(ContainLines(
+					fmt.Sprintf("    Running 'pixi exec pixi-pack --use-cache /layers/paketo-buildpacks_python-package-managers-run/pixi-env-cache --output-file /tmp/project.tar.gz --environment %s /workspace'", environment),
+				))
+
+				container, err = docker.Container.Run.
+					WithEnv(map[string]string{"PORT": "8080"}).
+					WithPublish("8080").
+					WithPublishAll().
+					WithCommand("python app.py").
+					Execute(image.ID)
+				Expect(err).NotTo(HaveOccurred())
+
+				Eventually(container).Should(Serve(ContainSubstring("Hello, world!")).OnPort(8080))
+			})
+		})
 	})
 }

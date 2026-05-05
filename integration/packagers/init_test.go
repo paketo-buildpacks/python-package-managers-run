@@ -70,12 +70,10 @@ func TestIntegration(t *testing.T) {
 	Expect(err).NotTo(HaveOccurred())
 
 	settings.Buildpacks.PythonPackageManagersInstall.Online, err = buildpackStore.Get.
-		WithVersion("0.1.0").
 		Execute(settings.Config.PythonPackageManagersInstall)
 	Expect(err).NotTo(HaveOccurred())
 
 	settings.Buildpacks.PythonPackageManagersInstall.Offline, err = buildpackStore.Get.
-		WithVersion("0.1.0").
 		WithOfflineDependencies().
 		Execute(settings.Config.PythonPackageManagersInstall)
 	Expect(err).NotTo(HaveOccurred())
