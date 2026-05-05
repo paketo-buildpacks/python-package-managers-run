@@ -317,6 +317,12 @@ func testDetect(t *testing.T, context spec.G, it spec.S) {
 						"Name": Equal(pythonpackagers.PackageManagersRunPlanEntry),
 					}),
 				))
+				Expect(result.Plan.Requires).To(ContainElement(
+					gstruct.MatchAllFields(gstruct.Fields{
+						"Name":     Equal(pythonpackagers.PackageManagersInstallPlanEntry),
+						"Metadata": BeNil(),
+					}),
+				))
 			})
 		})
 
