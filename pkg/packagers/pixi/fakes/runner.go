@@ -12,9 +12,10 @@ type Runner struct {
 		mutex     sync.Mutex
 		CallCount int
 		Receives  struct {
-			PixiEnvPath   string
-			PixiCachePath string
-			WorkingDir    string
+			PixiEnvPath         string
+			PixiCachePath       string
+			WorkingDir          string
+			PixiEnvironmentName string
 		}
 		Returns struct {
 			Error error
@@ -39,13 +40,14 @@ type Runner struct {
 	}
 }
 
-func (f *Runner) Execute(param1 string, param2 string, param3 string) error {
+func (f *Runner) Execute(param1 string, param2 string, param3 string, param4 string) error {
 	f.ExecuteCall.mutex.Lock()
 	defer f.ExecuteCall.mutex.Unlock()
 	f.ExecuteCall.CallCount++
 	f.ExecuteCall.Receives.PixiEnvPath = param1
 	f.ExecuteCall.Receives.PixiCachePath = param2
 	f.ExecuteCall.Receives.WorkingDir = param3
+	f.ExecuteCall.Receives.PixiEnvironmentName = param4
 	if f.ExecuteCall.Stub != nil {
 		return f.ExecuteCall.Stub(param1, param2, param3)
 	}

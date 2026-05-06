@@ -145,7 +145,7 @@ func testPixiRunner(t *testing.T, context spec.G, it spec.S) {
 			})
 
 			it("runs pixi create with the cache layer available in the environment", func() {
-				err := runner.Execute(pixiLayerPath, pixiCachePath, workingDir)
+				err := runner.Execute(pixiLayerPath, pixiCachePath, workingDir, pixiinstall.PixiDefaultEnvironmentName)
 				Expect(err).NotTo(HaveOccurred())
 
 				Expect(executions[0].Args).To(Equal([]string{
@@ -153,6 +153,7 @@ func testPixiRunner(t *testing.T, context spec.G, it spec.S) {
 					"pixi-pack",
 					"--use-cache", pixiCachePath,
 					"--output-file", "/tmp/project.tar.gz",
+					"--environment", pixiinstall.PixiDefaultEnvironmentName,
 					workingDir,
 				}))
 				Expect(executable.ExecuteCall.CallCount).To(Equal(2))
@@ -160,7 +161,7 @@ func testPixiRunner(t *testing.T, context spec.G, it spec.S) {
 					"exec",
 					"pixi-unpack",
 					"--output-directory", pixiLayerPath,
-					"--env-name", pixiinstall.PixiEnvironmentName,
+					"--env-name", pixiinstall.PixiDefaultEnvironmentName,
 					"/tmp/project.tar.gz",
 				}))
 			})
@@ -183,12 +184,13 @@ func testPixiRunner(t *testing.T, context spec.G, it spec.S) {
 				})
 
 				it("returns an error and logs the stdout and stderr output from the command", func() {
-					err := runner.Execute(pixiLayerPath, pixiCachePath, workingDir)
+					err := runner.Execute(pixiLayerPath, pixiCachePath, workingDir, pixiinstall.PixiDefaultEnvironmentName)
 					Expect(err).To(MatchError("failed to run pixi command: some pixi failure"))
 					Expect(buffer.String()).To(ContainLines(
 						fmt.Sprintf(
-							"    Running 'pixi exec pixi-pack --use-cache %s --output-file /tmp/project.tar.gz %s'",
+							"    Running 'pixi exec pixi-pack --use-cache %s --output-file /tmp/project.tar.gz --environment %s %s'",
 							pixiCachePath,
+							pixiinstall.PixiDefaultEnvironmentName,
 							workingDir,
 						),
 						"      pixi error stdout",

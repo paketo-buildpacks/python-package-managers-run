@@ -101,7 +101,7 @@ func (c PixiRunner) run(args []string) error {
 //
 // For more information about the commands used, see:
 // https://pixi.prefix.dev/latest/deployment/pixi_pack/
-func (c PixiRunner) Execute(pixiLayerPath string, pixiCachePath string, workingDir string) error {
+func (c PixiRunner) Execute(pixiLayerPath string, pixiCachePath string, workingDir string, pixiEnvironmentName string) error {
 	lockfileExists, err := fs.Exists(filepath.Join(workingDir, LockfileName))
 	if err != nil {
 		return err
@@ -120,6 +120,7 @@ func (c PixiRunner) Execute(pixiLayerPath string, pixiCachePath string, workingD
 		"pixi-pack",
 		"--use-cache", pixiCachePath,
 		"--output-file", "/tmp/project.tar.gz",
+		"--environment", pixiEnvironmentName,
 		workingDir,
 	}
 
@@ -133,7 +134,7 @@ func (c PixiRunner) Execute(pixiLayerPath string, pixiCachePath string, workingD
 		"exec",
 		"pixi-unpack",
 		"--output-directory", pixiLayerPath,
-		"--env-name", PixiEnvironmentName,
+		"--env-name", pixiEnvironmentName,
 		"/tmp/project.tar.gz",
 	}
 

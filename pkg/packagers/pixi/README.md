@@ -30,8 +30,7 @@ The buildpack will do the following:
 
 This sub package provides `pixi-environment` as a dependency. Downstream
 buildpacks can require the `pixi-environment` dependency by generating a
-[Build Plan TOML]
-(https://github.com/buildpacks/spec/blob/master/buildpack.md#build-plan-toml)
+[Build Plan TOML](https://github.com/buildpacks/spec/blob/master/buildpack.md#build-plan-toml)
 file that looks like the following:
 
 ```toml
@@ -55,3 +54,15 @@ build = true
 # that needs to use the pixi environment at runtime, this flag should be set to true.
 launch = true
 ```
+## Configuration
+
+### `BP_PIXI_ENVIRONMENT_NAME`
+
+The `BP_PIXI_ENVIRONMENT_NAME` variable allows you to specify the environment
+to install.
+
+```shell
+BP_PIXI_ENVIRONMENT_NAME=test
+```
+
+For more information check the [Pixi documentation about multiple environments](https://pixi.prefix.dev/latest/workspace/multi_environment/#design-considerations).

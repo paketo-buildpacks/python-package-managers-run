@@ -22,7 +22,7 @@ import (
 
 // Runner defines the interface for setting up the pixi environment.
 type Runner interface {
-	Execute(pixiEnvPath string, pixiCachePath string, workingDir string) error
+	Execute(pixiEnvPath string, pixiCachePath string, workingDir string, pixiEnvironmentName string) error
 	ShouldRun(workingDir string, metadata map[string]interface{}) (bool, string, error)
 }
 
@@ -73,8 +73,13 @@ func Build(
 
 			logger.Process("Executing build process")
 
+			pixiEnvironmentName, present := os.LookupEnv(PixiEnvironmentEnvVarName)
+			if !present {
+				pixiEnvironmentName = PixiDefaultEnvironmentName
+			}
+
 			duration, err := clock.Measure(func() error {
-				return runner.Execute(pixiLayer.Path, pixiCacheLayer.Path, context.WorkingDir)
+				return runner.Execute(pixiLayer.Path, pixiCacheLayer.Path, context.WorkingDir, pixiEnvironmentName)
 			})
 			if err != nil {
 				return packit.BuildResult{}, err
@@ -108,7 +113,7 @@ func Build(
 				"lockfile-sha": sha,
 			}
 
-			pixiLayer.SharedEnv.Prepend("PATH", filepath.Join(pixiLayer.Path, PixiEnvironmentName, "bin"), string(os.PathListSeparator))
+			pixiLayer.SharedEnv.Prepend("PATH", filepath.Join(pixiLayer.Path, pixiEnvironmentName, "bin"), string(os.PathListSeparator))
 
 			logger.EnvironmentVariables(pixiLayer)
 
