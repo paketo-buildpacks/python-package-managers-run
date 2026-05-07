@@ -105,7 +105,10 @@ func Detect(logger scribe.Emitter) packit.DetectFunc {
 
 		if shouldUsePackageManagers {
 			result.Plan.Provides = append(result.Plan.Provides, packit.BuildPlanProvision{
-				Name: PackageManagersPlanEntry,
+				Name: PackageManagersRunPlanEntry,
+			})
+			result.Plan.Requires = append(result.Plan.Requires, packit.BuildPlanRequirement{
+				Name: PackageManagersInstallPlanEntry,
 			})
 		}
 

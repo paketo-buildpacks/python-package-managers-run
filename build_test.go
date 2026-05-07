@@ -247,7 +247,7 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 			buildContext.Plan = plan
 			buildContext.Plan.Entries = append(buildContext.Plan.Entries,
 				packit.BuildpackPlanEntry{
-					Name: pythonpackagers.PackageManagersPlanEntry,
+					Name: pythonpackagers.PackageManagersRunPlanEntry,
 				},
 			)
 			result, err := buildFunc(buildContext)
