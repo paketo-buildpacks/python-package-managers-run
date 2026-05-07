@@ -6,6 +6,7 @@
 package pythonpackagers
 
 const (
-	PackageManagersEnv       = "BP_ENABLE_PACKAGE_MANAGERS"
-	PackageManagersPlanEntry = "package-managers"
+	PackageManagersEnv              = "BP_ENABLE_PACKAGE_MANAGERS"
+	PackageManagersRunPlanEntry     = "package-managers-run"
+	PackageManagersInstallPlanEntry = "package-managers-install"
 )

@@ -4,4 +4,4 @@ name = "conda-environment"
     launch = true
 
 [[requires]]
-name = "package-managers"
+name = "package-managers-run"

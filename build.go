@@ -44,7 +44,7 @@ func Build(
 		planEntries := filtered(context.Plan.Entries, pipinstall.SitePackages)
 		// Ignore entry as it is used to opt into using only the
 		// python-package-managers-* duo of buildpacks
-		planEntries = filtered(planEntries, PackageManagersPlanEntry)
+		planEntries = filtered(planEntries, PackageManagersRunPlanEntry)
 		layers := []packit.Layer{}
 
 		for _, entry := range planEntries {
